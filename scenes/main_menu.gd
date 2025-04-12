@@ -6,10 +6,6 @@ func _ready() -> void:
 		spawnRandomBall()
 
 
-func _process(delta: float) -> void:
-	pass
-
-
 func spawnRandomBall() -> void:
 	var position = Vector2(
 		randi_range(0, %Background.size.x),

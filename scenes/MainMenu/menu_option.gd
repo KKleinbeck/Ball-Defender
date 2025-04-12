@@ -1,4 +1,4 @@
-extends Container
+extends Control
 
 
 @export var title: String :
@@ -7,7 +7,7 @@ extends Container
 	set(value):
 		title = value
 		%Title.text = value
-		PanelContainer
+
 @export var subtitle: String :
 	get:
 		return subtitle

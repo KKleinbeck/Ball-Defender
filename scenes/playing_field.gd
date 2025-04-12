@@ -8,11 +8,11 @@ var ballObj: PackedScene = load("res://scenes/PlayingField/ball.tscn")
 var ballDict = {}
 
 
-func spawnBall(position: Vector2, velocity: Vector2):
+func spawnBall(_position: Vector2, _velocity: Vector2):
 	var newBall = ballObj.instantiate()
-	newBall.position = position
-	# TODO: Provide guarantees for position
-	newBall.velocity = velocity
+	newBall.position = _position
+	# TODO: Provide guarantees for position, i.e. colliding with walls etc
+	newBall.velocity = _velocity
 	add_child(newBall)
 	ballDict[newBall.name] = newBall
 	calculateNextCollision(newBall)
@@ -54,13 +54,10 @@ func _process(delta: float) -> void:
 			propagate(deltaRamining)
 			deltaRamining = 0.
 			
-			# Recalculate the next collision event to keep the prediction numerically stable
-			# Update it shortly before collision, but try to not overestimate in the last frame
-			# TODO: This approach is unstable and may lead to tunneling. Uncomment to test.
-			# TODO: As a better approach, create functions which recalculate the next collision time (can be done by using the stored collision location)
-			#if collisionEvent["t"] < 0.1 and collisionEvent["t"] > delta:
-				#collisionList.pop_back()
-				#calculateNextCollision(collisionEvent["ball"])
+			# Recalculate the collision time to keep the prediction numerically stable
+			var ball = collisionEvent["ball"]
+			var deltaP = collisionEvent["collision location"] - ball.position
+			collisionEvent["t"] = deltaP.length() / ball.velocity.length()
 			break
 		
 		CollisionList.pop_back() # Must happen before any other updates to collision list.

@@ -33,7 +33,7 @@ anchors_preset = -1
 anchor_left = 0.1
 anchor_top = 0.2
 anchor_right = 0.6
-anchor_bottom = 0.6
+anchor_bottom = 0.5
 grow_vertical = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Options"]
@@ -52,7 +52,7 @@ title = "Endless Mode"
 subtitle = "Highscore"
 addendum = "0"
 
-[node name="Spacer" type="Container" parent="Options/MarginContainer/VBoxContainer"]
+[node name="Spacer" type="Control" parent="Options/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -62,11 +62,21 @@ title = "Daily Challange"
 subtitle = " "
 addendum = " "
 
-[node name="Spacer2" type="Container" parent="Options/MarginContainer/VBoxContainer"]
+[node name="Spacer2" type="Control" parent="Options/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="OptionSettings" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
+layout_mode = 2
+title = "Upgrades"
+subtitle = " "
+addendum = " "
+
+[node name="Spacer3" type="Control" parent="Options/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OptionSettings2" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
 layout_mode = 2
 title = "Settings"
 subtitle = " "
