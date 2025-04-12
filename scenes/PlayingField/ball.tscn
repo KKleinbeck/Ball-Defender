@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0e0khxbf2pu5"]
+
+[ext_resource type="Script" path="res://scenes/PlayingField/ball.gd" id="1_341wv"]
+
+[node name="Ball" type="Node2D"]
+position = Vector2(240, 913)
+script = ExtResource("1_341wv")
+metadata/_edit_group_ = true

@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://boslddsacn2gf"]
+
+[ext_resource type="Script" path="res://scenes/MainMenu/menu_option.gd" id="1_7bl7r"]
+
+[node name="MarginContainer" type="PanelContainer"]
+process_mode = 4
+offset_right = 123.0
+offset_bottom = 51.0
+script = ExtResource("1_7bl7r")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="EndlessVBox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="MarginContainer/EndlessVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Title
+"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/EndlessVBox"]
+layout_mode = 2
+
+[node name="Subtitle" type="Label" parent="MarginContainer/EndlessVBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Subtitle"
+
+[node name="Addendum" type="Label" parent="MarginContainer/EndlessVBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Addendum"

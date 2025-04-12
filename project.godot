@@ -1,0 +1,37 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Ball Defender"
+run/main_scene="res://scenes/main_menu.tscn"
+config/features=PackedStringArray("4.3", "Mobile")
+
+[autoload]
+
+GlobalDefinitions="*res://global_definitions.gd"
+Math="*res://math.gd"
+CollisionList="*res://collision_list.gd"
+
+[display]
+
+window/size/viewport_width=540
+window/size/viewport_height=1188
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[dotnet]
+
+project/assembly_name="Ball Defender"
+
+[rendering]
+
+renderer/rendering_method="mobile"

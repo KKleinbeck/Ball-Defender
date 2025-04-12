@@ -1,0 +1,75 @@
+[gd_scene load_steps=4 format=3 uid="uid://c2xxikooclhen"]
+
+[ext_resource type="PackedScene" uid="uid://boslddsacn2gf" path="res://scenes/MainMenu/MenuOption.tscn" id="1_1opgk"]
+[ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_vxj3r"]
+[ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/playing_field.tscn" id="2_7gkl3"]
+
+[node name="MainMenu" type="Node"]
+script = ExtResource("1_vxj3r")
+
+[node name="Background" type="ColorRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0687983, 0.0687983, 0.0687983, 1)
+
+[node name="PlayingField" parent="." instance=ExtResource("2_7gkl3")]
+
+[node name="Void" type="ColorRect" parent="."]
+z_index = 1
+anchors_preset = -1
+anchor_top = 0.97
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.0687983, 0.0687983, 0.0687983, 1)
+
+[node name="Options" type="PanelContainer" parent="."]
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.2
+anchor_right = 0.6
+anchor_bottom = 0.6
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Options"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Options/MarginContainer"]
+layout_mode = 2
+
+[node name="OptionEndless" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
+layout_mode = 2
+title = "Endless Mode"
+subtitle = "Highscore"
+addendum = "0"
+
+[node name="Spacer" type="Container" parent="Options/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OptionDaily" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
+layout_mode = 2
+title = "Daily Challange"
+subtitle = " "
+addendum = " "
+
+[node name="Spacer2" type="Container" parent="Options/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OptionSettings" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
+layout_mode = 2
+title = "Settings"
+subtitle = " "
+addendum = " "
+
+[connection signal="ballDespawned" from="PlayingField" to="." method="_on_playing_field_ball_despawned"]
