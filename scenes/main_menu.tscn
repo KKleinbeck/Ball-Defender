@@ -8,7 +8,6 @@
 script = ExtResource("1_vxj3r")
 
 [node name="Background" type="ColorRect" parent="."]
-unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,6 +16,7 @@ grow_vertical = 2
 color = Color(0.0687983, 0.0687983, 0.0687983, 1)
 
 [node name="PlayingField" parent="." instance=ExtResource("2_7gkl3")]
+unique_name_in_owner = true
 
 [node name="Void" type="ColorRect" parent="."]
 z_index = 1
@@ -47,6 +47,7 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 
 [node name="OptionEndless" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
+unique_name_in_owner = true
 layout_mode = 2
 title = "Endless Mode"
 subtitle = "Highscore"
@@ -57,6 +58,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="OptionDaily" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
+unique_name_in_owner = true
 layout_mode = 2
 title = "Daily Challange"
 subtitle = " "
@@ -67,6 +69,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="OptionSettings" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
+unique_name_in_owner = true
 layout_mode = 2
 title = "Upgrades"
 subtitle = " "
@@ -77,6 +80,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="OptionSettings2" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
+unique_name_in_owner = true
 layout_mode = 2
 title = "Settings"
 subtitle = " "

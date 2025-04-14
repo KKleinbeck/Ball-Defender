@@ -1,4 +1,7 @@
-extends Control
+extends Container
+
+
+signal pressed()
 
 
 @export var title: String :
@@ -26,3 +29,8 @@ extends Control
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	set_process(false)
+
+
+func _on_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed:
+		pressed.emit()

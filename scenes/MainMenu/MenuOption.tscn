@@ -2,8 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/MainMenu/menu_option.gd" id="1_7bl7r"]
 
-[node name="MarginContainer" type="PanelContainer"]
-process_mode = 4
+[node name="PanelContainer" type="PanelContainer"]
 offset_right = 123.0
 offset_bottom = 51.0
 script = ExtResource("1_7bl7r")
@@ -39,3 +38,5 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
 text = "Addendum"
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]

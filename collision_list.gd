@@ -1,6 +1,9 @@
 extends Node
 
 
+signal requestCollisionUpdate()
+
+
 var entries: Array = []
 
 
@@ -32,10 +35,24 @@ func add(collisionEvent: Dictionary) -> void:
 	entries.insert(index, collisionEvent)
 
 
-func removeBall(ball) -> void:
+func removeBall(ball: Node) -> void:
+	var eliminationSet = {}
+	recursiveRemoveBallDependencies(ball, eliminationSet)
+	for deletedBall in eliminationSet:
+		requestCollisionUpdate.emit(deletedBall)
+
+
+func recursiveRemoveBallDependencies(ball: Node, eliminationSet: Dictionary) -> void:
 	var index = 0
 	for collisionEvent in entries:
-		if collisionEvent["ball"].name == ball.name:
+		if collisionEvent["ball"] == ball:
 			entries.remove_at(index)
-			return
+			eliminationSet[ball] = null
+			#recursiveRemoveBallDependencies(ball, eliminationSet)
+			#return
+		if collisionEvent["partner"] == "Ball":
+			entries.remove_at(index)
+			eliminationSet[collisionEvent["ball"]] = null
+			recursiveRemoveBallDependencies(collisionEvent["ball"], eliminationSet)
+			#return
 		index += 1

@@ -8,19 +8,32 @@ var ballObj: PackedScene = load("res://scenes/PlayingField/ball.tscn")
 var ballDict = {}
 
 
-func spawnBall(_position: Vector2, _velocity: Vector2):
+func isValidSpawnPosition(spawnPosition: Vector2) -> bool:
+	if spawnPosition.x < position.x or \
+	   spawnPosition.x > position.x + size.x or \
+	   spawnPosition.y < position.y or \
+	   spawnPosition.y > position.y + size.y:
+		return false
+	return true
+
+
+func spawnBall(spawnPosition: Vector2, spawnVelocity: Vector2):
 	var newBall = ballObj.instantiate()
-	newBall.position = _position
 	# TODO: Provide guarantees for position, i.e. colliding with walls etc
-	newBall.velocity = _velocity
+	if !isValidSpawnPosition(spawnPosition):
+		push_error("Ball Spawned outside of playing field")
+		print(spawnPosition, position, size)
+	newBall.position = spawnPosition
+	newBall.velocity = spawnVelocity
 	add_child(newBall)
 	ballDict[newBall.name] = newBall
 	calculateNextCollision(newBall)
 
 
-func despawnBall(ball: Object) -> void:
+func despawnBall(ball: Node) -> void:
 	#nBallsDespawned += 1
 	freeBall(ball)
+	CollisionList.removeBall(ball)
 	ballDespawned.emit()
 	
 	#if nBallsSpawned == nBallsDespawned:
@@ -33,9 +46,8 @@ func freeBall(ball: Object) -> void:
 	ballDict.erase(ball.name)
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	CollisionList.requestCollisionUpdate.connect(calculateNextCollision)
 
 
 func _process(delta: float) -> void:
@@ -53,11 +65,6 @@ func _process(delta: float) -> void:
 				event["t"] -= deltaRamining
 			propagate(deltaRamining)
 			deltaRamining = 0.
-			
-			# Recalculate the collision time to keep the prediction numerically stable
-			var ball = collisionEvent["ball"]
-			var deltaP = collisionEvent["collision location"] - ball.position
-			collisionEvent["t"] = deltaP.length() / ball.velocity.length()
 			break
 		
 		CollisionList.pop_back() # Must happen before any other updates to collision list.
@@ -65,6 +72,14 @@ func _process(delta: float) -> void:
 		propagate(collisionEvent["t"])
 		resolveCollision(collisionEvent)
 		calculateNextCollision(collisionEvent["ball"])
+	
+	# Recalculate the collision time to keep the prediction numerically stable
+	# Due to the coarse estimate do not update when this extends the collision time, as this might be unstable
+	#for collisionEvent in CollisionList.entries:
+		#var ball = collisionEvent["ball"]
+		#var deltaP = collisionEvent["collision location"] - ball.position
+		#collisionEvent["t"] = min(deltaP.length() / ball.velocity.length(), collisionEvent["t"])
+		#collisionEvent["t"] = min(deltaP.dot(ball.velocity) / ball.velocity.length_squared(), collisionEvent["t"])
 
 
 func propagate(delta: float) -> void:
@@ -184,4 +199,3 @@ func resolveOnBallCollision(collisionEvent: Dictionary) -> void:
 	other.velocity += 2 * m1 * deltaVProj * deltaPDir / (m1 + m2)
 	
 	CollisionList.removeBall(collisionEvent["partner details"])
-	calculateNextCollision(collisionEvent["partner details"])
