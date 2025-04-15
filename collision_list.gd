@@ -43,7 +43,11 @@ func triggerUpdateFor(ball: Node) -> void:
 
 
 func removeBall(ball: Node) -> void:
-	recursiveRemoveBallDependencies(ball, {})
+	var eliminationSet = {}
+	recursiveRemoveBallDependencies(ball, eliminationSet)
+	for deletedBall in eliminationSet:
+		if deletedBall == ball: continue
+		requestCollisionUpdate.emit(deletedBall)
 
 
 func recursiveRemoveBallDependencies(ball: Node, eliminationSet: Dictionary) -> void:
