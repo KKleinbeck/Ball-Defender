@@ -1,0 +1,61 @@
+[gd_scene load_steps=3 format=3 uid="uid://27sxmgkg6fdi"]
+
+[ext_resource type="Texture2D" uid="uid://cvicrdnlvci0a" path="res://assets/ball.png" id="1_orlt7"]
+[ext_resource type="Texture2D" uid="uid://ddctsy32lmu4k" path="res://assets/timer.png" id="2_fqos5"]
+
+[node name="ScoreBar" type="PanelContainer"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.04
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="BallIcon" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 15
+
+[node name="Image" type="TextureRect" parent="MarginContainer/HBoxContainer/BallIcon"]
+layout_mode = 2
+texture = ExtResource("1_orlt7")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "0
+"
+
+[node name="DeathTimeIcon" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 13
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/DeathTimeIcon"]
+layout_mode = 2
+texture = ExtResource("2_fqos5")
+expand_mode = 2
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "0
+"
+
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label3" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "0
+"
