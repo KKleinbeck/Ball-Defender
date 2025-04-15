@@ -48,11 +48,12 @@ func recursiveRemoveBallDependencies(ball: Node, eliminationSet: Dictionary) -> 
 		if collisionEvent["ball"] == ball:
 			entries.remove_at(index)
 			eliminationSet[ball] = null
-			#recursiveRemoveBallDependencies(ball, eliminationSet)
-			#return
-		if collisionEvent["partner"] == "Ball":
+			continue
+		if collisionEvent["partner"] == "Ball" and \
+		   collisionEvent["partner details"] == ball:
 			entries.remove_at(index)
 			eliminationSet[collisionEvent["ball"]] = null
 			recursiveRemoveBallDependencies(collisionEvent["ball"], eliminationSet)
-			#return
+			recursiveRemoveBallDependencies(ball, eliminationSet) # Restart as the list changed order now
+			return
 		index += 1
