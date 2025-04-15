@@ -6,6 +6,7 @@ func _ready() -> void:
 		spawnRandomBall()
 	
 	%OptionEndless.pressed.connect(_on_endless_start)
+	%OptionDaily.pressed.connect(_debug_info)
 
 
 func spawnRandomBall() -> void:
@@ -25,3 +26,17 @@ func _on_playing_field_ball_despawned() -> void:
 
 func _on_endless_start() -> void:
 	spawnRandomBall()
+
+
+func _debug_info() -> void:
+	print("=========================")
+	var t = INF
+	for entry in CollisionList.entries:
+		print(entry["t"])
+		if entry["t"] <= t:
+			t = entry["t"]
+		else:
+			print("Unsorted!")
+			return
+	print("Sorted")
+	print("Lost Balls: ", %PlayingField.ballDict.size() - CollisionList.entries.size())

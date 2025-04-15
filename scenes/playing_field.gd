@@ -61,28 +61,19 @@ func _process(delta: float) -> void:
 		
 		var collisionEvent = CollisionList.last()
 		if deltaRamining < collisionEvent["t"]:
-			for event in CollisionList.entries:
-				event["t"] -= deltaRamining
 			propagate(deltaRamining)
 			deltaRamining = 0.
 			break
 		
-		CollisionList.pop_back() # Must happen before any other updates to collision list.
 		deltaRamining -= collisionEvent["t"]
 		propagate(collisionEvent["t"])
 		resolveCollision(collisionEvent)
-		calculateNextCollision(collisionEvent["ball"])
-	
-	# Recalculate the collision time to keep the prediction numerically stable
-	# Due to the coarse estimate do not update when this extends the collision time, as this might be unstable
-	#for collisionEvent in CollisionList.entries:
-		#var ball = collisionEvent["ball"]
-		#var deltaP = collisionEvent["collision location"] - ball.position
-		#collisionEvent["t"] = min(deltaP.length() / ball.velocity.length(), collisionEvent["t"])
-		#collisionEvent["t"] = min(deltaP.dot(ball.velocity) / ball.velocity.length_squared(), collisionEvent["t"])
+		CollisionList.triggerUpdateFor(collisionEvent["ball"])
 
 
 func propagate(delta: float) -> void:
+	for event in CollisionList.entries:
+		event["t"] -= delta
 	for ball in ballDict:
 		ballDict[ball].propagate(delta)
 
@@ -198,4 +189,4 @@ func resolveOnBallCollision(collisionEvent: Dictionary) -> void:
 	ball.velocity  -= 2 * m2 * deltaVProj * deltaPDir / (m1 + m2)
 	other.velocity += 2 * m1 * deltaVProj * deltaPDir / (m1 + m2)
 	
-	CollisionList.removeBall(collisionEvent["partner details"])
+	CollisionList.triggerUpdateFor(collisionEvent["partner details"])

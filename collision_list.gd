@@ -35,11 +35,15 @@ func add(collisionEvent: Dictionary) -> void:
 	entries.insert(index, collisionEvent)
 
 
-func removeBall(ball: Node) -> void:
+func triggerUpdateFor(ball: Node) -> void:
 	var eliminationSet = {}
 	recursiveRemoveBallDependencies(ball, eliminationSet)
 	for deletedBall in eliminationSet:
 		requestCollisionUpdate.emit(deletedBall)
+
+
+func removeBall(ball: Node) -> void:
+	recursiveRemoveBallDependencies(ball, {})
 
 
 func recursiveRemoveBallDependencies(ball: Node, eliminationSet: Dictionary) -> void:
@@ -48,7 +52,8 @@ func recursiveRemoveBallDependencies(ball: Node, eliminationSet: Dictionary) -> 
 		if collisionEvent["ball"] == ball:
 			entries.remove_at(index)
 			eliminationSet[ball] = null
-			continue
+			recursiveRemoveBallDependencies(ball, eliminationSet)
+			return
 		if collisionEvent["partner"] == "Ball" and \
 		   collisionEvent["partner details"] == ball:
 			entries.remove_at(index)
