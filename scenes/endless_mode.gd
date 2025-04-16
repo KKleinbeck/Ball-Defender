@@ -125,9 +125,12 @@ func _on_box_destruction(details: String, scorePoints: int) -> void:
 	CollisionList.removeBoxFromCollisionList(boxName)
 
 
-func _on_collect_upgrade(details: String, type: GlobalDefinitions.Upgrade) -> void:
+func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) -> void:
 	match type:
-		GlobalDefinitions.Upgrade.TimeUp:
+		GlobalDefinitions.EntityType.TimeUp:
+			deathTime += 1
+			deathTimeRemaining += 1
+		GlobalDefinitions.EntityType.Currency:
 			deathTime += 1
 			deathTimeRemaining += 1
 	

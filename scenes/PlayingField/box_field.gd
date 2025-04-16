@@ -11,17 +11,15 @@ signal gameover()
 @export var upgrades: PackedScene
 
 
-enum BoxType {Empty, Standard, TimeUp}
-
-
 var isReady: bool = false
 var gameCanvas: Rect2
 var gridConstant: int
 var margin: int = 5
-var upgradeMargin: int = 10
-var boxesPerRow: int = 10
+var boxesPerRow: int = 9
 var nRows: int = 0
-var pTimeUp: float = 0.9
+var pTimeUp: float = 0.1
+var pCurrency: float = 0.5
+var pPremiumCurrency: float = 0.5
 
 
 func _process(_delta: float) -> void:
@@ -46,11 +44,11 @@ func newBoxAtColumnRow(x: int, y: int) -> Polygon2D:
 	return box
 
 
-func newTimeUpAtColumnRow(x: int, y: int) -> TextureRect:
+func newBenefitAtColumnRow(x: int, y: int, type: GlobalDefinitions.EntityType) -> TextureRect:
 	var start = position + gridConstant * Vector2(x, y)
 	
 	var upgrade = upgrades.instantiate()
-	upgrade.makeTimeUp(gridConstant, upgradeMargin, start)
+	upgrade.createBenefit(gridConstant, start, type)
 	add_child(upgrade)
 	return upgrade
 
@@ -64,21 +62,25 @@ func newRow() -> void:
 	var boxLocation = []
 	for n in boxesPerRow:
 		if n < nBoxes:
-			boxLocation.append(BoxType.Standard)
+			boxLocation.append(GlobalDefinitions.EntityType.Standard)
 		else:
-			boxLocation.append(BoxType.Empty)
+			boxLocation.append(GlobalDefinitions.EntityType.Empty)
 	if randf() < pTimeUp:
-		boxLocation[-1] = BoxType.TimeUp
+		boxLocation[-2] = GlobalDefinitions.EntityType.TimeUp
+	if randf() < pCurrency:
+		boxLocation[-1] = GlobalDefinitions.EntityType.Currency
+	elif randf() < pPremiumCurrency: # Do not spawn currency and and premium at the same time
+		boxLocation[-1] = GlobalDefinitions.EntityType.PremiumCurrency
 	boxLocation.shuffle()
 	
 	for n in boxesPerRow:
 		match boxLocation[n]:
-			BoxType.Standard:
+			GlobalDefinitions.EntityType.Empty:
+				continue
+			GlobalDefinitions.EntityType.Standard:
 				newBoxAtColumnRow(n, 0)
-			BoxType.TimeUp:
-				newTimeUpAtColumnRow(n, 0)
 			_:
-				pass
+				newBenefitAtColumnRow(n, 0, boxLocation[n])
 
 
 func walk() -> void:
