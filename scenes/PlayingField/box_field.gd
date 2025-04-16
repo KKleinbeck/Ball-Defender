@@ -18,8 +18,8 @@ var margin: int = 5
 var boxesPerRow: int = 9
 var nRows: int = 0
 var pTimeUp: float = 0.1
-var pCurrency: float = 0.5
-var pPremiumCurrency: float = 0.5
+var pCurrency: float = 0.95
+var pPremiumCurrency: float = 0.1
 
 
 func _process(_delta: float) -> void:
