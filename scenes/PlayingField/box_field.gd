@@ -21,7 +21,7 @@ var margin: int = 5
 var upgradeMargin: int = 10
 var boxesPerRow: int = 10
 var nRows: int = 0
-var pTimeUp: float = 0.1
+var pTimeUp: float = 0.9
 
 
 func _process(_delta: float) -> void:

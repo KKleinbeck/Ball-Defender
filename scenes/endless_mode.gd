@@ -35,9 +35,8 @@ func _ready() -> void:
 	%PlayingField.canvasClicked.connect(_on_click_on_playingfield)
 	
 	%BoxField.readyAndRendered.connect(_box_field_ready)
-	#%BoxField.collision.connect(_on_boxes_collision)
 	%BoxField.boxDestruction.connect(_on_box_destruction)
-	#%BoxField.collectUpgrade.connect(_on_collect_upgrade)
+	%BoxField.collectUpgrade.connect(_on_collect_upgrade)
 	%BoxField.gameover.connect(_on_gameover)
 	
 	$ScoreBar.setBallNumber(nBalls)
@@ -122,6 +121,16 @@ func _box_field_ready() -> void:
 func _on_box_destruction(details: String, scorePoints: int) -> void:
 	score += scorePoints
 	$ScoreBar.setScore(score)
+	var boxName = details.split("-")[0]
+	CollisionList.removeBoxFromCollisionList(boxName)
+
+
+func _on_collect_upgrade(details: String, type: GlobalDefinitions.Upgrade) -> void:
+	match type:
+		GlobalDefinitions.Upgrade.TimeUp:
+			deathTime += 1
+			deathTimeRemaining += 1
+	
 	var boxName = details.split("-")[0]
 	CollisionList.removeBoxFromCollisionList(boxName)
 
