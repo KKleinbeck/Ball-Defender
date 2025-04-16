@@ -11,10 +11,12 @@ const nBoxRows: int = 18
 const boxesPerRow: int = 10
 const boxMargin: int = 5
 
+var boxFieldReady: bool = false
 var ballSpeed
 var nBalls: int = 1
 var nBallsSpawned: int = 0
 var nBallsDespawned: int = 0
+var score: int = 0
 
 var deathTime: int = 5
 var deathTimeRemaining: int :
@@ -28,11 +30,18 @@ var deathTimeRemaining: int :
 # ========================================
 func _ready() -> void:
 	%PlayingField.ballDespawned.connect(_on_ball_despawned)
+	%PlayingField.requestCalculateOnBoxCollision.connect(%BoxField.calculateOnBoxCollision)
+	%PlayingField.requestResolveOnBoxCollision.connect(%BoxField.resolveOnBoxCollision)
 	%PlayingField.canvasClicked.connect(_on_click_on_playingfield)
+	
+	%BoxField.readyAndRendered.connect(_box_field_ready)
+	#%BoxField.collision.connect(_on_boxes_collision)
+	%BoxField.boxDestruction.connect(_on_box_destruction)
+	#%BoxField.collectUpgrade.connect(_on_collect_upgrade)
+	%BoxField.gameover.connect(_on_gameover)
 	
 	$ScoreBar.setBallNumber(nBalls)
 	$ProgressBar.max_value = ballProgressAngleRequired
-	#updateScore()
 	roundReset()
 
 
@@ -51,7 +60,7 @@ func roundReset() -> void:
 	$BallSpawnTimer.stop()
 	$DeathTimer.stop()
 	
-	#$Boxes.walk()
+	if boxFieldReady: %BoxField.walk()
 	
 	# Free all spawned balls and resets collision list
 	%PlayingField.reset()
@@ -103,6 +112,23 @@ func _on_ball_despawned() -> void:
 	if nBallsSpawned == nBallsDespawned:
 		await get_tree().create_timer(0.1).timeout # Short timer between rounds
 		roundReset()
+
+
+func _box_field_ready() -> void:
+	boxFieldReady = true
+	%BoxField.walk()
+
+
+func _on_box_destruction(details: String, scorePoints: int) -> void:
+	score += scorePoints
+	$ScoreBar.setScore(score)
+	var boxName = details.split("-")[0]
+	CollisionList.removeBoxFromCollisionList(boxName)
+
+
+func _on_gameover() -> void:
+	GlobalDefinitions.state = GlobalDefinitions.State.GAMEOVER
+	stopRunning()
 
 
 func _on_ball_spawn_timer_timeout() -> void:

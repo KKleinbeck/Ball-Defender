@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://38hpxc86n28g"]
+[gd_scene load_steps=5 format=3 uid="uid://38hpxc86n28g"]
 
 [ext_resource type="Script" path="res://scenes/endless_mode.gd" id="1_5codb"]
-[ext_resource type="PackedScene" uid="uid://27sxmgkg6fdi" path="res://scenes/PlayingField/ScoreBar.tscn" id="2_dgjtq"]
+[ext_resource type="PackedScene" uid="uid://27sxmgkg6fdi" path="res://scenes/PlayingField/score_bar.tscn" id="2_dgjtq"]
 [ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/playing_field.tscn" id="3_wjj17"]
+[ext_resource type="PackedScene" uid="uid://bnjc37jk5h6xx" path="res://scenes/PlayingField/box_field.tscn" id="4_mwu1d"]
 
 [node name="EndlessMode" type="Node"]
 script = ExtResource("1_5codb")
@@ -45,6 +46,13 @@ grow_horizontal = 2
 [node name="StartPosition" type="Marker2D" parent="AspectRatioContainer/Container/PlayingField"]
 unique_name_in_owner = true
 position = Vector2(269, 990)
+
+[node name="BoxField" parent="AspectRatioContainer/Container" instance=ExtResource("4_mwu1d")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.9
 
 [node name="Void" type="ColorRect" parent="AspectRatioContainer/Container"]
 layout_mode = 1

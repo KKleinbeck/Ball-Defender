@@ -2,6 +2,8 @@ extends ColorRect
 
 
 signal ballDespawned
+signal requestCalculateOnBoxCollision(ball: Node, collisionEvent: Dictionary)
+signal requestResolveOnBoxCollision(collisionEvent: Dictionary)
 signal canvasClicked(location: Vector2)
 
 var ballObj: PackedScene = load("res://scenes/PlayingField/ball.tscn")
@@ -34,6 +36,8 @@ func spawnBall(spawnPosition: Vector2, spawnVelocity: Vector2, determineCollisio
 	ballDict[newBall.name] = newBall
 	if determineCollision:
 		calculateNextCollision(newBall)
+	if ballDict.size() == 1:
+		newBall.toggleDebug()
 
 
 func despawnBall(ball: Node) -> void:
@@ -101,23 +105,13 @@ func propagate(delta: float) -> void:
 # ========================================
 # ========= Collision Handling ===========
 # ========================================
-func updateCollisionEvent(collisionEvent: Dictionary, t: float, partner: String, partner_details, collision_location: Vector2) -> void:
-	# TODO: Simultaneous collision events
-	if collisionEvent["t"] < t:
-		return 
-	collisionEvent["t"] = t
-	collisionEvent["partner"] = partner
-	collisionEvent["partner details"] = partner_details
-	collisionEvent["collision location"] = collision_location
-
-
 func calculateNextCollision(ball) -> void:
 	if ball.is_queued_for_deletion():
 		return
 	var collisionEvent = {"ball": ball, "t": INF}
 	calculateOnCanvasCollision(ball, collisionEvent)
 	calculateOnBallCollision(ball, collisionEvent)
-	#calculateOnBoxCollision(ball, collisionEvent)
+	calculateOnBoxCollision(ball, collisionEvent)
 	
 	CollisionList.add(collisionEvent)
 
@@ -130,16 +124,16 @@ func calculateOnCanvasCollision(ball, collisionEvent: Dictionary) -> void:
 	var endPosition = position + size
 	if v.x < 0:
 		var tCollision = (position.x + r - p.x) / v.x
-		updateCollisionEvent(collisionEvent, tCollision, "Canvas", "Left", Vector2(r, p.y + v.y * tCollision))
+		GlobalDefinitions.updateCollisionEvent(collisionEvent, tCollision, "Canvas", "Left", Vector2(r, p.y + v.y * tCollision))
 	else:
 		var tCollision = (endPosition.x - r - p.x) / (v.x + 1e-200) # In case v.x == 0
-		updateCollisionEvent(collisionEvent, tCollision, "Canvas", "Right", Vector2(endPosition.x - r, p.y + v.y * tCollision))
+		GlobalDefinitions.updateCollisionEvent(collisionEvent, tCollision, "Canvas", "Right", Vector2(endPosition.x - r, p.y + v.y * tCollision))
 	if v.y < 0:
 		var tCollision = (r - p.y) / v.y
-		updateCollisionEvent(collisionEvent, tCollision, "Canvas", "Top", Vector2(p.x + v.x * tCollision, r))
+		GlobalDefinitions.updateCollisionEvent(collisionEvent, tCollision, "Canvas", "Top", Vector2(p.x + v.x * tCollision, r))
 	else:
 		var tCollision = (size.y + 2*r - p.y) / (v.y + 1e-200)
-		updateCollisionEvent(collisionEvent, tCollision, "Canvas", "Void", Vector2(p.x + v.x * tCollision, size.y + 2*r))
+		GlobalDefinitions.updateCollisionEvent(collisionEvent, tCollision, "Canvas", "Void", Vector2(p.x + v.x * tCollision, size.y + 2*r))
 
 
 func calculateOnBallCollision(ball, collisionEvent: Dictionary) -> void:
@@ -162,9 +156,13 @@ func calculateOnBallCollision(ball, collisionEvent: Dictionary) -> void:
 			continue
 		
 		var tCollision = (-b - pow(discriminant, 0.5)) / (2*a)
-		updateCollisionEvent(
+		GlobalDefinitions.updateCollisionEvent(
 			collisionEvent, tCollision, "Ball", other, ball.position + ball.velocity * tCollision
 		)
+
+
+func calculateOnBoxCollision(ball: Node, collisionEvent: Dictionary) -> void:
+	requestCalculateOnBoxCollision.emit(ball, collisionEvent)
 
 
 func resolveCollision(collisionEvent: Dictionary) -> void:
@@ -180,8 +178,8 @@ func resolveCollision(collisionEvent: Dictionary) -> void:
 		"Ball":
 			resolveOnBallCollision(collisionEvent)
 		
-		#"Boxes":
-			#resolveOnBoxCollision(collisionEvent)
+		"Entity":
+			requestResolveOnBoxCollision.emit(collisionEvent)
 
 
 func resolveOnCanvasCollision(collisionEvent) -> void:

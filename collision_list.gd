@@ -40,7 +40,7 @@ func add(collisionEvent: Dictionary) -> void:
 
 
 func triggerUpdateFor(ball: Node) -> void:
-	var eliminationSet = {}
+	var eliminationSet = {ball: null}
 	recursiveRemoveBallDependencies(ball, eliminationSet)
 	for deletedBall in eliminationSet:
 		requestCollisionUpdate.emit(deletedBall)
@@ -70,3 +70,13 @@ func recursiveRemoveBallDependencies(ball: Node, eliminationSet: Dictionary) -> 
 			recursiveRemoveBallDependencies(ball, eliminationSet) # Restart as the list changed order now
 			return
 		index += 1
+
+
+func removeBoxFromCollisionList(boxName: String) -> void:
+	for n in entries.size():
+		if entries[n]["partner"] == "Entity" and entries[n]["partner details"].split("-")[0] == boxName:
+			triggerUpdateFor(entries[n]["ball"])
+			# Since the list now changed, it is dangerous to continue the loop
+			# Thus restart the cleaning step
+			removeBoxFromCollisionList(boxName)
+			break

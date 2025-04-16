@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://df8xwyv5r0bj1"]
+
+[ext_resource type="Script" path="res://scenes/PlayingField/box.gd" id="1_3datu"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_3iiho"]
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[node name="Box" type="Polygon2D"]
+polygon = PackedVector2Array(0, 0, 50, 0, 50, 50, 0, 50)
+script = ExtResource("1_3datu")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 50.0
+offset_bottom = 50.0
+size_flags_vertical = 1
+text = "1"
+label_settings = SubResource("LabelSettings_3iiho")
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -7,3 +7,7 @@ func setBallNumber(n: int) -> void:
 
 func setDeathTimer(n: int) -> void:
 	%DeathTimer.text = str(n)
+
+
+func setScore(n: int) -> void:
+	%Score.text = str(n)
