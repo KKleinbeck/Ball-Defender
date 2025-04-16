@@ -7,7 +7,7 @@ func _ready() -> void:
 	
 	%OptionEndless.pressed.connect(_on_endless_start)
 	%OptionDaily.pressed.connect(_debug_info)
-	%OptionSettings.pressed.connect(_on_playing_field_ball_despawned)
+	%OptionSettings.pressed.connect(spawnRandomBall)
 
 
 func spawnRandomBall() -> void:
@@ -27,10 +27,7 @@ func _on_playing_field_ball_despawned() -> void:
 
 func _on_endless_start() -> void:
 	CollisionList.purge()
-	get_tree().change_scene_to_file("res://scenes/EndlessMode.tscn")
-	#var endlessModeScene = load("res://scenes/EndlessMode.tscn")
-	#var endlessModeInstance = endlessModeScene.instantiate()
-	#add_child(endlessModeInstance)
+	get_tree().change_scene_to_file("res://scenes/endless_mode.tscn")
 
 
 func _debug_info() -> void:

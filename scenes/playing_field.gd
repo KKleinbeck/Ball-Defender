@@ -2,12 +2,17 @@ extends ColorRect
 
 
 signal ballDespawned
-
+signal canvasClicked(location: Vector2)
 
 var ballObj: PackedScene = load("res://scenes/PlayingField/ball.tscn")
-var ballDict = {}
+var ballDict: Dictionary = {}
+var ballSpeed = 450
+var v0: Vector2 = Vector2(0, -ballSpeed)
 
 
+# ========================================
+# ========= Ball Spawning ================
+# ========================================
 func isValidSpawnPosition(spawnPosition: Vector2) -> bool:
 	if spawnPosition.x < position.x or \
 	   spawnPosition.x > position.x + size.x or \
@@ -17,28 +22,24 @@ func isValidSpawnPosition(spawnPosition: Vector2) -> bool:
 	return true
 
 
-func spawnBall(spawnPosition: Vector2, spawnVelocity: Vector2):
+func spawnBallAt(spawnPosition: Vector2):
+	spawnBall(spawnPosition, v0)
+
+
+func spawnBall(spawnPosition: Vector2, spawnVelocity: Vector2, determineCollision: bool = true):
 	var newBall = ballObj.instantiate()
-	# TODO: Provide guarantees for position, i.e. colliding with walls etc
-	if !isValidSpawnPosition(spawnPosition):
-		push_error("Ball Spawned outside of playing field")
-		print(spawnPosition, position, size)
 	newBall.position = spawnPosition
 	newBall.velocity = spawnVelocity
 	add_child(newBall)
 	ballDict[newBall.name] = newBall
-	calculateNextCollision(newBall)
+	if determineCollision:
+		calculateNextCollision(newBall)
 
 
 func despawnBall(ball: Node) -> void:
-	#nBallsDespawned += 1
 	freeBall(ball)
 	CollisionList.removeBall(ball)
 	ballDespawned.emit()
-	
-	#if nBallsSpawned == nBallsDespawned:
-		#await get_tree().create_timer(0.1).timeout # Short timer between rounds
-		#roundReset()
 
 
 func freeBall(ball: Object) -> void:
@@ -46,14 +47,33 @@ func freeBall(ball: Object) -> void:
 	ballDict.erase(ball.name)
 
 
+func reset() -> void:
+	for ballName in ballDict:
+		ballDict[ballName].queue_free()
+	ballDict = {}
+
+
+# ========================================
+# ========= Godot Overrides ==============
+# ========================================
 func _ready() -> void:
 	CollisionList.requestCollisionUpdate.connect(calculateNextCollision)
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed == false: # pressed == false =>  mouse up
+		var clickLocation = get_local_mouse_position()
+		
+		if ballDict.size() == 1 and GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
+			var ball = ballDict[ballDict.keys()[0]]
+			v0 = (clickLocation - ball.position).normalized() * ballSpeed
+			ball.velocity = v0
+			calculateNextCollision(ball)
+			#updateBallProgress()
+		canvasClicked.emit(clickLocation)
+
+
 func _process(delta: float) -> void:
-	#if state == State.DEBUG_STEP:
-		#debugPause()
-	
 	var deltaRamining = delta
 	while deltaRamining > 0.:
 		if CollisionList.isEmpty():

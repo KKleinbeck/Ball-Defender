@@ -1,0 +1,64 @@
+[gd_scene load_steps=4 format=3 uid="uid://38hpxc86n28g"]
+
+[ext_resource type="Script" path="res://scenes/endless_mode.gd" id="1_5codb"]
+[ext_resource type="PackedScene" uid="uid://27sxmgkg6fdi" path="res://scenes/PlayingField/ScoreBar.tscn" id="2_dgjtq"]
+[ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/playing_field.tscn" id="3_wjj17"]
+
+[node name="EndlessMode" type="Node"]
+script = ExtResource("1_5codb")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0687983, 0.0687983, 0.0687983, 1)
+
+[node name="ScoreBar" parent="." instance=ExtResource("2_dgjtq")]
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+anchors_preset = -1
+anchor_top = 0.04
+anchor_right = 1.0
+anchor_bottom = 0.05
+show_percentage = false
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+anchors_preset = -1
+anchor_top = 0.055
+anchor_right = 1.0
+anchor_bottom = 1.0
+ratio = 0.48
+alignment_vertical = 0
+
+[node name="Container" type="Control" parent="AspectRatioContainer"]
+layout_mode = 2
+
+[node name="PlayingField" parent="AspectRatioContainer/Container" instance=ExtResource("3_wjj17")]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 0.0
+anchor_bottom = 0.9
+grow_horizontal = 2
+
+[node name="StartPosition" type="Marker2D" parent="AspectRatioContainer/Container/PlayingField"]
+unique_name_in_owner = true
+position = Vector2(269, 990)
+
+[node name="Void" type="ColorRect" parent="AspectRatioContainer/Container"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="BallSpawnTimer" type="Timer" parent="."]
+
+[node name="DeathTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="BallSpawnTimer" to="." method="_on_ball_spawn_timer_timeout"]
+[connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]
