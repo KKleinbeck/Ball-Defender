@@ -1,0 +1,112 @@
+[gd_scene load_steps=5 format=3 uid="uid://dv1wsujrmrgf7"]
+
+[ext_resource type="Texture2D" uid="uid://carkrd3lfh0w5" path="res://assets/chevronLeft.png" id="1_4fyso"]
+[ext_resource type="Script" path="res://scenes/store.gd" id="1_pbjr5"]
+[ext_resource type="Texture2D" uid="uid://dmr53b34ss8hg" path="res://assets/currency.png" id="2_qj6t0"]
+[ext_resource type="Texture2D" uid="uid://cosofngwy7jk" path="res://assets/premiumCurrency.png" id="4_v0ngm"]
+
+[node name="Store" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pbjr5")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.231078, 0.0330194, 0.322924, 1)
+
+[node name="GoBack" type="TextureButton" parent="."]
+layout_mode = 2
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 64.0
+offset_bottom = 64.0
+texture_normal = ExtResource("1_4fyso")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.95
+anchor_bottom = 0.9
+
+[node name="Currency" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 70.0
+grow_horizontal = 0
+
+[node name="IconStandard" type="TextureRect" parent="Currency"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.25
+anchor_right = 1.0
+anchor_bottom = 0.25
+offset_left = -24.0
+offset_top = -7.0
+offset_right = -10.0
+offset_bottom = 7.0
+texture = ExtResource("2_qj6t0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Standard" type="Label" parent="Currency"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.25
+anchor_right = 0.78
+anchor_bottom = 0.25
+offset_top = -12.0
+offset_bottom = 12.0
+text = "0"
+horizontal_alignment = 2
+
+[node name="IconPremium" type="TextureRect" parent="Currency"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 0.75
+offset_left = -24.0
+offset_top = -7.0
+offset_right = -10.0
+offset_bottom = 7.0
+texture = ExtResource("4_v0ngm")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Premium" type="Label" parent="Currency"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.75
+anchor_right = 0.78
+anchor_bottom = 0.75
+offset_top = -12.0
+offset_bottom = 12.0
+text = "0
+"
+horizontal_alignment = 2
+
+[connection signal="pressed" from="GoBack" to="." method="_on_go_back_pressed"]

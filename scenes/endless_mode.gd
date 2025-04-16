@@ -131,8 +131,12 @@ func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) ->
 			deathTime += 1
 			deathTimeRemaining += 1
 		GlobalDefinitions.EntityType.Currency:
-			deathTime += 1
-			deathTimeRemaining += 1
+			Player.state["currency"]["standard"] += 1
+			Player.saveState()
+		GlobalDefinitions.EntityType.PremiumCurrency:
+			Player.state["currency"]["premium"] += 1
+			Player.saveState()
+		#GlobalDefinitions.EntityType.Charge:
 	
 	var boxName = details.split("-")[0]
 	CollisionList.removeBoxFromCollisionList(boxName)

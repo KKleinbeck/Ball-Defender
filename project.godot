@@ -19,6 +19,7 @@ config/features=PackedStringArray("4.3", "Mobile")
 GlobalDefinitions="*res://global_definitions.gd"
 Math="*res://math.gd"
 CollisionList="*res://collision_list.gd"
+Player="*res://player_state.gd"
 
 [display]
 
