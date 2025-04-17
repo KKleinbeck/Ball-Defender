@@ -7,6 +7,9 @@ const nBoxRows: int = 18
 const boxesPerRow: int = 10
 const boxMargin: int = 5
 
+var rewardAd: RewardedInterstitialAd
+var rewardAdLoadCallback = RewardedInterstitialAdLoadCallback.new()
+
 var boxFieldReady: bool = false
 var continuedOnce: bool = false
 var ballSpeed
@@ -41,6 +44,11 @@ func _ready() -> void:
 	$GameOverDialog.restartGame.connect(_on_gameover_restart_game)
 	$GameOverDialog.endGame.connect(_on_gameover_end_game)
 	setup()
+	
+	MobileAds.initialize()
+	
+	rewardAdLoadCallback.on_ad_failed_to_load = onRewardAdFailedToLoad
+	rewardAdLoadCallback.on_ad_loaded = onRewardAdLoaded
 
 
 func _process(_delta: float) -> void:
@@ -127,7 +135,7 @@ func _on_ball_despawned() -> void:
 
 func _on_box_field_ready() -> void:
 	boxFieldReady = true
-	for i in 3:
+	for i in 15:
 		%EntityField.walk()
 
 
@@ -169,6 +177,8 @@ func _on_gameover_continue_game() -> void:
 	await get_tree().create_timer(0.1).timeout
 	stopRunning()
 	continuedOnce = true
+	if rewardAd:
+		rewardAd.show()
 
 
 func _on_gameover_restart_game() -> void:
@@ -198,3 +208,19 @@ func _on_death_timer_timeout() -> void:
 	deathTimeRemaining -= 1
 	if deathTimeRemaining <= 0:
 		roundReset()
+
+
+# ========================================
+# ========= AdMob ========================
+# ========================================
+func onLoadInterstitialPressed() -> void:
+	# Android, so far, see docs for IOS
+	var unit_id = "ca-app-pub-3940256099942544/5354046379"
+	RewardedInterstitialAdLoader.new().load(unit_id, AdRequest.new(), rewardAdLoadCallback)
+
+func onRewardAdFailedToLoad() -> void:
+	print("Failed")
+
+
+func onRewardAdLoaded(rewardedInterstitialAd: RewardedInterstitialAd) -> void:
+	rewardAd = rewardedInterstitialAd

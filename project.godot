@@ -33,6 +33,10 @@ window/handheld/orientation=1
 
 project/assembly_name="Ball Defender"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/admob/plugin.cfg")
+
 [rendering]
 
 renderer/rendering_method="mobile"
