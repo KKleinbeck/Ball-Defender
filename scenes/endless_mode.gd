@@ -3,7 +3,6 @@ extends Node
 
 #signal gameover(score)
 
-@export var ballProgressAngleRequired: int = 360
 #@export var ballDiameterRatio: float = 0.02
 #@export var ballSpeedRatio: float = 0.6
 
@@ -13,12 +12,12 @@ const boxMargin: int = 5
 
 var boxFieldReady: bool = false
 var ballSpeed
-var nBalls: int = 1
+var nBalls: int
 var nBallsSpawned: int = 0
 var nBallsDespawned: int = 0
 var score: int = 0
 
-var deathTime: int = 5
+var deathTime: int
 var deathTimeRemaining: int :
 	set(newDTR):
 		deathTimeRemaining = newDTR
@@ -29,6 +28,9 @@ var deathTimeRemaining: int :
 # ========= Godot Overrides ==============
 # ========================================
 func _ready() -> void:
+	nBalls = Player.upgrades["nBalls"]
+	deathTime = Player.upgrades["deathTime"]
+	
 	%PlayingField.ballDespawned.connect(_on_ball_despawned)
 	%PlayingField.requestCalculateOnBoxCollision.connect(%BoxField.calculateOnBoxCollision)
 	%PlayingField.requestResolveOnBoxCollision.connect(%BoxField.resolveOnBoxCollision)
@@ -40,7 +42,8 @@ func _ready() -> void:
 	%BoxField.gameover.connect(_on_gameover)
 	
 	$ScoreBar.setBallNumber(nBalls)
-	$ProgressBar.max_value = ballProgressAngleRequired
+	$ProgressBar.max_value = Player.upgrades["ballProgressCost"] + \
+		(nBalls - 1) * Player.upgrades["ballProgressPerLevelCost"]
 	roundReset()
 
 
@@ -96,11 +99,14 @@ func _on_click_on_playingfield(location: Vector2) -> void:
 		startRunning()
 		
 		var trajectory = location - %StartPosition.position
-		var spawnAngle = 90. - abs(trajectory.angle_to(Vector2.UP)) * 180 / PI
+		var flankAngleBonus = 1 - (Player.upgrades["ballProgressFlankAngle"] / 90.)
+		var spawnAngle = 90. - flankAngleBonus * abs(trajectory.angle_to(Vector2.UP)) * 180 / PI
 		if $ProgressBar.value + spawnAngle > $ProgressBar.max_value:
 			$ProgressBar.value = $ProgressBar.value + spawnAngle - $ProgressBar.max_value
 			nBalls += 1
 			$ScoreBar.setBallNumber(nBalls)
+			$ProgressBar.max_value = Player.upgrades["ballProgressCost"] + \
+				(nBalls - 1) * Player.upgrades["ballProgressPerLevelCost"]
 		else:
 			$ProgressBar.value += spawnAngle
 
@@ -115,7 +121,8 @@ func _on_ball_despawned() -> void:
 
 func _box_field_ready() -> void:
 	boxFieldReady = true
-	%BoxField.walk()
+	for i in 3:
+		%BoxField.walk()
 
 
 func _on_box_destruction(details: String, scorePoints: int) -> void:

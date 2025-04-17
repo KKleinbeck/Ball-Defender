@@ -17,9 +17,6 @@ var gridConstant: int
 var margin: int = 5
 var boxesPerRow: int = 9
 var nRows: int = 0
-var pTimeUp: float = 0.1
-var pCurrency: float = 0.95
-var pPremiumCurrency: float = 0.1
 
 
 func _process(_delta: float) -> void:
@@ -65,11 +62,11 @@ func newRow() -> void:
 			boxLocation.append(GlobalDefinitions.EntityType.Standard)
 		else:
 			boxLocation.append(GlobalDefinitions.EntityType.Empty)
-	if randf() < pTimeUp:
+	if randf() < Player.upgrades["pDeathTime"]:
 		boxLocation[-2] = GlobalDefinitions.EntityType.TimeUp
-	if randf() < pCurrency:
+	if randf() < chanceCurrency("Currency"):
 		boxLocation[-1] = GlobalDefinitions.EntityType.Currency
-	elif randf() < pPremiumCurrency: # Do not spawn currency and and premium at the same time
+	elif randf() < chanceCurrency("PremiumCurrency"): # Do not spawn currency and and premium at the same time
 		boxLocation[-1] = GlobalDefinitions.EntityType.PremiumCurrency
 	boxLocation.shuffle()
 	
@@ -81,6 +78,13 @@ func newRow() -> void:
 				newBoxAtColumnRow(n, 0)
 			_:
 				newBenefitAtColumnRow(n, 0, boxLocation[n])
+
+
+func chanceCurrency(type: String) -> float:
+	var p0 = Player.upgrades["p" + type]
+	var pinf = Player.upgrades["p" + type + "Eventually"]
+	print(pinf + (p0 - pinf) / (1. + (nRows - 1.) / 50.))
+	return pinf + (p0 - pinf) / (1. + (nRows - 1.) / 50.)
 
 
 func walk() -> void:
@@ -192,7 +196,7 @@ func resolveOnBoxCollision(collisionEvent: Dictionary) -> void:
 	# TODO: After all stability improvements, we should still implement a check here, to see whether the ball entered a box at this step
 	
 	# Box destruction
-	box.changeHealth(-1)
+	box.applyDamage()
 	if box.health <= 0:
 		box.queue_free()
 		boxDestruction.emit(collisionEvent["partner details"], box.initialHealth)

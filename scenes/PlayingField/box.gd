@@ -32,6 +32,10 @@ func walk() -> void:
 	$Label.position += yDown
 
 
-func changeHealth(delta) -> void:
-	health += delta
+func applyDamage() -> void:
+	var damage = Player.upgrades["damage"]
+	var fullDamage = int(damage)
+	if randf() < damage - fullDamage:
+		fullDamage += 1
+	health -= fullDamage
 	$Label.text = str(health)

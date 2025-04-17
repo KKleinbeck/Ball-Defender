@@ -6,6 +6,7 @@ signal requestCalculateOnBoxCollision(ball: Node, collisionEvent: Dictionary)
 signal requestResolveOnBoxCollision(collisionEvent: Dictionary)
 signal canvasClicked(location: Vector2)
 
+var pressReadied: bool = false
 var ballObj: PackedScene = load("res://scenes/PlayingField/ball.tscn")
 var ballDict: Dictionary = {}
 var ballSpeed = 450
@@ -65,7 +66,11 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed == false: # pressed == false =>  mouse up
+	if event is InputEventMouseButton and event.pressed:
+		pressReadied = true
+	
+	if event is InputEventMouseButton and event.pressed == false and pressReadied: # pressed == false =>  mouse up
+		pressReadied = false
 		var clickLocation = get_local_mouse_position()
 		
 		if ballDict.size() == 1 and GlobalDefinitions.State.HALTING == GlobalDefinitions.state:

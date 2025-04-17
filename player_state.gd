@@ -12,6 +12,7 @@ var state = {
 		"damage": 0,
 		"deathTime": 0,
 		
+		"nBalls": 0,
 		"ballProgressCost": 0,
 		"ballProgressPerLevelCost": 0,
 		"ballProgressFlankAngle": 0,
@@ -29,55 +30,95 @@ var state = {
 var levelingDetails = {
 	"damage": {
 		"max": INF,
+		"start": 1.,
+		"levelBonus": 0.1,
 		"cost": [2, 5, 10]
 	},
 	"deathTime": {
-		"max": INF,
+		"max": 25,
+		"start": 5,
+		"levelBonus": 1,
 		"cost": [5, 5, 10]
 	},
 		
+	"nBalls": {
+		"max": 9,
+		"start": 1,
+		"levelBonus": 1,
+		"cost": [10, 50, 50]
+	},
 	"ballProgressCost": {
 		"max": 50,
+		"start": 360,
+		"levelBonus": -3.5,
 		"cost": [5, 5, 10]
 	},
 	"ballProgressPerLevelCost": {
-		"max": 50,
+		"max": 20,
+		"start": 20.,
+		"levelBonus": -0.5,
 		"cost": [2, 5, 10]
 	},
 	"ballProgressFlankAngle": {
-		"max": 20,
+		"max": 30,
+		"start": 0.,
+		"levelBonus": 1.,
 		"cost": [2, 5, 10]
 	},
 		
 	"pDeathTime": {
 		"max": 20,
+		"start": 0.1,
+		"levelBonus": 0.005,
 		"cost": [2, 5, 5]
 	},
 	"pCurrency": {
-		"max": 30,
+		"max": 40,
+		"start": 0.1,
+		"levelBonus": 0.0025,
 		"cost": [2, 5, 10]
 	},
 	"pCurrencyEventually": {
-		"max": 30,
+		"max": 40,
+		"start": 0.25,
+		"levelBonus": 0.004,
 		"cost": [2, 5, 10]
 	},
 	"pPremiumCurrency": {
-		"max": 30,
+		"max": 20,
+		"start": 0.02,
+		"levelBonus": 0.001,
 		"cost": [5, 5, 10]
 	},
 	"pPremiumCurrencyEventually": {
-		"max": 30,
+		"max": 20,
+		"start": 0.04,
+		"levelBonus": 0.001,
 		"cost": [5, 5, 10]
 	},
 	"pCharge": {
 		"max": INF,
+		"start": 1.,
+		"levelBonus": 0.1,
 		"cost": [2, 5, 10]
 	},
 }
 
+var upgrades: Dictionary = {}
+
 
 func _ready() -> void:
 	loadState()
+	determineUpgrades()
+
+
+func determineUpgrades() -> void:
+	for upgrade in levelingDetails:
+		var level = state["upgrades"][upgrade]
+		var start = levelingDetails[upgrade]["start"]
+		var levelBonus = levelingDetails[upgrade]["levelBonus"]
+		
+		upgrades[upgrade] = start + level * levelBonus
 
 
 func saveState() -> void:

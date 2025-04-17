@@ -55,5 +55,6 @@ func _on_upgrade(identifier) -> void:
 	if upgradeCost <= Player.state["currency"]["standard"]:
 		Player.state["currency"]["standard"] -= upgradeCost
 		Player.state["upgrades"][identifier] += 1
-	redraw(identifier)
-	Player.saveState()
+		Player.determineUpgrades()
+		redraw(identifier)
+		Player.saveState()
