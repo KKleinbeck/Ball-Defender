@@ -23,10 +23,6 @@ func reset() -> void:
 	entries = []
 
 
-func purge() -> void:
-	entries = []
-
-
 func add(collisionEvent: Dictionary) -> void:
 	for collision in entries:
 		if collision["ball"].name == collisionEvent["ball"].name:

@@ -3,14 +3,12 @@ extends Node
 
 #signal gameover(score)
 
-#@export var ballDiameterRatio: float = 0.02
-#@export var ballSpeedRatio: float = 0.6
-
 const nBoxRows: int = 18
 const boxesPerRow: int = 10
 const boxMargin: int = 5
 
 var boxFieldReady: bool = false
+var continuedOnce: bool = false
 var ballSpeed
 var nBalls: int
 var nBallsSpawned: int = 0
@@ -28,23 +26,21 @@ var deathTimeRemaining: int :
 # ========= Godot Overrides ==============
 # ========================================
 func _ready() -> void:
-	nBalls = Player.upgrades["nBalls"]
-	deathTime = Player.upgrades["deathTime"]
 	
 	%PlayingField.ballDespawned.connect(_on_ball_despawned)
-	%PlayingField.requestCalculateOnBoxCollision.connect(%BoxField.calculateOnBoxCollision)
-	%PlayingField.requestResolveOnBoxCollision.connect(%BoxField.resolveOnBoxCollision)
+	%PlayingField.requestCalculateOnBoxCollision.connect(%EntityField.calculateOnBoxCollision)
+	%PlayingField.requestResolveOnBoxCollision.connect(%EntityField.resolveOnBoxCollision)
 	%PlayingField.canvasClicked.connect(_on_click_on_playingfield)
 	
-	%BoxField.readyAndRendered.connect(_box_field_ready)
-	%BoxField.boxDestruction.connect(_on_box_destruction)
-	%BoxField.collectUpgrade.connect(_on_collect_upgrade)
-	%BoxField.gameover.connect(_on_gameover)
+	%EntityField.readyAndRendered.connect(_on_box_field_ready)
+	%EntityField.boxDestruction.connect(_on_box_destruction)
+	%EntityField.collectUpgrade.connect(_on_collect_upgrade)
+	%EntityField.gameover.connect(_on_gameover)
 	
-	$ScoreBar.setBallNumber(nBalls)
-	$ProgressBar.max_value = Player.upgrades["ballProgressCost"] + \
-		(nBalls - 1) * Player.upgrades["ballProgressPerLevelCost"]
-	roundReset()
+	$GameOverDialog.continueGame.connect(_on_gameover_continue_game)
+	$GameOverDialog.restartGame.connect(_on_gameover_restart_game)
+	$GameOverDialog.endGame.connect(_on_gameover_end_game)
+	setup()
 
 
 func _process(_delta: float) -> void:
@@ -54,6 +50,16 @@ func _process(_delta: float) -> void:
 # ========================================
 # ========= Custom Methods ===============
 # ========================================
+func setup() -> void:
+	nBalls = Player.upgrades["nBalls"]
+	deathTime = Player.upgrades["deathTime"]
+	$ScoreBar.setBallNumber(nBalls)
+	$ProgressBar.max_value = 0
+	$ProgressBar.max_value = Player.upgrades["ballProgressCost"] + \
+		(nBalls - 1) * Player.upgrades["ballProgressPerLevelCost"]
+	roundReset()
+
+
 func roundReset() -> void:
 	nBallsDespawned = 0
 	deathTimeRemaining = deathTime
@@ -62,11 +68,11 @@ func roundReset() -> void:
 	$BallSpawnTimer.stop()
 	$DeathTimer.stop()
 	
-	if boxFieldReady: %BoxField.walk()
+	if boxFieldReady: %EntityField.walk()
 	
 	# Free all spawned balls and resets collision list
 	%PlayingField.reset()
-	CollisionList.purge()
+	CollisionList.reset()
 	
 	# Instantiate first ball at origin
 	%PlayingField.spawnBall(%StartPosition.position, Vector2.ZERO, false)
@@ -119,10 +125,10 @@ func _on_ball_despawned() -> void:
 		roundReset()
 
 
-func _box_field_ready() -> void:
+func _on_box_field_ready() -> void:
 	boxFieldReady = true
 	for i in 3:
-		%BoxField.walk()
+		%EntityField.walk()
 
 
 func _on_box_destruction(details: String, scorePoints: int) -> void:
@@ -151,7 +157,34 @@ func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) ->
 
 func _on_gameover() -> void:
 	GlobalDefinitions.state = GlobalDefinitions.State.GAMEOVER
+	set_process(false)
+	$GameOverDialog.show()
+	if continuedOnce:
+		$GameOverDialog.hideContinue()
+
+
+func _on_gameover_continue_game() -> void:
+	%EntityField.cleanRowsOnContinue()
+	$GameOverDialog.hide()
+	await get_tree().create_timer(0.1).timeout
 	stopRunning()
+	continuedOnce = true
+
+
+func _on_gameover_restart_game() -> void:
+	%EntityField.reset()
+	%PlayingField.reset()
+	CollisionList.reset()
+	$GameOverDialog.hide()
+	await get_tree().create_timer(0.1).timeout
+	boxFieldReady = false
+	setup()
+	_on_box_field_ready()
+
+
+func _on_gameover_end_game() -> void:
+	CollisionList.reset()
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 
 func _on_ball_spawn_timer_timeout() -> void:

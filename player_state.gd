@@ -17,6 +17,8 @@ var state = {
 		"ballProgressPerLevelCost": 0,
 		"ballProgressFlankAngle": 0,
 		
+		"clearRowsOnRestart": 0,
+		
 		"pDeathTime": 0,
 		"pCurrency": 0,
 		"pCurrencyEventually": 0,
@@ -45,7 +47,7 @@ var levelingDetails = {
 		"max": 9,
 		"start": 1,
 		"levelBonus": 1,
-		"cost": [10, 50, 50]
+		"cost": [10, 40, 50]
 	},
 	"ballProgressCost": {
 		"max": 50,
@@ -64,6 +66,13 @@ var levelingDetails = {
 		"start": 0.,
 		"levelBonus": 1.,
 		"cost": [2, 5, 10]
+	},
+	
+	"clearRowsOnRestart": {
+		"max": 5,
+		"start": 3,
+		"levelBonus": 1,
+		"cost": [10, 40, 50]
 	},
 		
 	"pDeathTime": {

@@ -27,12 +27,12 @@ func _on_playing_field_ball_despawned() -> void:
 
 
 func _on_endless_start() -> void:
-	CollisionList.purge()
+	CollisionList.reset()
 	get_tree().change_scene_to_file("res://scenes/endless_mode.tscn")
 
 
 func _enter_upgrade_store() -> void:
-	CollisionList.purge()
+	CollisionList.reset()
 	get_tree().change_scene_to_file("res://scenes/store.tscn")
 
 

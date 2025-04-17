@@ -69,7 +69,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		pressReadied = true
 	
-	if event is InputEventMouseButton and event.pressed == false and pressReadied: # pressed == false =>  mouse up
+	if event is InputEventMouseButton and event.pressed == false and pressReadied: # pressed == false => mouse up
 		pressReadied = false
 		var clickLocation = get_local_mouse_position()
 		
