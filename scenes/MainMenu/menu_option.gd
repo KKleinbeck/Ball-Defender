@@ -26,7 +26,6 @@ signal pressed()
 		%Addendum.text = value
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	set_process(false)
 
@@ -34,3 +33,12 @@ func _ready() -> void:
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		pressed.emit()
+
+
+func setImage1(path: String) -> void:
+	%Image1.texture = load(path)
+	%Spacer.show()
+
+
+func setImage2(path: String) -> void:
+	%Image2.texture = load(path)

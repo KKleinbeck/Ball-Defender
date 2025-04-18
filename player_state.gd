@@ -4,6 +4,7 @@ extends Node
 const playerDataLocation = "user://PlayerData.json"
 
 var state = {
+	"highscore": 0,
 	"currency": {
 		"standard": 0,
 		"premium": 0
@@ -137,6 +138,12 @@ func determineUpgrades() -> void:
 		upgrades[upgrade] = start + level * levelBonus
 
 
+func endOfGameUpdates(highscore, currencyReward) -> void:
+	Player.state["highscore"] = max(Player.state["highscore"], highscore)
+	Player.state["currency"]["standard"] += currencyReward
+	Player.saveState()
+
+
 func saveState() -> void:
 	var file = FileAccess.open_encrypted_with_pass(playerDataLocation, FileAccess.WRITE, "yFOghex4gzvfW99uMON9rIzhc5rnXdj3")
 	file.store_var(state.duplicate())
@@ -147,6 +154,7 @@ func loadState() -> void:
 	if FileAccess.file_exists(playerDataLocation):
 		var file = FileAccess.open_encrypted_with_pass(playerDataLocation, FileAccess.READ, "yFOghex4gzvfW99uMON9rIzhc5rnXdj3")
 		var data = file.get_var()
+		state["highscore"] = data["highscore"]
 		state["currency"] = data["currency"]
 		for upgradeName in data["upgrades"]:
 			state["upgrades"][upgradeName] = data["upgrades"][upgradeName]

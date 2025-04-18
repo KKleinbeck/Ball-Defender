@@ -9,6 +9,14 @@ func _ready() -> void:
 	%OptionDaily.pressed.connect(_debug_info)
 	%OptionUpgrades.pressed.connect(_enter_upgrade_store)
 	%OptionSettings.pressed.connect(spawnRandomBall)
+	
+	%OptionEndless.subtitle = "Highscore"
+	%OptionEndless.addendum = str(Player.state["highscore"])
+	
+	%OptionUpgrades.subtitle = str(Player.state["currency"]["standard"])
+	%OptionUpgrades.setImage1("res://assets/currency.png")
+	%OptionUpgrades.addendum = str(Player.state["currency"]["premium"])
+	%OptionUpgrades.setImage2("res://assets/premiumCurrency.png")
 
 
 func spawnRandomBall() -> void:

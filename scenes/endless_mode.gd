@@ -1,8 +1,6 @@
 extends Node
 
 
-#signal gameover(score)
-
 const nBoxRows: int = 18
 const boxesPerRow: int = 10
 const boxMargin: int = 5
@@ -188,8 +186,7 @@ func _on_gameover_restart_game() -> void:
 	CollisionList.reset()
 	$GameOverDialog.hide()
 	$GameOverDialog.showContinue()
-	Player.state["currency"]["standard"] += %EntityField.currencyReward()
-	Player.saveState()
+	Player.endOfGameUpdates(score, %EntityField.currencyReward())
 	await get_tree().create_timer(0.1).timeout
 	continuedOnce = false
 	boxFieldReady = false
@@ -199,8 +196,7 @@ func _on_gameover_restart_game() -> void:
 
 func _on_gameover_end_game() -> void:
 	CollisionList.reset()
-	Player.state["currency"]["standard"] += %EntityField.currencyReward()
-	Player.saveState()
+	Player.endOfGameUpdates(score, %EntityField.currencyReward())
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 
