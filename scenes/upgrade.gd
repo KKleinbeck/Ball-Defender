@@ -7,6 +7,7 @@ var radius: float
 var type: GlobalDefinitions.EntityType
 
 var upgradeMargin = {
+	GlobalDefinitions.EntityType.Damage: 10,
 	GlobalDefinitions.EntityType.TimeUp: 10,
 	GlobalDefinitions.EntityType.Currency: 15,
 	GlobalDefinitions.EntityType.PremiumCurrency: 15,
@@ -26,6 +27,8 @@ func createBenefit(_gridConstant: int, start: Vector2, _type: GlobalDefinitions.
 	type = _type
 	
 	match type:
+		GlobalDefinitions.EntityType.Damage:
+			texture = load("res://assets/charge.png")
 		GlobalDefinitions.EntityType.TimeUp:
 			texture = load("res://assets/timer.png")
 		GlobalDefinitions.EntityType.Currency:

@@ -1,7 +1,7 @@
 extends Node
 
 
-enum EntityType {Empty, Standard, TimeUp, Currency, PremiumCurrency, Charge}
+enum EntityType {Empty, Standard, Damage, TimeUp, Currency, PremiumCurrency, Charge}
 enum State {RUNNING, HALTING, GAMEOVER}
 var state: State = State.RUNNING
 

@@ -26,6 +26,7 @@ var state = {
 		"pCurrencyEventually": 0,
 		"pPremiumCurrency": 0,
 		"pPremiumCurrencyEventually": 0,
+		"pDamage": 0,
 		"pCharge": 0,
 	},
 	"challangeLevel": 0,
@@ -113,15 +114,24 @@ var levelingDetails = {
 		"levelBonus": 0.001,
 		"cost": [5, 5, 10]
 	},
+	"pDamage": {
+		"max": 50,
+		"start": 0.5,
+		"levelBonus": 0.002,
+		"cost": [2, 5, 10]
+	},
 	"pCharge": {
-		"max": INF,
-		"start": 1.,
+		"max": 5,
+		"start": 0.5,
 		"levelBonus": 0.1,
 		"cost": [2, 5, 10]
 	},
 }
 
 var upgrades: Dictionary = {}
+var temporaryUpgrades: Dictionary = {
+	"damage": 0
+}
 
 
 func _ready() -> void:

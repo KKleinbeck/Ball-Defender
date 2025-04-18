@@ -63,6 +63,10 @@ func setup() -> void:
 	$ProgressBar.max_value = 0
 	$ProgressBar.max_value = Player.upgrades["ballProgressCost"] + \
 		(nBalls - 1) * Player.upgrades["ballProgressPerLevelCost"]
+	
+	# Reset temporary player state
+	for upgrade in Player.temporaryUpgrades:
+		Player.temporaryUpgrades[upgrade] = 0
 	roundReset()
 
 
@@ -133,7 +137,7 @@ func _on_ball_despawned() -> void:
 
 func _on_box_field_ready() -> void:
 	boxFieldReady = true
-	for i in 15:
+	for i in 3:
 		%EntityField.walk()
 
 
@@ -146,6 +150,8 @@ func _on_box_destruction(details: String, scorePoints: int) -> void:
 
 func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) -> void:
 	match type:
+		GlobalDefinitions.EntityType.Damage:
+			Player.temporaryUpgrades["damage"] += 1
 		GlobalDefinitions.EntityType.TimeUp:
 			deathTime += 1
 			deathTimeRemaining += 1
