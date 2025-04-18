@@ -18,13 +18,14 @@ var state = {
 		"ballProgressFlankAngle": 0,
 		
 		"clearRowsOnRestart": 0,
+		"currencyRewardPerLevel": 0,
 		
 		"pDeathTime": 0,
 		"pCurrency": 0,
 		"pCurrencyEventually": 0,
 		"pPremiumCurrency": 0,
 		"pPremiumCurrencyEventually": 0,
-		"pCharge": 0
+		"pCharge": 0,
 	},
 	"challangeLevel": 0,
 }
@@ -73,6 +74,12 @@ var levelingDetails = {
 		"start": 3,
 		"levelBonus": 1,
 		"cost": [10, 40, 50]
+	},
+	"currencyRewardPerLevel": {
+		"max": 40,
+		"start": 0.2,
+		"levelBonus": 0.02,
+		"cost": [10, 0, 10]
 	},
 		
 	"pDeathTime": {

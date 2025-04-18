@@ -31,6 +31,10 @@ func reset() -> void:
 		entity.queue_free()
 
 
+func currencyReward() -> int:
+	return nRows * Player.upgrades["currencyRewardPerLevel"]
+
+
 func cleanRowsOnContinue() -> void:
 	var nRowsCleared = Player.upgrades["clearRowsOnRestart"]
 	for entity in get_children():

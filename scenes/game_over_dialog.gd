@@ -10,6 +10,14 @@ func hideContinue():
 	%MarginContinue.hide()
 
 
+func showContinue():
+	%MarginContinue.show()
+
+
+func setRewardAmount(amount: int) -> void:
+	%Amount.text = "+ " + str(amount)
+
+
 func _on_continue_pressed() -> void:
 	continueGame.emit()
 

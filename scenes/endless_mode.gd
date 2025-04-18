@@ -167,6 +167,7 @@ func _on_gameover() -> void:
 	GlobalDefinitions.state = GlobalDefinitions.State.GAMEOVER
 	set_process(false)
 	$GameOverDialog.show()
+	$GameOverDialog.setRewardAmount(%EntityField.currencyReward())
 	if continuedOnce:
 		$GameOverDialog.hideContinue()
 
@@ -186,7 +187,11 @@ func _on_gameover_restart_game() -> void:
 	%PlayingField.reset()
 	CollisionList.reset()
 	$GameOverDialog.hide()
+	$GameOverDialog.showContinue()
+	Player.state["currency"]["standard"] += %EntityField.currencyReward()
+	Player.saveState()
 	await get_tree().create_timer(0.1).timeout
+	continuedOnce = false
 	boxFieldReady = false
 	setup()
 	_on_box_field_ready()
@@ -194,6 +199,8 @@ func _on_gameover_restart_game() -> void:
 
 func _on_gameover_end_game() -> void:
 	CollisionList.reset()
+	Player.state["currency"]["standard"] += %EntityField.currencyReward()
+	Player.saveState()
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 
