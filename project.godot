@@ -37,6 +37,10 @@ project/assembly_name="Ball Defender"
 
 enabled=PackedStringArray("res://addons/admob/plugin.cfg")
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://localisation/localisations.de.translation", "res://localisation/localisations.en.translation")
+
 [rendering]
 
 renderer/rendering_method="mobile"

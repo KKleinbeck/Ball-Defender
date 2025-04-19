@@ -49,8 +49,8 @@ layout_mode = 2
 [node name="OptionEndless" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
 unique_name_in_owner = true
 layout_mode = 2
-title = "Endless Mode"
-subtitle = "Highscore"
+title = "MAIN_MENU_ENDLESS"
+subtitle = "MAIN_MENU_HIGHSCORE"
 addendum = "0"
 
 [node name="Spacer" type="Control" parent="Options/MarginContainer/VBoxContainer"]
@@ -60,7 +60,7 @@ size_flags_vertical = 3
 [node name="OptionDaily" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
 unique_name_in_owner = true
 layout_mode = 2
-title = "Daily Challange"
+title = "MAIN_MENU_DAILY"
 subtitle = " "
 addendum = " "
 
@@ -71,7 +71,7 @@ size_flags_vertical = 3
 [node name="OptionUpgrades" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
 unique_name_in_owner = true
 layout_mode = 2
-title = "Upgrades"
+title = "MAIN_MENU_UPGRADES"
 subtitle = " "
 addendum = " "
 
@@ -82,7 +82,7 @@ size_flags_vertical = 3
 [node name="OptionSettings" parent="Options/MarginContainer/VBoxContainer" instance=ExtResource("1_1opgk")]
 unique_name_in_owner = true
 layout_mode = 2
-title = "Settings"
+title = "MAIN_MENU_SETTINGS"
 subtitle = " "
 addendum = " "
 
