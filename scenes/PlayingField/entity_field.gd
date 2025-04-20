@@ -75,9 +75,9 @@ func newRow() -> void:
 			boxLocation.append(GlobalDefinitions.EntityType.Standard)
 		else:
 			boxLocation.append(GlobalDefinitions.EntityType.Empty)
-	if randf() < Player.upgrades["pDamage"]:
+	if randf() < Player.upgrades["probDamage"]:
 		boxLocation[-3] = GlobalDefinitions.EntityType.Damage
-	if randf() < Player.upgrades["pDeathTime"]:
+	if randf() < Player.upgrades["probDeathTime"]:
 		boxLocation[-2] = GlobalDefinitions.EntityType.TimeUp
 	if randf() < chanceCurrency("Currency"):
 		boxLocation[-1] = GlobalDefinitions.EntityType.Currency
@@ -96,8 +96,8 @@ func newRow() -> void:
 
 
 func chanceCurrency(type: String) -> float:
-	var p0 = Player.upgrades["p" + type]
-	var pinf = Player.upgrades["p" + type + "Eventually"]
+	var p0 = Player.upgrades["prob" + type]
+	var pinf = Player.upgrades["prob" + type + "Eventually"]
 	return pinf + (p0 - pinf) / (1. + (nRows - 1.) / 50.)
 
 

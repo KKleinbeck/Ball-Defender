@@ -1,15 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddwhp3rvq4tav"]
+[gd_scene load_steps=5 format=3 uid="uid://ddwhp3rvq4tav"]
 
-[ext_resource type="Texture2D" uid="uid://dmr53b34ss8hg" path="res://assets/currency.png" id="1_r60ke"]
+[ext_resource type="Texture2D" uid="uid://cgx66km3tckom" path="res://assets/currency.png" id="1_r60ke"]
 [ext_resource type="Script" path="res://scenes/Store/upgrade_option.gd" id="1_rirfw"]
-[ext_resource type="Texture2D" uid="uid://cxsjk1ra06nys" path="res://assets/plus.png" id="2_5rkbo"]
+[ext_resource type="Texture2D" uid="uid://d4u6rh74q6df" path="res://assets/plus.png" id="2_5rkbo"]
+[ext_resource type="Texture2D" uid="uid://n25p3at2gg7l" path="res://assets/chevronLeft.png" id="4_hrlmd"]
 
 [node name="Margin" type="MarginContainer"]
-custom_minimum_size = Vector2(270, 60)
-offset_right = 270.0
-offset_bottom = 55.0
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_bottom = 5
+custom_minimum_size = Vector2(270, 62)
+offset_right = 540.0
+offset_bottom = 60.0
+theme_override_constants/margin_bottom = 10
 script = ExtResource("1_rirfw")
 
 [node name="Panel" type="Panel" parent="."]
@@ -96,5 +96,51 @@ size_flags_vertical = 4
 texture_normal = ExtResource("2_5rkbo")
 ignore_texture_size = true
 stretch_mode = 5
+
+[node name="Current" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.75
+anchor_right = 0.5
+anchor_bottom = 0.75
+offset_left = -100.0
+offset_top = -15.0
+offset_right = -15.0
+offset_bottom = 15.0
+text = "Current"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ProgressArror" type="TextureRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.75
+anchor_right = 0.5
+anchor_bottom = 0.75
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+texture = ExtResource("4_hrlmd")
+expand_mode = 2
+flip_h = true
+
+[node name="New" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.75
+anchor_right = 0.5
+anchor_bottom = 0.75
+offset_left = 15.0
+offset_top = -15.0
+offset_right = 100.0
+offset_bottom = 15.0
+text = "New"
+vertical_alignment = 1
 
 [connection signal="pressed" from="Panel/TextureRect" to="." method="_on_texture_rect_pressed"]

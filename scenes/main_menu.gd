@@ -5,8 +5,6 @@ func _ready() -> void:
 	for _i in 5:
 		spawnRandomBall()
 	
-	#var translation = load("res://localisations.csv")
-	#TranslationServer.add_translation(translation)
 	TranslationServer.set_locale(OS.get_locale_language())
 	
 	%OptionEndless.pressed.connect(_on_endless_start)

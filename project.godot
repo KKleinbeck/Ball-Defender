@@ -20,6 +20,7 @@ GlobalDefinitions="*res://global_definitions.gd"
 Math="*res://math.gd"
 CollisionList="*res://collision_list.gd"
 Player="*res://player_state.gd"
+LocalisationHelper="*res://localisation/localisation_helper.gd"
 
 [display]
 

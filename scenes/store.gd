@@ -11,13 +11,17 @@ func _ready() -> void:
 	for upgradeName in Player.state["upgrades"]:
 		var optionInstance = optionScene.instantiate()
 		optionInstance.identifier = upgradeName
-		optionInstance.setTitle(upgradeName)
+		optionInstance.setTitle(tr("UPGRADE_" + upgradeName.to_upper()))
 		
 		var level = Player.state["upgrades"][upgradeName]
 		optionInstance.setLevel(level)
 		
 		var upgradeCost = cost(upgradeName, level)
 		optionInstance.setCost(upgradeCost)
+		
+		var currentEffect = LocalisationHelper.upgradeEffect(upgradeName, level)
+		var newEffect = LocalisationHelper.upgradeEffect(upgradeName, level + 1)
+		optionInstance.setEffect(currentEffect, newEffect)
 		
 		optionDict[upgradeName] = optionInstance
 		optionInstance.upgrade.connect(_on_upgrade)

@@ -21,13 +21,13 @@ var state = {
 		"clearRowsOnRestart": 0,
 		"currencyRewardPerLevel": 0,
 		
-		"pDeathTime": 0,
-		"pCurrency": 0,
-		"pCurrencyEventually": 0,
-		"pPremiumCurrency": 0,
-		"pPremiumCurrencyEventually": 0,
-		"pDamage": 0,
-		"pCharge": 0,
+		"probDeathTime": 0,
+		"probCurrency": 0,
+		"probCurrencyEventually": 0,
+		"probPremiumCurrency": 0,
+		"probPremiumCurrencyEventually": 0,
+		"probDamage": 0,
+		"probCharge": 0,
 	},
 	"challangeLevel": 0,
 }
@@ -37,7 +37,7 @@ var levelingDetails = {
 		"max": INF,
 		"start": 1.,
 		"levelBonus": 0.1,
-		"cost": [2, 5, 10]
+		"cost": [2, 5, 5]
 	},
 	"deathTime": {
 		"max": 25,
@@ -84,43 +84,43 @@ var levelingDetails = {
 		"cost": [10, 0, 10]
 	},
 		
-	"pDeathTime": {
+	"probDeathTime": {
 		"max": 20,
 		"start": 0.1,
 		"levelBonus": 0.005,
 		"cost": [2, 5, 5]
 	},
-	"pCurrency": {
+	"probCurrency": {
 		"max": 40,
 		"start": 0.1,
 		"levelBonus": 0.0025,
 		"cost": [2, 5, 10]
 	},
-	"pCurrencyEventually": {
+	"probCurrencyEventually": {
 		"max": 40,
 		"start": 0.25,
 		"levelBonus": 0.004,
 		"cost": [2, 5, 10]
 	},
-	"pPremiumCurrency": {
+	"probPremiumCurrency": {
 		"max": 20,
 		"start": 0.02,
 		"levelBonus": 0.001,
 		"cost": [5, 5, 10]
 	},
-	"pPremiumCurrencyEventually": {
+	"probPremiumCurrencyEventually": {
 		"max": 20,
 		"start": 0.04,
 		"levelBonus": 0.001,
 		"cost": [5, 5, 10]
 	},
-	"pDamage": {
+	"probDamage": {
 		"max": 50,
-		"start": 0.5,
+		"start": 0.1,
 		"levelBonus": 0.002,
 		"cost": [2, 5, 10]
 	},
-	"pCharge": {
+	"probCharge": {
 		"max": 5,
 		"start": 0.5,
 		"levelBonus": 0.1,

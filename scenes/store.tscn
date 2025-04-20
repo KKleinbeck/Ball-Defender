@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://dv1wsujrmrgf7"]
 
-[ext_resource type="Texture2D" uid="uid://carkrd3lfh0w5" path="res://assets/chevronLeft.png" id="1_4fyso"]
+[ext_resource type="Texture2D" uid="uid://n25p3at2gg7l" path="res://assets/chevronLeft.png" id="1_4fyso"]
 [ext_resource type="Script" path="res://scenes/store.gd" id="1_pbjr5"]
-[ext_resource type="Texture2D" uid="uid://dmr53b34ss8hg" path="res://assets/currency.png" id="2_qj6t0"]
-[ext_resource type="Texture2D" uid="uid://cosofngwy7jk" path="res://assets/premiumCurrency.png" id="4_v0ngm"]
+[ext_resource type="Texture2D" uid="uid://cgx66km3tckom" path="res://assets/currency.png" id="2_qj6t0"]
+[ext_resource type="Texture2D" uid="uid://d046vuumalplc" path="res://assets/premiumCurrency.png" id="4_v0ngm"]
 
 [node name="Store" type="Control"]
 layout_mode = 3

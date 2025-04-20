@@ -151,7 +151,7 @@ func _on_box_destruction(details: String, scorePoints: int) -> void:
 func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) -> void:
 	match type:
 		GlobalDefinitions.EntityType.Damage:
-			Player.temporaryUpgrades["damage"] += 1
+			Player.temporaryUpgrades["damage"] += 0.5
 		GlobalDefinitions.EntityType.TimeUp:
 			deathTime += 1
 			deathTimeRemaining += 1

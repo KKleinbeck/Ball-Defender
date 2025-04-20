@@ -4,3 +4,35 @@ MAIN_MENU_HIGHSCORE,Highscore,Bestes Ergebnis
 MAIN_MENU_DAILY,Daily Challange,Tägliche Herausforderung
 MAIN_MENU_UPGRADES,Upgrade Forge,Fortschritt Schmiede
 MAIN_MENU_SETTINGS,Settings,Einstellungen
+,,
+UPGRADE_DAMAGE,Damage,Schaden
+UPGRADE_DAMAGE_EFFECT,{value},
+UPGRADE_DAMAGE_EFFECT_LONG,{value} + {chance}%,
+UPGRADE_DEATHTIME,Death time,Rundenzeit
+UPGRADE_DEATHTIME_EFFECT,{value} sec,
+UPGRADE_NBALLS,Initial balls,Bälle beim Start
+UPGRADE_NBALLS_EFFECT,{value},
+UPGRADE_BALLPROGRESSCOST,Cost first new ball,Kosten 1. Zusatzball
+UPGRADE_BALLPROGRESSCOST_EFFECT,{value}°,
+UPGRADE_BALLPROGRESSPERLEVELCOST,Extra cost per ball,Zusatzkosten pro Ball
+UPGRADE_BALLPROGRESSPERLEVELCOST_EFFECT,{value}°,
+UPGRADE_BALLPROGRESSFLANKANGLE,Cost reward for flat shot,Ballfortschritt flacher Schüsse
+UPGRADE_BALLPROGRESSFLANKANGLE_EFFECT,{value}°,
+UPGRADE_CLEARROWSONRESTART,Rows removed after Ads,Entfernte Reihen nach Werbung
+UPGRADE_CLEARROWSONRESTART_EFFECT,{value},
+UPGRADE_CURRENCYREWARDPERLEVEL,Gameover reward per level,Spielendenbelohnung pro Reihe
+UPGRADE_CURRENCYREWARDPERLEVEL_EFFECT,{value},
+UPGRADE_PROBDEATHTIME,Death time bonus spawn chance,Chance auf Rundenzeitbonus
+UPGRADE_PROBDEATHTIME_EFFECT,{value} %,
+UPGRADE_PROBCURRENCY,Purple coin spawn chance (round 1),Chance auf violette Münzen (1. Runde)
+UPGRADE_PROBCURRENCY_EFFECT,{value} %,
+UPGRADE_PROBCURRENCYEVENTUALLY,Maximum purple coin spawn chance,Maximalchance auf violette Münzen
+UPGRADE_PROBCURRENCYEVENTUALLY_EFFECT,{value} %,
+UPGRADE_PROBPREMIUMCURRENCY,Gold coin spawn chance (round 1),Chance auf goldene Münzen (1. Runde)
+UPGRADE_PROBPREMIUMCURRENCY_EFFECT,{value} %,
+UPGRADE_PROBPREMIUMCURRENCYEVENTUALLY,Maximum gold coin spawn chance,Maximalchance auf goldene Münzen
+UPGRADE_PROBPREMIUMCURRENCYEVENTUALLY_EFFECT,{value} %,
+UPGRADE_PROBDAMAGE,Damage boost spawn chance,Chance auf Bonusschaden
+UPGRADE_PROBDAMAGE_EFFECT,{value} %,
+UPGRADE_PROBCHARGE,Ability charge spawn chance,Chance auf Fähigkeitsenergie
+UPGRADE_PROBCHARGE_EFFECT,{value} %,
