@@ -72,13 +72,13 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed == false and pressReadied: # pressed == false => mouse up
 		pressReadied = false
 		var clickLocation = get_local_mouse_position()
+		if clickLocation.y < position.y or clickLocation.y > position.y + size.y: return
 		
 		if ballDict.size() == 1 and GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
 			var ball = ballDict[ballDict.keys()[0]]
 			v0 = (clickLocation - ball.position).normalized() * ballSpeed
 			ball.velocity = v0
 			calculateNextCollision(ball)
-			#updateBallProgress()
 		canvasClicked.emit(clickLocation)
 
 
