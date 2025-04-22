@@ -133,6 +133,14 @@ var temporaryUpgrades: Dictionary = {
 	"damage": 0
 }
 
+var abilities = {
+	"preRoundAbilityId": "Pass",
+	"endRoundAbilityId": "SuddenStop",
+	"ability1Id": "GlassCannon",
+	"ability2Id": "Pass",
+	"mainAbilityId": "Pass"
+}
+
 
 func _ready() -> void:
 	loadState()

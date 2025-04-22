@@ -37,6 +37,8 @@ func _ready() -> void:
 	$GameOverDialog.continueGame.connect(_on_gameover_continue_game)
 	$GameOverDialog.restartGame.connect(_on_gameover_restart_game)
 	$GameOverDialog.endGame.connect(_on_gameover_end_game)
+	
+	%Abilities.abilityUsed.connect(_on_use_ability)
 	setup()
 
 
@@ -67,6 +69,7 @@ func roundReset() -> void:
 	deathTimeRemaining = deathTime
 	
 	stopRunning()
+	%Abilities.onRoundReset()
 	$BallSpawnTimer.stop()
 	$DeathTimer.stop()
 	
@@ -83,6 +86,7 @@ func roundReset() -> void:
 
 func startRunning() -> void:
 	GlobalDefinitions.state = GlobalDefinitions.State.RUNNING
+	%Abilities.onRoundStart()
 	set_process(true)
 	
 	$BallSpawnTimer.start()
@@ -129,7 +133,7 @@ func _on_ball_despawned() -> void:
 
 func _on_box_field_ready() -> void:
 	boxFieldReady = true
-	for i in 3:
+	for i in 14:
 		%EntityField.walk()
 
 
@@ -195,6 +199,24 @@ func _on_gameover_end_game() -> void:
 	CollisionList.reset()
 	Player.endOfGameUpdates(score, %EntityField.currencyReward())
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+
+
+func _on_use_ability(abilityId: String) -> void:#
+	match abilityId.to_lower():
+		# pre round abilities#
+		
+		# end round abilities
+		"suddenstop":
+			roundReset()
+		
+		# minor abilities
+		"glasscannon":
+			AbilityDefinitions.startGlassCannon()
+			var lambda = func(ball) -> void:
+					# TODO: Do not trigger for upgrades
+					AbilityDefinitions.endGlassCannon()
+					%PlayingField.despawnBall(ball)
+			%EntityField.boxHit.connect(lambda, CONNECT_ONE_SHOT)
 
 
 func _on_ball_spawn_timer_timeout() -> void:

@@ -2,6 +2,7 @@ extends Control
 
 
 signal readyAndRendered()
+signal boxHit(ball)
 signal boxDestruction(details, scorePoints)
 signal collectUpgrade(details, type)
 signal gameover()
@@ -212,6 +213,7 @@ func resolveOnBoxCollision(collisionEvent: Dictionary) -> void:
 	
 	# Box destruction
 	entity.applyDamage()
+	boxHit.emit(ball)
 	if entity.health <= 0:
 		entity.queue_free()
 		boxDestruction.emit(collisionEvent["partner details"], entity.initialHealth)

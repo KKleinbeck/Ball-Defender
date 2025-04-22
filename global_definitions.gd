@@ -16,7 +16,7 @@ func _ready() -> void:
 	MobileAds.initialize()
 	
 	if OS.get_name() == "Android":
-		adUnitID = "ca-app-pub-3940256099942544/1033173712"
+		adUnitID = "ca-app-pub-3940256099942544/5354046379"
 	elif OS.get_name() == "iOS":
 		adUnitID = "ca-app-pub-3940256099942544/4411468910"
 	

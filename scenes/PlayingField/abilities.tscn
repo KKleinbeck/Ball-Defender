@@ -1,0 +1,105 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvvjfkmq1ifjx"]
+
+[ext_resource type="Texture2D" uid="uid://boxjrpfx76bft" path="res://assets/UI/ability.png" id="1_5u03q"]
+[ext_resource type="Script" path="res://scenes/PlayingField/abilities.gd" id="1_x18y6"]
+[ext_resource type="Texture2D" uid="uid://bs4l0lkq4kh76" path="res://assets/UI/abilityDisabled.png" id="2_0um2a"]
+
+[node name="HBoxContainer" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -1088.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x18y6")
+
+[node name="Spacer" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AbilityPreRound" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 16
+
+[node name="AbilityPreRound" type="TextureButton" parent="AbilityPreRound"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 2
+texture_normal = ExtResource("1_5u03q")
+texture_disabled = ExtResource("2_0um2a")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Spacer2" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Ability1" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 16
+
+[node name="Ability1" type="TextureButton" parent="Ability1"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 2
+texture_normal = ExtResource("1_5u03q")
+texture_disabled = ExtResource("2_0um2a")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Spacer3" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AbilityMain" type="TextureButton" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture_normal = ExtResource("1_5u03q")
+texture_disabled = ExtResource("2_0um2a")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Spacer4" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Ability2" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 16
+
+[node name="Ability2" type="TextureButton" parent="Ability2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 2
+texture_normal = ExtResource("1_5u03q")
+texture_disabled = ExtResource("2_0um2a")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Spacer5" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AbilityEndRound" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 16
+
+[node name="AbilityEndRound" type="TextureButton" parent="AbilityEndRound"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 2
+texture_normal = ExtResource("1_5u03q")
+texture_disabled = ExtResource("2_0um2a")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Spacer6" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="AbilityPreRound/AbilityPreRound" to="." method="_on_pre_round_ability_pressed"]
+[connection signal="pressed" from="Ability1/Ability1" to="." method="_on_ability_1_pressed"]
+[connection signal="pressed" from="AbilityMain" to="." method="_on_ability_main_pressed"]
+[connection signal="pressed" from="Ability2/Ability2" to="." method="_on_ability_2_pressed"]
+[connection signal="pressed" from="AbilityEndRound/AbilityEndRound" to="." method="_on_end_round_ability_pressed"]
