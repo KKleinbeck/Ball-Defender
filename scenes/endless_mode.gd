@@ -1,6 +1,9 @@
 extends Node
 
 
+signal endOfRound
+
+
 const nBoxRows: int = 18
 const boxesPerRow: int = 10
 const boxMargin: int = 5
@@ -38,6 +41,8 @@ func _ready() -> void:
 	$GameOverDialog.restartGame.connect(_on_gameover_restart_game)
 	$GameOverDialog.endGame.connect(_on_gameover_end_game)
 	
+	Player.dataChanged.connect(_on_player_data_changed)
+	
 	%Abilities.abilityUsed.connect(_on_use_ability)
 	setup()
 
@@ -51,12 +56,12 @@ func _process(_delta: float) -> void:
 # ========================================
 func setup() -> void:
 	GlobalDefinitions.loadRewardInterstitial()
-	nBalls = Player.upgrades["nBalls"]
-	deathTime = Player.upgrades["deathTime"]
+	deathTime = Player.getUpgrade("deathTime")
+	nBalls = Player.getUpgrade("nBalls")
 	$ScoreBar.setBallNumber(nBalls)
 	$ProgressBar.max_value = 0
-	$ProgressBar.max_value = Player.upgrades["ballProgressCost"] + \
-		(nBalls - 1) * Player.upgrades["ballProgressPerLevelCost"]
+	$ProgressBar.max_value = Player.getUpgrade("ballProgressCost") + \
+		(nBalls - 1) * Player.getUpgrade("ballProgressPerLevelCost")
 	
 	# Reset temporary player state
 	for upgrade in Player.temporaryUpgrades:
@@ -65,6 +70,7 @@ func setup() -> void:
 
 
 func roundReset() -> void:
+	endOfRound.emit()
 	nBallsDespawned = 0
 	deathTimeRemaining = deathTime
 	
@@ -111,14 +117,14 @@ func _on_click_on_playingfield(location: Vector2) -> void:
 		startRunning()
 		
 		var trajectory = location - %StartPosition.position
-		var flankAngleBonus = 1 - (Player.upgrades["ballProgressFlankAngle"] / 90.)
+		var flankAngleBonus = 1 - (Player.getUpgrade("ballProgressFlankAngle") / 90.)
 		var spawnAngle = 90. - flankAngleBonus * abs(trajectory.angle_to(Vector2.UP)) * 180 / PI
 		if $ProgressBar.value + spawnAngle > $ProgressBar.max_value:
 			$ProgressBar.value = $ProgressBar.value + spawnAngle - $ProgressBar.max_value
 			nBalls += 1
 			$ScoreBar.setBallNumber(nBalls)
-			$ProgressBar.max_value = Player.upgrades["ballProgressCost"] + \
-				(nBalls - 1) * Player.upgrades["ballProgressPerLevelCost"]
+			$ProgressBar.max_value = Player.getUpgrade("ballProgressCost") + \
+				(nBalls - 1) * Player.getUpgrade("ballProgressPerLevelCost")
 		else:
 			$ProgressBar.value += spawnAngle
 
@@ -201,22 +207,43 @@ func _on_gameover_end_game() -> void:
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 
-func _on_use_ability(abilityId: String) -> void:#
-	match abilityId.to_lower():
+func _on_player_data_changed(id: String, value) -> void:
+	print("Test ", id)
+	match id:
+		"nBalls":
+			nBalls = value
+			$ScoreBar.setBallNumber(nBalls)
+		_:
+			pass
+
+
+func _on_use_ability(abilityId: String) -> void:
+	match abilityId:
+		"Pass":
+			pass
+		
 		# pre round abilities#
 		
 		# end round abilities
-		"suddenstop":
+		"SuddenStop":
 			roundReset()
 		
 		# minor abilities
-		"glasscannon":
+		"GlassCannon":
 			AbilityDefinitions.startGlassCannon()
 			var lambda = func(ball) -> void:
 					# TODO: Do not trigger for upgrades
 					AbilityDefinitions.endGlassCannon()
 					%PlayingField.despawnBall(ball)
 			%EntityField.boxHit.connect(lambda, CONNECT_ONE_SHOT)
+		
+		_:
+			AbilityDefinitions.factory[abilityId]["start"].call()
+			connect(
+				AbilityDefinitions.factory[abilityId]["signal"],
+				AbilityDefinitions.factory[abilityId]["end"],
+				CONNECT_ONE_SHOT
+			)
 
 
 func _on_ball_spawn_timer_timeout() -> void:

@@ -33,7 +33,7 @@ func walk() -> void:
 
 
 func applyDamage() -> void:
-	var damage = Player.upgrades["damage"] + Player.temporaryUpgrades["damage"]
+	var damage = Player.getUpgrade("damage")
 	var fullDamage = int(damage)
 	if randf() < damage - fullDamage:
 		fullDamage += 1

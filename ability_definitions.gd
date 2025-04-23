@@ -1,18 +1,67 @@
 extends Node
 
 
-var ability1Active: bool = false
-var ability1Store: Dictionary = {}
+var abilityStore: Dictionary = {}
+
+var factory: Dictionary = {}
+
+
+# ========================================
+# ========= Godot Overrides ==============
+# ========================================
+func _ready() -> void:
+	factory["BallHell"] = {
+		"signal": "endOfRound",
+		"start": startBallHell,
+		"end": endBallHell
+	}
+	factory["DoubleDamage"] = {
+		"signal": "endOfRound",
+		"start": startDoubleDamage,
+		"end": endDoubleDamage
+	}
+
+
+# ========================================
+# ========= Custom Methods ===============
+# ========================================
+func storeTempUpgrade(ability: String, id: String) -> void:
+	if not ability in abilityStore:
+		abilityStore[ability] = {}
+	abilityStore[ability][id] = Player.temporaryUpgrades[id]
+
+
+func resetTempUpgrade(ability: String, id: String) -> void:
+	Player.temporaryUpgrades[id] = abilityStore[ability][id]
+	abilityStore.erase(ability)
+
+
+# ========================================
+# ===========  Abilities =================
+# ========================================
+func startBallHell() -> void:
+	print("Hell")
+	storeTempUpgrade("BallHell", "nBalls")
+	Player.setTemporaryUpgrade("nBalls", 2 * Player.getUpgrade("nBalls") - Player.upgrades["nBalls"])
+
+
+func endBallHell() -> void:
+	resetTempUpgrade("BallHell", "nBalls")
+
+
+func startDoubleDamage() -> void:
+	storeTempUpgrade("DoubleDamage", "damage")
+	Player.incrementTemporaryUpgrade("damage", Player.getUpgrade("damage"))
+
+
+func endDoubleDamage() -> void:
+	resetTempUpgrade("DoubleDamage", "damage")
 
 
 func startGlassCannon() -> void:
-	ability1Active = false
-	ability1Store["tempDamage"] = Player.temporaryUpgrades["damage"]
-	Player.temporaryUpgrades["damage"] = INF
+	storeTempUpgrade("GlassCannon", "damage")
+	Player.setTemporaryUpgrade("damage", INF)
 
 
 func endGlassCannon() -> void:
-	ability1Active = true
-	print(ability1Store["tempDamage"])
-	Player.temporaryUpgrades["damage"] = ability1Store["tempDamage"]
-	ability1Store["tempDamage"] = {}
+	resetTempUpgrade("GlassCannon", "damage")

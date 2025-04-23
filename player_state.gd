@@ -1,6 +1,9 @@
 extends Node
 
 
+signal dataChanged(id: String, value)
+
+
 const playerDataLocation = "user://PlayerData.json"
 
 var state = {
@@ -130,15 +133,16 @@ var levelingDetails = {
 
 var upgrades: Dictionary = {}
 var temporaryUpgrades: Dictionary = {
-	"damage": 0
+	"damage": 0,
+	"nBalls": 0,
 }
 
 var abilities = {
 	"preRoundAbilityId": "Pass",
 	"endRoundAbilityId": "SuddenStop",
 	"ability1Id": "GlassCannon",
-	"ability2Id": "Pass",
-	"mainAbilityId": "Pass"
+	"ability2Id": "DoubleDamage",
+	"mainAbilityId": "BallHell"
 }
 
 
@@ -154,6 +158,22 @@ func determineUpgrades() -> void:
 		var levelBonus = levelingDetails[upgrade]["levelBonus"]
 		
 		upgrades[upgrade] = start + level * levelBonus
+
+
+func getUpgrade(id: String):
+	if id in temporaryUpgrades:
+		return upgrades[id] + temporaryUpgrades[id]
+	return upgrades[id]
+
+
+func setTemporaryUpgrade(id: String, value) -> void:
+	temporaryUpgrades[id] = value
+	dataChanged.emit(id, getUpgrade(id))
+
+
+func incrementTemporaryUpgrade(id: String, value) -> void:
+	temporaryUpgrades[id] += value
+	dataChanged.emit(id, getUpgrade(id))
 
 
 func endOfGameUpdates(highscore, currencyReward) -> void:
