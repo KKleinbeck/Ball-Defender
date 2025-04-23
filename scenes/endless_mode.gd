@@ -208,7 +208,6 @@ func _on_gameover_end_game() -> void:
 
 
 func _on_player_data_changed(id: String, value) -> void:
-	print("Test ", id)
 	match id:
 		"nBalls":
 			nBalls = value

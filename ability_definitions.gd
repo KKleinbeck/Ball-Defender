@@ -32,7 +32,7 @@ func storeTempUpgrade(ability: String, id: String) -> void:
 
 
 func resetTempUpgrade(ability: String, id: String) -> void:
-	Player.temporaryUpgrades[id] = abilityStore[ability][id]
+	Player.setTemporaryUpgrade(id, abilityStore[ability][id])
 	abilityStore.erase(ability)
 
 
@@ -40,7 +40,6 @@ func resetTempUpgrade(ability: String, id: String) -> void:
 # ===========  Abilities =================
 # ========================================
 func startBallHell() -> void:
-	print("Hell")
 	storeTempUpgrade("BallHell", "nBalls")
 	Player.setTemporaryUpgrade("nBalls", 2 * Player.getUpgrade("nBalls") - Player.upgrades["nBalls"])
 
