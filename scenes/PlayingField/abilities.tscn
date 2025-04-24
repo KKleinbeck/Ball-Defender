@@ -30,6 +30,22 @@ texture_disabled = ExtResource("2_0um2a")
 ignore_texture_size = true
 stretch_mode = 4
 
+[node name="MarginIcon" type="MarginContainer" parent="AbilityPreRound"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="AbilityPreRountIcon" type="TextureRect" parent="AbilityPreRound/MarginIcon"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(68, 68)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 4
+
 [node name="Spacer2" type="Control" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -47,17 +63,52 @@ texture_disabled = ExtResource("2_0um2a")
 ignore_texture_size = true
 stretch_mode = 4
 
+[node name="MarginIcon" type="MarginContainer" parent="Ability1"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Ability1Icon" type="TextureRect" parent="Ability1/MarginIcon"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(68, 68)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 4
+
 [node name="Spacer3" type="Control" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AbilityMain" type="TextureButton" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="AbilityMain" type="TextureButton" parent="MarginContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture_normal = ExtResource("1_5u03q")
 texture_disabled = ExtResource("2_0um2a")
 ignore_texture_size = true
+stretch_mode = 4
+
+[node name="MarginIcon" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="AbilityMainIcon" type="TextureRect" parent="MarginContainer/MarginIcon"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(68, 68)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
 stretch_mode = 4
 
 [node name="Spacer4" type="Control" parent="."]
@@ -77,6 +128,22 @@ texture_disabled = ExtResource("2_0um2a")
 ignore_texture_size = true
 stretch_mode = 4
 
+[node name="MarginIcon" type="MarginContainer" parent="Ability2"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Ability2Icon" type="TextureRect" parent="Ability2/MarginIcon"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(68, 68)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 4
+
 [node name="Spacer5" type="Control" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -94,12 +161,28 @@ texture_disabled = ExtResource("2_0um2a")
 ignore_texture_size = true
 stretch_mode = 4
 
+[node name="MarginIcon2" type="MarginContainer" parent="AbilityEndRound"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="AbilityEndRoundIcon" type="TextureRect" parent="AbilityEndRound/MarginIcon2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(68, 68)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 4
+
 [node name="Spacer6" type="Control" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [connection signal="pressed" from="AbilityPreRound/AbilityPreRound" to="." method="_on_pre_round_ability_pressed"]
 [connection signal="pressed" from="Ability1/Ability1" to="." method="_on_ability_1_pressed"]
-[connection signal="pressed" from="AbilityMain" to="." method="_on_ability_main_pressed"]
+[connection signal="pressed" from="MarginContainer/AbilityMain" to="." method="_on_ability_main_pressed"]
 [connection signal="pressed" from="Ability2/Ability2" to="." method="_on_ability_2_pressed"]
 [connection signal="pressed" from="AbilityEndRound/AbilityEndRound" to="." method="_on_end_round_ability_pressed"]

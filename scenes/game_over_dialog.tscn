@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cq8g4rbaay25f"]
 
 [ext_resource type="Script" path="res://scenes/game_over_dialog.gd" id="1_hx0ak"]
-[ext_resource type="Texture2D" uid="uid://cgx66km3tckom" path="res://assets/currency.png" id="2_2bufa"]
+[ext_resource type="Texture2D" uid="uid://cgx66km3tckom" path="res://assets/upgrades/currency.png" id="2_2bufa"]
 
 [node name="GameOverDialog" type="CanvasLayer"]
 script = ExtResource("1_hx0ak")

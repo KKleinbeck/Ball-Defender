@@ -139,7 +139,7 @@ func _on_ball_despawned() -> void:
 
 func _on_box_field_ready() -> void:
 	boxFieldReady = true
-	for i in 14:
+	for i in 3:
 		%EntityField.walk()
 
 

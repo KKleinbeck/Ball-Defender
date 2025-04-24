@@ -123,7 +123,7 @@ func calculateOnBoxCollision(ball, collisionEvent: Dictionary) -> void:
 		if entity.is_queued_for_deletion(): continue
 		
 		if entity is TextureRect:
-			var center = entity.position + 0.5 * boxWidth * Vector2(1., 1.)
+			var center = entity.position + entity.radius * Vector2(1., 1.)
 			var deltaPos = center - ball.position
 			
 			var signedLongDist = deltaPos.dot(trajDir)

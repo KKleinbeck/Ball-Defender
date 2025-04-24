@@ -28,15 +28,15 @@ func createBenefit(_gridConstant: int, start: Vector2, _type: GlobalDefinitions.
 	
 	match type:
 		GlobalDefinitions.EntityType.Damage:
-			texture = load("res://assets/charge.png")
+			texture = load("res://assets/upgrades/damage.png")
 		GlobalDefinitions.EntityType.TimeUp:
-			texture = load("res://assets/timer.png")
+			texture = load("res://assets/upgrades/timer.png")
 		GlobalDefinitions.EntityType.Currency:
-			texture = load("res://assets/currency.png")
+			texture = load("res://assets/upgrades/currency.png")
 		GlobalDefinitions.EntityType.PremiumCurrency:
-			texture = load("res://assets/premiumCurrency.png")
+			texture = load("res://assets/upgrades/premiumCurrency.png")
 		GlobalDefinitions.EntityType.Charge:
-			texture = load("res://assets/charge.png")
+			texture = load("res://assets/upgrades/charge.png")
 		_:
 			pass
 	

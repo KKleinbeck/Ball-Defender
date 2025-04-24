@@ -16,9 +16,9 @@ func _ready() -> void:
 	%OptionEndless.addendum = str(Player.state["highscore"])
 	
 	%OptionUpgrades.subtitle = str(Player.state["currency"]["standard"])
-	%OptionUpgrades.setImage1("res://assets/currency.png")
+	%OptionUpgrades.setImage1("res://assets/upgrades/currency.png")
 	%OptionUpgrades.addendum = str(Player.state["currency"]["premium"])
-	%OptionUpgrades.setImage2("res://assets/premiumCurrency.png")
+	%OptionUpgrades.setImage2("res://assets/upgrades/premiumCurrency.png")
 
 
 func spawnRandomBall() -> void:

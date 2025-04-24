@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://bqy5nw3j6lcwy"]
 
-[ext_resource type="Texture2D" uid="uid://ddctsy32lmu4k" path="res://assets/timer.png" id="1_vgvqb"]
+[ext_resource type="Texture2D" uid="uid://c7dq51lpm27tl" path="res://assets/upgrades/timer.png" id="1_vgvqb"]
 [ext_resource type="Script" path="res://scenes/upgrade.gd" id="2_6m3pv"]
+
 
 [node name="Upgrade" type="TextureRect"]
 offset_right = 100.0
