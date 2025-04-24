@@ -70,6 +70,7 @@ func setup() -> void:
 
 
 func roundReset() -> void:
+	print("Asd")
 	endOfRound.emit()
 	nBallsDespawned = 0
 	deathTimeRemaining = deathTime
@@ -133,6 +134,7 @@ func _on_ball_despawned() -> void:
 	nBallsDespawned += 1
 	
 	if nBallsSpawned == nBallsDespawned:
+		$DeathTimer.stop() # manual stop to prevent to independent round end events
 		await get_tree().create_timer(0.1).timeout # Short timer between rounds
 		roundReset()
 
