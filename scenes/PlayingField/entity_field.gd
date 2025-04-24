@@ -78,6 +78,8 @@ func newRow() -> void:
 			boxLocation.append(GlobalDefinitions.EntityType.Empty)
 	if randf() < Player.upgrades["probDamage"]:
 		boxLocation[-3] = GlobalDefinitions.EntityType.Damage
+	if randf() < 0.8:
+		boxLocation[-3] = GlobalDefinitions.EntityType.Charge
 	if randf() < Player.upgrades["probDeathTime"]:
 		boxLocation[-2] = GlobalDefinitions.EntityType.TimeUp
 	if randf() < chanceCurrency("Currency"):

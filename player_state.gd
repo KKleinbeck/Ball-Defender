@@ -1,6 +1,7 @@
 extends Node
 
 
+signal abilityCharged(type: String)
 signal dataChanged(id: String, value)
 
 
@@ -142,13 +143,22 @@ var abilities = {
 	"endRoundAbilityId": "SuddenStop",
 	"ability1Id": "GlassCannon",
 	"ability2Id": "DoubleDamage",
-	"mainAbilityId": "BallHell"
+	"mainAbilityId": "BallHell",
+	
+	"ability1Charge": 0.,
+	"ability2Charge": 0.,
+	"abilityMainCharge": 0.
 }
 
 
 func _ready() -> void:
 	loadState()
 	determineUpgrades()
+
+
+func addCharge() -> void:
+	abilities["ability1Charge"] += 1.
+	abilityCharged.emit("Ability1")
 
 
 func determineUpgrades() -> void:

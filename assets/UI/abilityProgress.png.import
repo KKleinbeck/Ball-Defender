@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://einku2lby1mu"
-path="res://.godot/imported/AbilitiesMain.png-c4450b809357205ff3cd159aa061e973.ctex"
+uid="uid://dijc48ouce14h"
+path="res://.godot/imported/abilityProgress.png-7d7ed004849f22bc887b988bb34934a1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/UI/AbilitiesMain.png"
-dest_files=["res://.godot/imported/AbilitiesMain.png-c4450b809357205ff3cd159aa061e973.ctex"]
+source_file="res://assets/UI/abilityProgress.png"
+dest_files=["res://.godot/imported/abilityProgress.png-7d7ed004849f22bc887b988bb34934a1.ctex"]
 
 [params]
 

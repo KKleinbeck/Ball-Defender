@@ -12,6 +12,8 @@ func _ready() -> void:
 	%Ability1Icon.texture = load("res://assets/abilities/" + Player.abilities.ability1Id + ".png")
 	%Ability2Icon.texture = load("res://assets/abilities/" + Player.abilities.ability2Id + ".png")
 	%AbilityMainIcon.texture = load("res://assets/abilities/" + Player.abilities.mainAbilityId + ".png")
+	
+	Player.abilityCharged.connect(_on_ability_charged)
 
 
 # ========================================
@@ -46,6 +48,9 @@ func _on_ability_1_pressed() -> void:
 	if %Ability1.disabled == false:
 		%Ability1.disabled = true
 		abilityUsed.emit(Player.abilities["ability1Id"])
+		Player.abilities["ability1Charge"] = 0
+		%Ability1Charge.value = 100
+		%Ability1ChargeContainer.show()
 
 
 func _on_ability_2_pressed() -> void:
@@ -58,3 +63,14 @@ func _on_ability_main_pressed() -> void:
 	if %AbilityMain.disabled == false:
 		%AbilityMain.disabled = true
 		abilityUsed.emit(Player.abilities["mainAbilityId"])
+
+
+func _on_ability_charged(type: String) -> void:
+	var id = type.to_lower()
+	var charge = Player.abilities[id + "Charge"]
+	var fullCharge = AbilityDefinitions.details[Player.abilities[id + "Id"]]["fullCharge"]
+	if charge > fullCharge:
+		get_node("%" + type + "ChargeContainer").hide()
+		get_node("%" + type).disabled = false
+	else:
+		get_node("%" + type + "Charge").value = 100 * (fullCharge - charge) / fullCharge

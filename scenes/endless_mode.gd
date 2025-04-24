@@ -70,7 +70,6 @@ func setup() -> void:
 
 
 func roundReset() -> void:
-	print("Asd")
 	endOfRound.emit()
 	nBallsDespawned = 0
 	deathTimeRemaining = deathTime
@@ -165,7 +164,8 @@ func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) ->
 		GlobalDefinitions.EntityType.PremiumCurrency:
 			Player.state["currency"]["premium"] += 1
 			Player.saveState()
-		#GlobalDefinitions.EntityType.Charge:
+		GlobalDefinitions.EntityType.Charge:
+			Player.addCharge()
 	
 	var boxName = details.split("-")[0]
 	CollisionList.removeBoxFromCollisionList(boxName)

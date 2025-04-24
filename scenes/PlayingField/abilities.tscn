@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bvvjfkmq1ifjx"]
+[gd_scene load_steps=5 format=3 uid="uid://bvvjfkmq1ifjx"]
 
 [ext_resource type="Texture2D" uid="uid://boxjrpfx76bft" path="res://assets/UI/ability.png" id="1_5u03q"]
 [ext_resource type="Script" path="res://scenes/PlayingField/abilities.gd" id="1_x18y6"]
 [ext_resource type="Texture2D" uid="uid://bs4l0lkq4kh76" path="res://assets/UI/abilityDisabled.png" id="2_0um2a"]
+[ext_resource type="Texture2D" uid="uid://dijc48ouce14h" path="res://assets/UI/abilityProgress.png" id="4_2q1k5"]
 
 [node name="HBoxContainer" type="HBoxContainer"]
 anchors_preset = 15
@@ -78,6 +79,25 @@ layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 4
+
+[node name="Ability1ChargeContainer" type="Control" parent="Ability1"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Ability1Charge" type="TextureProgressBar" parent="Ability1/Ability1ChargeContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 84.0
+offset_bottom = 84.0
+mouse_filter = 2
+value = 30.0
+fill_mode = 8
+nine_patch_stretch = true
+texture_under = ExtResource("4_2q1k5")
+texture_progress = ExtResource("4_2q1k5")
+tint_under = Color(0, 0.662745, 0.811765, 1)
 
 [node name="Spacer3" type="Control" parent="."]
 layout_mode = 2
