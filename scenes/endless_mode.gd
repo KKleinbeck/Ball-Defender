@@ -122,6 +122,7 @@ func _on_click_on_playingfield(location: Vector2) -> void:
 		if $ProgressBar.value + spawnAngle > $ProgressBar.max_value:
 			$ProgressBar.value = $ProgressBar.value + spawnAngle - $ProgressBar.max_value
 			nBalls += 1
+			Player.incrementTemporaryUpgrade("nBalls", 1)
 			$ScoreBar.setBallNumber(nBalls)
 			$ProgressBar.max_value = Player.getUpgrade("ballProgressCost") + \
 				(nBalls - 1) * Player.getUpgrade("ballProgressPerLevelCost")
@@ -249,7 +250,6 @@ func _on_use_ability(abilityId: String) -> void:
 
 func _on_ball_spawn_timer_timeout() -> void:
 	if nBallsSpawned == nBalls:
-		$BallSpawnTimer.stop()
 		return
 	spawnBall()
 
