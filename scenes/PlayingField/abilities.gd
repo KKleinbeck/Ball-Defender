@@ -34,8 +34,11 @@ func onRoundStart() -> void:
 func onAbilityPressed(type: String) -> void:
 	var ability = get_node("%" + type)
 	if ability.disabled == false:
+		var abilityName = Player.abilities[type]["id"]
+		if AbilityDefinitions.factory[abilityName].active: return
+		
 		ability.disabled = true
-		abilityUsed.emit(Player.abilities[type]["id"])
+		abilityUsed.emit(abilityName)
 		Player.abilities[type]["charge"] = 0.
 		get_node("%" + type + "Charge").value = 100
 		get_node("%" + type + "ChargeContainer").show()
