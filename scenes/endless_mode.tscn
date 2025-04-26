@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/playing_field.tscn" id="3_wjj17"]
 [ext_resource type="PackedScene" uid="uid://bnjc37jk5h6xx" path="res://scenes/PlayingField/entity_field.tscn" id="4_mwu1d"]
 [ext_resource type="PackedScene" uid="uid://cq8g4rbaay25f" path="res://scenes/game_over_dialog.tscn" id="5_4n0y1"]
-[ext_resource type="PackedScene" uid="uid://bvvjfkmq1ifjx" path="res://scenes/PlayingField/abilities.tscn" id="5_jnkj4"]
+[ext_resource type="PackedScene" uid="uid://dc51n8jndld17" path="res://scenes/PlayingField/abilities.tscn" id="5_jnkj4"]
 
 [node name="EndlessMode" type="Node"]
 script = ExtResource("1_5codb")

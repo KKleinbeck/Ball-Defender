@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bvvjfkmq1ifjx"]
+[gd_scene load_steps=5 format=3 uid="uid://dc51n8jndld17"]
 
 [ext_resource type="Texture2D" uid="uid://boxjrpfx76bft" path="res://assets/UI/ability.png" id="1_5u03q"]
 [ext_resource type="Script" path="res://scenes/PlayingField/abilities.gd" id="1_x18y6"]
@@ -18,11 +18,11 @@ script = ExtResource("1_x18y6")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AbilityPreRound" type="MarginContainer" parent="."]
+[node name="PreRoundAbility" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_top = 16
 
-[node name="AbilityPreRound" type="TextureButton" parent="AbilityPreRound"]
+[node name="PreRoundAbility" type="TextureButton" parent="PreRoundAbility"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(84, 84)
 layout_mode = 2
@@ -31,7 +31,7 @@ texture_disabled = ExtResource("2_0um2a")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="MarginIcon" type="MarginContainer" parent="AbilityPreRound"]
+[node name="MarginIcon" type="MarginContainer" parent="PreRoundAbility"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 8
@@ -39,13 +39,32 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="AbilityPreRountIcon" type="TextureRect" parent="AbilityPreRound/MarginIcon"]
+[node name="PreRoundAbilityIcon" type="TextureRect" parent="PreRoundAbility/MarginIcon"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(68, 68)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 4
+
+[node name="PreRoundAbilityChargeContainer" type="Control" parent="PreRoundAbility"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PreRoundAbilityCharge" type="TextureProgressBar" parent="PreRoundAbility/PreRoundAbilityChargeContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 84.0
+offset_bottom = 84.0
+mouse_filter = 2
+value = 30.0
+fill_mode = 8
+nine_patch_stretch = true
+texture_under = ExtResource("4_2q1k5")
+texture_progress = ExtResource("4_2q1k5")
+tint_under = Color(0, 0.662745, 0.811765, 1)
 
 [node name="Spacer2" type="Control" parent="."]
 layout_mode = 2
@@ -103,10 +122,10 @@ tint_under = Color(0, 0.662745, 0.811765, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MainAbility" type="MarginContainer" parent="."]
 layout_mode = 2
 
-[node name="AbilityMain" type="TextureButton" parent="MarginContainer"]
+[node name="MainAbility" type="TextureButton" parent="MainAbility"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
@@ -115,7 +134,7 @@ texture_disabled = ExtResource("2_0um2a")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="MarginIcon" type="MarginContainer" parent="MarginContainer"]
+[node name="MarginIcon" type="MarginContainer" parent="MainAbility"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 8
@@ -123,13 +142,32 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="AbilityMainIcon" type="TextureRect" parent="MarginContainer/MarginIcon"]
+[node name="MainAbilityIcon" type="TextureRect" parent="MainAbility/MarginIcon"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(68, 68)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 4
+
+[node name="MainAbilityChargeContainer" type="Control" parent="MainAbility"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MainAbilityCharge" type="TextureProgressBar" parent="MainAbility/MainAbilityChargeContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 100.0
+offset_bottom = 100.0
+mouse_filter = 2
+value = 30.0
+fill_mode = 8
+nine_patch_stretch = true
+texture_under = ExtResource("4_2q1k5")
+texture_progress = ExtResource("4_2q1k5")
+tint_under = Color(0, 0.662745, 0.811765, 1)
 
 [node name="Spacer4" type="Control" parent="."]
 layout_mode = 2
@@ -164,15 +202,34 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 4
 
+[node name="Ability2ChargeContainer" type="Control" parent="Ability2"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Ability2Charge" type="TextureProgressBar" parent="Ability2/Ability2ChargeContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 84.0
+offset_bottom = 84.0
+mouse_filter = 2
+value = 30.0
+fill_mode = 8
+nine_patch_stretch = true
+texture_under = ExtResource("4_2q1k5")
+texture_progress = ExtResource("4_2q1k5")
+tint_under = Color(0, 0.662745, 0.811765, 1)
+
 [node name="Spacer5" type="Control" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AbilityEndRound" type="MarginContainer" parent="."]
+[node name="EndRoundAbility" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_top = 16
 
-[node name="AbilityEndRound" type="TextureButton" parent="AbilityEndRound"]
+[node name="EndRoundAbility" type="TextureButton" parent="EndRoundAbility"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(84, 84)
 layout_mode = 2
@@ -181,7 +238,7 @@ texture_disabled = ExtResource("2_0um2a")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="MarginIcon2" type="MarginContainer" parent="AbilityEndRound"]
+[node name="MarginIcon2" type="MarginContainer" parent="EndRoundAbility"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 8
@@ -189,7 +246,7 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="AbilityEndRoundIcon" type="TextureRect" parent="AbilityEndRound/MarginIcon2"]
+[node name="EndRoundAbilityIcon" type="TextureRect" parent="EndRoundAbility/MarginIcon2"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(68, 68)
 layout_mode = 2
@@ -197,12 +254,31 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 4
 
+[node name="EndRoundAbilityChargeContainer" type="Control" parent="EndRoundAbility"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EndRoundAbilityCharge" type="TextureProgressBar" parent="EndRoundAbility/EndRoundAbilityChargeContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 84.0
+offset_bottom = 84.0
+mouse_filter = 2
+value = 30.0
+fill_mode = 8
+nine_patch_stretch = true
+texture_under = ExtResource("4_2q1k5")
+texture_progress = ExtResource("4_2q1k5")
+tint_under = Color(0, 0.662745, 0.811765, 1)
+
 [node name="Spacer6" type="Control" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[connection signal="pressed" from="AbilityPreRound/AbilityPreRound" to="." method="_on_pre_round_ability_pressed"]
+[connection signal="pressed" from="PreRoundAbility/PreRoundAbility" to="." method="_on_pre_round_ability_pressed"]
 [connection signal="pressed" from="Ability1/Ability1" to="." method="_on_ability_1_pressed"]
-[connection signal="pressed" from="MarginContainer/AbilityMain" to="." method="_on_ability_main_pressed"]
+[connection signal="pressed" from="MainAbility/MainAbility" to="." method="_on_ability_main_pressed"]
 [connection signal="pressed" from="Ability2/Ability2" to="." method="_on_ability_2_pressed"]
-[connection signal="pressed" from="AbilityEndRound/AbilityEndRound" to="." method="_on_end_round_ability_pressed"]
+[connection signal="pressed" from="EndRoundAbility/EndRoundAbility" to="." method="_on_end_round_ability_pressed"]

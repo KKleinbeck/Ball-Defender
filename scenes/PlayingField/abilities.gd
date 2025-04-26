@@ -7,11 +7,11 @@ signal abilityUsed(id: String)
 # ========= Godot Overrides ==============
 # ========================================
 func _ready() -> void:
-	%AbilityPreRountIcon.texture = load("res://assets/abilities/" + Player.abilities.preRoundAbilityId + ".png")
-	%AbilityEndRoundIcon.texture = load("res://assets/abilities/" + Player.abilities.endRoundAbilityId + ".png")
-	%Ability1Icon.texture = load("res://assets/abilities/" + Player.abilities.ability1Id + ".png")
-	%Ability2Icon.texture = load("res://assets/abilities/" + Player.abilities.ability2Id + ".png")
-	%AbilityMainIcon.texture = load("res://assets/abilities/" + Player.abilities.mainAbilityId + ".png")
+	%PreRoundAbilityIcon.texture = load("res://assets/abilities/" + Player.abilities.PreRoundAbility.id + ".png")
+	%EndRoundAbilityIcon.texture = load("res://assets/abilities/" + Player.abilities.EndRoundAbility.id + ".png")
+	%Ability1Icon.texture = load("res://assets/abilities/" + Player.abilities.Ability1.id + ".png")
+	%Ability2Icon.texture = load("res://assets/abilities/" + Player.abilities.Ability2.id + ".png")
+	%MainAbilityIcon.texture = load("res://assets/abilities/" + Player.abilities.MainAbility.id + ".png")
 	
 	Player.abilityCharged.connect(_on_ability_charged)
 
@@ -20,55 +20,53 @@ func _ready() -> void:
 # ========= Interface ====================
 # ========================================
 func onRoundReset() -> void:
-	%AbilityPreRound.disabled = false
-	%AbilityEndRound.disabled = true
+	%PreRoundAbility.disabled = false
+	if Player.missingCharge("EndRoundAbility") < 0:
+		%EndRoundAbility.disabled = true
 
 
 func onRoundStart() -> void:
-	%AbilityPreRound.disabled = true
-	%AbilityEndRound.disabled = false
+	if Player.missingCharge("PreRoundAbility") < 0:
+		%PreRoundAbility.disabled = true
+	%EndRoundAbility.disabled = false
+
+
+func onAbilityPressed(type: String) -> void:
+	var ability = get_node("%" + type)
+	if ability.disabled == false:
+		ability.disabled = true
+		abilityUsed.emit(Player.abilities[type]["id"])
+		Player.abilities[type]["charge"] = 0.
+		get_node("%" + type + "Charge").value = 100
+		get_node("%" + type + "ChargeContainer").show()
 
 
 # ========================================
 # ========= Signals ======================
 # ========================================
 func _on_pre_round_ability_pressed() -> void:
-	if %AbilityPreRound.disabled == false:
-		%AbilityPreRound.disabled = true
-		abilityUsed.emit(Player.abilities["preRoundAbilityId"])
+	onAbilityPressed("PreRoundAbility")
 
 
 func _on_end_round_ability_pressed() -> void:
-	if %AbilityEndRound.disabled == false:
-		%AbilityEndRound.disabled = true
-		abilityUsed.emit(Player.abilities["endRoundAbilityId"])
+	onAbilityPressed("EndRoundAbility")
 
 
 func _on_ability_1_pressed() -> void:
-	if %Ability1.disabled == false:
-		%Ability1.disabled = true
-		abilityUsed.emit(Player.abilities["ability1Id"])
-		Player.abilities["ability1Charge"] = 0
-		%Ability1Charge.value = 100
-		%Ability1ChargeContainer.show()
+	onAbilityPressed("Ability1")
 
 
 func _on_ability_2_pressed() -> void:
-	if %Ability2.disabled == false:
-		%Ability2.disabled = true
-		abilityUsed.emit(Player.abilities["ability2Id"])
+	onAbilityPressed("Ability2")
 
 
 func _on_ability_main_pressed() -> void:
-	if %AbilityMain.disabled == false:
-		%AbilityMain.disabled = true
-		abilityUsed.emit(Player.abilities["mainAbilityId"])
+	onAbilityPressed("MainAbility")
 
 
 func _on_ability_charged(type: String) -> void:
-	var id = type.to_lower()
-	var charge = Player.abilities[id + "Charge"]
-	var fullCharge = AbilityDefinitions.details[Player.abilities[id + "Id"]]["fullCharge"]
+	var charge = Player.abilities[type].charge
+	var fullCharge = Player.abilityDetails[Player.abilities[type].id]["fullCharge"]
 	if charge > fullCharge:
 		get_node("%" + type + "ChargeContainer").hide()
 		get_node("%" + type).disabled = false

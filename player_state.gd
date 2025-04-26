@@ -139,15 +139,50 @@ var temporaryUpgrades: Dictionary = {
 }
 
 var abilities = {
-	"preRoundAbilityId": "Pass",
-	"endRoundAbilityId": "SuddenStop",
-	"ability1Id": "GlassCannon",
-	"ability2Id": "DoubleDamage",
-	"mainAbilityId": "BallHell",
-	
-	"ability1Charge": 0.,
-	"ability2Charge": 0.,
-	"abilityMainCharge": 0.
+	"PreRoundAbility": {
+		"id": "Pass",
+		"charge": INF
+	},
+	"EndRoundAbility": {
+		"id": "SuddenStop",
+		"charge": INF
+	},
+	"Ability1": {
+		"id": "GlassCannon",
+		"charge": INF
+	},
+	"Ability2": {
+		"id": "DoubleDamage",
+		"charge": INF
+	},
+	"MainAbility": {
+		"id": "BallHell",
+		"charge": INF
+	}
+}
+
+var abilityDetails: Dictionary = {
+	"BallHell": {
+		"fullCharge": 4.999
+	},
+	"DoubleDamage": {
+		"fullCharge": 1.999
+	},
+	"GlassCannon": {
+		"fullCharge": 1.999
+	},
+	"LaserPointer": {
+		"fullCharge": 1.999
+	},
+	"Pass": {
+		"fullCharge": 0.
+	},
+	"Phantom": {
+		"fullCharge": 1.999
+	},
+	"SuddenStop": {
+		"fullCharge": 0.
+	},
 }
 
 
@@ -157,8 +192,29 @@ func _ready() -> void:
 
 
 func addCharge() -> void:
-	abilities["ability1Charge"] += 1.
-	abilityCharged.emit("Ability1")
+	var charge = 1.
+	
+	var nonFullAbilities = {}
+	for _i in 5: # Fixed number of loops as 5 buckets can only redistribute 5 times
+		# Determine which abilities needs to be charged
+		for ability in abilities:
+			var missing = missingCharge(ability)
+			if missing > 0.: nonFullAbilities[ability] = missing
+		
+		if nonFullAbilities.size() == 0:
+			break # no abilities waiting
+		
+		var chargePerAbility = charge / nonFullAbilities.size()
+		for ability in nonFullAbilities:
+			abilities[ability].charge += min(nonFullAbilities[ability], chargePerAbility)
+			charge -= min(nonFullAbilities[ability], chargePerAbility)
+			abilityCharged.emit(ability)
+			
+		if charge <= 1e-7: break
+
+
+func missingCharge(type: String) -> float:
+	return abilityDetails[abilities[type].id].fullCharge - abilities[type].charge
 
 
 func determineUpgrades() -> void:
@@ -202,8 +258,8 @@ func loadState() -> void:
 	if FileAccess.file_exists(playerDataLocation):
 		var file = FileAccess.open_encrypted_with_pass(playerDataLocation, FileAccess.READ, "yFOghex4gzvfW99uMON9rIzhc5rnXdj3")
 		var data = file.get_var()
-		state["highscore"] = data["highscore"]
-		state["currency"] = data["currency"]
+		if "highscore" in data: state["highscore"] = data["highscore"]
+		if "currency" in data: state["currency"] = data["currency"]
 		for upgradeName in data["upgrades"]:
 			state["upgrades"][upgradeName] = data["upgrades"][upgradeName]
 		file.close()

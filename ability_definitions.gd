@@ -1,18 +1,6 @@
 extends Node
 
 
-var details: Dictionary = {
-	"BallHell": {
-		"fullCharge": 4.999
-	},
-	"DoubleDamage": {
-		"fullCharge": 1.999
-	},
-	"GlassCannon": {
-		"fullCharge": 1.999
-	},
-}
-
 var abilityStore: Dictionary = {}
 
 var factory: Dictionary = {}
