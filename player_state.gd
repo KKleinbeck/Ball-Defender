@@ -119,16 +119,16 @@ var levelingDetails = {
 		"cost": [5, 5, 10]
 	},
 	"probDamage": {
-		"max": 50,
-		"start": 0.1,
-		"levelBonus": 0.002,
-		"cost": [2, 5, 10]
+		"max": 20,
+		"start": 0.2,
+		"levelBonus": 0.005,
+		"cost": [2, 0, 2]
 	},
 	"probCharge": {
-		"max": 5,
+		"max": 40,
 		"start": 0.5,
-		"levelBonus": 0.1,
-		"cost": [2, 5, 10]
+		"levelBonus": 0.01,
+		"cost": [1, 2, 2]
 	},
 }
 

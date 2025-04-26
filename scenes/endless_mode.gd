@@ -59,6 +59,7 @@ func setup() -> void:
 	deathTime = Player.getUpgrade("deathTime")
 	nBalls = Player.getUpgrade("nBalls")
 	$ScoreBar.setBallNumber(nBalls)
+	$ScoreBar.setDamage(Player.getUpgrade("damage"))
 	$ProgressBar.max_value = 0
 	$ProgressBar.max_value = Player.getUpgrade("ballProgressCost") + \
 		(nBalls - 1) * Player.getUpgrade("ballProgressPerLevelCost")
@@ -155,7 +156,8 @@ func _on_box_destruction(details: String, scorePoints: int) -> void:
 func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) -> void:
 	match type:
 		GlobalDefinitions.EntityType.Damage:
-			Player.temporaryUpgrades["damage"] += 0.5
+			Player.incrementTemporaryUpgrade("damage", 0.5)
+			AbilityDefinitions.onUpgradeCollect("damage", 0.5)
 		GlobalDefinitions.EntityType.TimeUp:
 			deathTime += 1
 			deathTimeRemaining += 1
@@ -214,7 +216,9 @@ func _on_player_data_changed(id: String, value) -> void:
 	match id:
 		"nBalls":
 			nBalls = value
-			$ScoreBar.setBallNumber(nBalls)
+			$ScoreBar.setBallNumber(value)
+		"damage":
+			$ScoreBar.setDamage(value)
 		_:
 			pass
 

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://27sxmgkg6fdi"]
+[gd_scene load_steps=5 format=3 uid="uid://27sxmgkg6fdi"]
 
 [ext_resource type="Script" path="res://scenes/PlayingField/score_bar.gd" id="1_jsd7i"]
 [ext_resource type="Texture2D" uid="uid://cvicrdnlvci0a" path="res://assets/ball.png" id="1_orlt7"]
 [ext_resource type="Texture2D" uid="uid://c7dq51lpm27tl" path="res://assets/upgrades/timer.png" id="2_fqos5"]
+[ext_resource type="Texture2D" uid="uid://bxkj8d21pas78" path="res://assets/upgrades/damage.png" id="4_xbbei"]
 
 [node name="ScoreBar" type="PanelContainer"]
 process_mode = 4
@@ -34,13 +35,15 @@ expand_mode = 2
 
 [node name="NumberBalls" type="Label" parent="MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 text = "0
 "
+horizontal_alignment = 2
 
 [node name="DeathTimeIcon" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 7
+theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 13
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 13
@@ -52,9 +55,31 @@ expand_mode = 2
 
 [node name="DeathTimer" type="Label" parent="MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 text = "0
 "
+horizontal_alignment = 2
+
+[node name="DamageIcon" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 12
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/DamageIcon"]
+layout_mode = 2
+texture = ExtResource("4_xbbei")
+expand_mode = 2
+
+[node name="Damage" type="Label" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+text = "0
+"
+horizontal_alignment = 2
 
 [node name="Control" type="Control" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2

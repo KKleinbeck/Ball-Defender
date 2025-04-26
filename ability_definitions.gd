@@ -36,6 +36,13 @@ func resetTempUpgrade(ability: String, id: String) -> void:
 	abilityStore.erase(ability)
 
 
+func onUpgradeCollect(id: String, change) -> void:
+	# Guarantees that upgrades collected during abilities are added correctly
+	for ability in abilityStore:
+		if id in abilityStore[ability]:
+			abilityStore[ability][id] += change
+
+
 # ========================================
 # ===========  Abilities =================
 # ========================================
