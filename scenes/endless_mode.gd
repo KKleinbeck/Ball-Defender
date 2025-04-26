@@ -157,7 +157,6 @@ func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) ->
 	match type:
 		GlobalDefinitions.EntityType.Damage:
 			Player.incrementTemporaryUpgrade("damage", 0.5)
-			AbilityDefinitions.onUpgradeCollect("damage", 0.5)
 		GlobalDefinitions.EntityType.TimeUp:
 			deathTime += 1
 			deathTimeRemaining += 1

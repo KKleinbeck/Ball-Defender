@@ -137,6 +137,7 @@ var temporaryUpgrades: Dictionary = {
 	"damage": 0,
 	"nBalls": 0,
 }
+var abilityUpgrades: Dictionary = {}
 
 var abilities = {
 	"PreRoundAbility": {
@@ -226,20 +227,41 @@ func determineUpgrades() -> void:
 		upgrades[upgrade] = start + level * levelBonus
 
 
-func getUpgrade(id: String):
+func getUpgradeWithoutEffects(id: String):
+	var value = upgrades[id]
 	if id in temporaryUpgrades:
-		return upgrades[id] + temporaryUpgrades[id]
-	return upgrades[id]
+		value += temporaryUpgrades[id]
+	return value
 
 
-func setTemporaryUpgrade(id: String, value) -> void:
-	temporaryUpgrades[id] = value
-	dataChanged.emit(id, getUpgrade(id))
+func getUpgrade(id: String):
+	var value = getUpgradeWithoutEffects(id)
+	for ability in abilityUpgrades:
+		if id in abilityUpgrades[ability]:
+			value += abilityUpgrades[ability][id]
+	return value
 
 
 func incrementTemporaryUpgrade(id: String, value) -> void:
 	temporaryUpgrades[id] += value
 	dataChanged.emit(id, getUpgrade(id))
+
+
+func setEffectUpgrade(ability: String, id: String, value) -> void:
+	if not ability in Player.abilityUpgrades:
+		Player.abilityUpgrades[ability] = {}
+	Player.abilityUpgrades[ability][id] = value
+	dataChanged.emit(id, getUpgrade(id))
+
+
+func removeEffectUpgrade(ability: String) -> void:
+	var ids = []
+	if ability in Player.abilityUpgrades:
+		for id in Player.abilityUpgrades[ability]:
+			ids.append(id)
+		Player.abilityUpgrades.erase(ability)
+	for id in ids:
+		dataChanged.emit(id, getUpgrade(id))
 
 
 func endOfGameUpdates(highscore, currencyReward) -> void:
