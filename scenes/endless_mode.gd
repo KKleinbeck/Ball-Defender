@@ -79,6 +79,7 @@ func roundReset() -> void:
 	%Abilities.onRoundReset()
 	$BallSpawnTimer.stop()
 	$DeathTimer.stop()
+	Player.onRoundReset()
 	
 	if boxFieldReady: %EntityField.walk()
 	

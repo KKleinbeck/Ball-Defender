@@ -170,7 +170,8 @@ var abilityDetails: Dictionary = {
 		"fullCharge": 1.999
 	},
 	"GlassCannon": {
-		"fullCharge": 1.999
+		"timed": true,
+		"fullCharge": 0.5,
 	},
 	"LaserPointer": {
 		"fullCharge": 1.999
@@ -192,6 +193,14 @@ func _ready() -> void:
 	determineUpgrades()
 
 
+func _process(delta: float) -> void:
+	# Increase charge of abilities, which run on a timer
+	for ability in abilities:
+		if "timed" in abilityDetails[abilities[ability].id]:
+			abilities[ability].charge += delta
+			abilityCharged.emit(ability)
+
+
 func addCharge() -> void:
 	var charge = 1.
 	
@@ -199,6 +208,7 @@ func addCharge() -> void:
 	for _i in 5: # Fixed number of loops as 5 buckets can only redistribute 5 times
 		# Determine which abilities needs to be charged
 		for ability in abilities:
+			if "timed" in abilityDetails[abilities[ability].id]: continue
 			var missing = missingCharge(ability)
 			if missing > 0.: nonFullAbilities[ability] = missing
 		
@@ -262,6 +272,14 @@ func removeEffectUpgrade(ability: String) -> void:
 		Player.abilityUpgrades.erase(ability)
 	for id in ids:
 		dataChanged.emit(id, getUpgrade(id))
+
+
+func onRoundReset() -> void:
+	# Fully charge timer abilitites
+	for ability in abilities:
+		if "timed" in abilityDetails[abilities[ability].id]:
+			abilities[ability].charge += missingCharge(ability)
+			abilityCharged.emit(ability)
 
 
 func endOfGameUpdates(highscore, currencyReward) -> void:
