@@ -149,7 +149,7 @@ var abilities = {
 		"charge": INF
 	},
 	"Ability1": {
-		"id": "GlassCannon",
+		"id": "Phantom",
 		"charge": INF
 	},
 	"Ability2": {
@@ -163,6 +163,10 @@ var abilities = {
 }
 
 var abilityDetails: Dictionary = {
+	"AntiGravity": {
+		"timed": true,
+		"fullCharge": 10.0
+	},
 	"BallHell": {
 		"fullCharge": 4.999
 	},
@@ -180,7 +184,7 @@ var abilityDetails: Dictionary = {
 		"fullCharge": 0.
 	},
 	"Phantom": {
-		"fullCharge": 1.999
+		"fullCharge": 4.999
 	},
 	"SuddenStop": {
 		"fullCharge": 0.

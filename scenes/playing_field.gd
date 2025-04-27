@@ -115,7 +115,8 @@ func calculateNextCollision(ball) -> void:
 		return
 	var collisionEvent = {"ball": ball, "t": INF}
 	calculateOnCanvasCollision(ball, collisionEvent)
-	calculateOnBallCollision(ball, collisionEvent)
+	if AbilityDefinitions.factory["Phantom"].active == false:
+		calculateOnBallCollision(ball, collisionEvent)
 	calculateOnBoxCollision(ball, collisionEvent)
 	
 	CollisionList.add(collisionEvent)
@@ -171,8 +172,6 @@ func calculateOnBoxCollision(ball: Node, collisionEvent: Dictionary) -> void:
 
 
 func resolveCollision(collisionEvent: Dictionary) -> void:
-	#Logger.debug("Resolving collision event:\n\t" + str(collisionEvent))
-	
 	var ball = collisionEvent["ball"]
 	ball.position = collisionEvent["collision location"]
 	
@@ -203,13 +202,14 @@ func resolveOnBallCollision(collisionEvent: Dictionary) -> void:
 	var other = collisionEvent["partner details"]
 	
 	# See Wikipedia - Elastic collision
-	var deltaPDir = (ball.position - other.position).normalized()
-	var deltaVProj = (ball.velocity - other.velocity).dot(deltaPDir)
-	
-	var m1 = ball.mass
-	var m2 = other.mass
-	
-	ball.velocity  -= 2 * m2 * deltaVProj * deltaPDir / (m1 + m2)
-	other.velocity += 2 * m1 * deltaVProj * deltaPDir / (m1 + m2)
+	if AbilityDefinitions.factory["Phantom"].active == false:
+		var deltaPDir = (ball.position - other.position).normalized()
+		var deltaVProj = (ball.velocity - other.velocity).dot(deltaPDir)
+		
+		var m1 = ball.mass
+		var m2 = other.mass
+		
+		ball.velocity  -= 2 * m2 * deltaVProj * deltaPDir / (m1 + m2)
+		other.velocity += 2 * m1 * deltaVProj * deltaPDir / (m1 + m2)
 	
 	CollisionList.triggerUpdateFor(collisionEvent["partner details"])

@@ -11,6 +11,11 @@ func _ready() -> void:
 	for ability in Player.abilityDetails:
 		factory[ability] = {"active": false}
 	
+	factory["AntiGravity"].merge({
+		"signal": "endOfRound",
+		"start": startAntiGravity,
+		"end": endAntiGravity
+	})
 	factory["BallHell"].merge({
 		"signal": "endOfRound",
 		"start": startBallHell,
@@ -21,11 +26,27 @@ func _ready() -> void:
 		"start": startDoubleDamage,
 		"end": endDoubleDamage
 	})
+	factory["Phantom"].merge({
+		"signal": "endOfRound",
+		"start": startPhantom,
+		"end": endPhantom
+	})
 
 
 # ========================================
 # ===========  Abilities =================
 # ========================================
+func startAntiGravity() -> void:
+	factory["AntiGravity"].active = true
+	var antiGravityStop = get_tree().create_timer(2.0)
+	antiGravityStop.timeout.connect(endAntiGravity)
+
+
+func endAntiGravity() -> void:
+	factory["AntiGravity"].active = false
+	# TODO: This massively changes the collision list every single frame => we should find a work around
+
+
 func startBallHell() -> void:
 	factory["BallHell"].active = true
 	Player.setAbilityUpgrade("BallHell", "nBalls", Player.getUpgrade("nBalls"))
@@ -54,3 +75,11 @@ func startGlassCannon(nRows: int) -> void:
 func endGlassCannon() -> void:
 	factory["GlassCannon"].active = false
 	Player.removeAbilityUpgrade("GlassCannon")
+
+
+func startPhantom() -> void:
+	factory["Phantom"].active = true
+
+
+func endPhantom() -> void:
+	factory["Phantom"].active = false
