@@ -201,6 +201,15 @@ func _process(delta: float) -> void:
 			abilityCharged.emit(ability)
 
 
+func reset() -> void:
+	for ability in temporaryUpgrades:
+		temporaryUpgrades[ability] = 0
+	for ability in abilities:
+		abilities[ability].charge = INF
+		abilityCharged.emit(ability)
+	abilityUpgrades = {}
+
+
 func addCharge() -> void:
 	var charge = 1.
 	
@@ -257,14 +266,14 @@ func incrementTemporaryUpgrade(id: String, value) -> void:
 	dataChanged.emit(id, getUpgrade(id))
 
 
-func setEffectUpgrade(ability: String, id: String, value) -> void:
+func setAbilityUpgrade(ability: String, id: String, value) -> void:
 	if not ability in Player.abilityUpgrades:
 		Player.abilityUpgrades[ability] = {}
 	Player.abilityUpgrades[ability][id] = value
 	dataChanged.emit(id, getUpgrade(id))
 
 
-func removeEffectUpgrade(ability: String) -> void:
+func removeAbilityUpgrade(ability: String) -> void:
 	var ids = []
 	if ability in Player.abilityUpgrades:
 		for id in Player.abilityUpgrades[ability]:

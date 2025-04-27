@@ -143,7 +143,7 @@ func _on_ball_despawned() -> void:
 
 func _on_box_field_ready() -> void:
 	boxFieldReady = true
-	for i in 3:
+	for i in 13:
 		%EntityField.walk()
 
 
@@ -193,6 +193,7 @@ func _on_gameover_continue_game() -> void:
 
 
 func _on_gameover_restart_game() -> void:
+	Player.reset()
 	%EntityField.reset()
 	%PlayingField.reset()
 	CollisionList.reset()
@@ -207,6 +208,7 @@ func _on_gameover_restart_game() -> void:
 
 
 func _on_gameover_end_game() -> void:
+	Player.reset()
 	CollisionList.reset()
 	Player.endOfGameUpdates(score, %EntityField.currencyReward())
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
@@ -236,7 +238,7 @@ func _on_use_ability(abilityId: String) -> void:
 		
 		# minor abilities
 		"GlassCannon":
-			AbilityDefinitions.startGlassCannon()
+			AbilityDefinitions.startGlassCannon(%EntityField.nRows)
 			var lambda = func(ball) -> void:
 					# TODO: Do not trigger for upgrades
 					AbilityDefinitions.endGlassCannon()

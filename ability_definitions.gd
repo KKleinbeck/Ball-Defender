@@ -28,29 +28,29 @@ func _ready() -> void:
 # ========================================
 func startBallHell() -> void:
 	factory["BallHell"].active = true
-	Player.setEffectUpgrade("BallHell", "nBalls", Player.getUpgrade("nBalls"))
+	Player.setAbilityUpgrade("BallHell", "nBalls", Player.getUpgrade("nBalls"))
 
 
 func endBallHell() -> void:
 	factory["BallHell"].active = false
-	Player.removeEffectUpgrade("BallHell")
+	Player.removeAbilityUpgrade("BallHell")
 
 
 func startDoubleDamage() -> void:
 	factory["DoubleDamage"].active = true
-	Player.setEffectUpgrade("DoubleDamage", "damage", Player.getUpgradeWithoutEffects("damage"))
+	Player.setAbilityUpgrade("DoubleDamage", "damage", Player.getUpgradeWithoutEffects("damage"))
 
 
 func endDoubleDamage() -> void:
 	factory["DoubleDamage"].active = false
-	Player.removeEffectUpgrade("DoubleDamage")
+	Player.removeAbilityUpgrade("DoubleDamage")
 
 
-func startGlassCannon() -> void:
+func startGlassCannon(nRows: int) -> void:
 	factory["GlassCannon"].active = true
-	Player.setEffectUpgrade("GlassCannon", "damage", INF)
+	Player.setAbilityUpgrade("GlassCannon", "damage", nRows / 4.)
 
 
 func endGlassCannon() -> void:
 	factory["GlassCannon"].active = false
-	Player.removeEffectUpgrade("GlassCannon")
+	Player.removeAbilityUpgrade("GlassCannon")
