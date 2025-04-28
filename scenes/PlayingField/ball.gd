@@ -15,6 +15,9 @@ func _draw() -> void:
 
 func propagate(delta: float) -> void:
 	position += velocity * delta
+	if AbilityDefinitions.factory["AntiGravity"].active == true:
+		velocity.y -= 300 * delta
+		CollisionList.triggerUpdateFor(self)
 
 
 func toggleDebug() -> void:

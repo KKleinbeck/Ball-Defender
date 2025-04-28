@@ -2,15 +2,74 @@ extends ColorRect
 
 
 signal ballDespawned
+signal cursorDragStart(start: Vector2)
+signal cursorReleased(start: Vector2, end: Vector2)
 signal requestCalculateOnBoxCollision(ball: Node, collisionEvent: Dictionary)
 signal requestResolveOnBoxCollision(collisionEvent: Dictionary)
 signal canvasClicked(location: Vector2)
 
 var pressReadied: bool = false
+var pressStartLocation: Vector2
 var ballObj: PackedScene = load("res://scenes/PlayingField/ball.tscn")
 var ballDict: Dictionary = {}
 var ballSpeed = 450
 var v0: Vector2 = Vector2(0, -ballSpeed)
+
+
+# ========================================
+# ========= Godot Overrides ==============
+# ========================================
+func _ready() -> void:
+	CollisionList.requestCollisionUpdate.connect(calculateNextCollision)
+
+
+func _input(event: InputEvent) -> void:
+	var clickLocation = get_local_mouse_position()
+	if event is InputEventMouseButton and event.pressed:
+		if !pressReadied:
+			pressStartLocation = clickLocation
+		cursorDragStart.emit(pressStartLocation)
+		pressReadied = true
+	
+	if event is InputEventMouseButton and event.pressed == false and pressReadied: # pressed == false => mouse up
+		pressReadied = false
+		cursorReleased.emit(pressStartLocation, clickLocation)
+		# Ignore clicks outside the field or too distant locations
+		if clickLocation.y < position.y or clickLocation.y > position.y + size.y or \
+		   ( (clickLocation - pressStartLocation).length() > 20 and Player.state.doNotStartOnDrag):
+			return
+		
+		if ballDict.size() == 1 and GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
+			var ball = ballDict[ballDict.keys()[0]]
+			v0 = (clickLocation - ball.position).normalized() * ballSpeed
+			ball.velocity = v0
+			calculateNextCollision(ball)
+		canvasClicked.emit(clickLocation)
+
+
+func _process(delta: float) -> void:
+	var deltaRamining = delta
+	while deltaRamining > 0.:
+		if CollisionList.isEmpty():
+			break # E.g. after deletion of last ball
+		
+		var collisionEvent = CollisionList.last()
+		if deltaRamining < collisionEvent["t"]:
+			propagate(deltaRamining)
+			deltaRamining = 0.
+			break
+		
+		deltaRamining -= collisionEvent["t"]
+		propagate(collisionEvent["t"])
+		resolveCollision(collisionEvent)
+		CollisionList.triggerUpdateFor(collisionEvent["ball"])
+
+
+func propagate(delta: float) -> void:
+	for event in CollisionList.entries:
+		event["t"] -= delta
+	for ball in ballDict:
+		ballDict[ball].propagate(delta)
 
 
 # ========================================
@@ -56,55 +115,6 @@ func reset() -> void:
 	for ballName in ballDict:
 		ballDict[ballName].queue_free()
 	ballDict = {}
-
-
-# ========================================
-# ========= Godot Overrides ==============
-# ========================================
-func _ready() -> void:
-	CollisionList.requestCollisionUpdate.connect(calculateNextCollision)
-
-
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
-		pressReadied = true
-	
-	if event is InputEventMouseButton and event.pressed == false and pressReadied: # pressed == false => mouse up
-		pressReadied = false
-		var clickLocation = get_local_mouse_position()
-		if clickLocation.y < position.y or clickLocation.y > position.y + size.y: return
-		
-		if ballDict.size() == 1 and GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
-			var ball = ballDict[ballDict.keys()[0]]
-			v0 = (clickLocation - ball.position).normalized() * ballSpeed
-			ball.velocity = v0
-			calculateNextCollision(ball)
-		canvasClicked.emit(clickLocation)
-
-
-func _process(delta: float) -> void:
-	var deltaRamining = delta
-	while deltaRamining > 0.:
-		if CollisionList.isEmpty():
-			break # E.g. after deletion of last ball
-		
-		var collisionEvent = CollisionList.last()
-		if deltaRamining < collisionEvent["t"]:
-			propagate(deltaRamining)
-			deltaRamining = 0.
-			break
-		
-		deltaRamining -= collisionEvent["t"]
-		propagate(collisionEvent["t"])
-		resolveCollision(collisionEvent)
-		CollisionList.triggerUpdateFor(collisionEvent["ball"])
-
-
-func propagate(delta: float) -> void:
-	for event in CollisionList.entries:
-		event["t"] -= delta
-	for ball in ballDict:
-		ballDict[ball].propagate(delta)
 
 
 # ========================================

@@ -33,6 +33,7 @@ var state = {
 		"probDamage": 0,
 		"probCharge": 0,
 	},
+	"doNotStartOnDrag": true,
 	"challangeLevel": 0,
 }
 
@@ -149,7 +150,7 @@ var abilities = {
 		"charge": INF
 	},
 	"Ability1": {
-		"id": "Phantom",
+		"id": "AntiGravity",
 		"charge": INF
 	},
 	"Ability2": {
