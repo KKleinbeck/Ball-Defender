@@ -116,6 +116,7 @@ func walk() -> void:
 
 
 func isSpaceAvailable(objectPosition: Vector2, radius: float) -> bool:
+	# TODO: Since we approximate boxes as spheres this is a way too coarse approximation
 	for entity in get_children():
 		if entity.is_queued_for_deletion(): continue
 		if (entity.center - objectPosition).length() < radius + entity.radius:

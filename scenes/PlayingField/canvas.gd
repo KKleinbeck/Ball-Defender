@@ -28,7 +28,15 @@ func _input(event: InputEvent) -> void:
 		cursorReleased.emit(pressStartLocation, clickLocation)
 
 
-func calculateOnCanvasCollision(p: Vector2, v: Vector2) -> Dictionary:
+func calculateOnCanvasCollision(ball, collisionEvent: Dictionary) -> void:
+	var geometricCollisionData = calculateNextCollision(ball.position, ball.velocity)
+	if geometricCollisionData["t"] < INF:
+		GlobalDefinitions.updateCollisionEventFromGeometricData(
+			collisionEvent, "Canvas", geometricCollisionData
+		)
+
+
+func calculateNextCollision(p: Vector2, v: Vector2) -> Dictionary:
 	var r = GlobalDefinitions.ballRadius
 	
 	var endPosition = position + size

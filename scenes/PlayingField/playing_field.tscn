@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://8lnr5p5klpqg"]
+
+[ext_resource type="Script" path="res://scenes/PlayingField/playing_field.gd" id="1_bwonq"]
+[ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/PlayingField/canvas.tscn" id="2_s7tpq"]
+[ext_resource type="PackedScene" uid="uid://bnjc37jk5h6xx" path="res://scenes/PlayingField/entity_field.tscn" id="3_wyduw"]
+[ext_resource type="PackedScene" uid="uid://7ir32ja6lr1q" path="res://scenes/PlayingField/object_field.tscn" id="4_hdagt"]
+[ext_resource type="PackedScene" uid="uid://dc51n8jndld17" path="res://scenes/PlayingField/abilities.tscn" id="5_xhhf0"]
+
+[node name="PlayingField" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_bwonq")
+
+[node name="Canvas" parent="." instance=ExtResource("2_s7tpq")]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 0.0
+anchor_bottom = 0.9
+grow_horizontal = 2
+
+[node name="StartPosition" type="Marker2D" parent="Canvas"]
+unique_name_in_owner = true
+position = Vector2(269, 980)
+
+[node name="EntityField" parent="." instance=ExtResource("3_wyduw")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.9
+
+[node name="ObjectField" parent="." instance=ExtResource("4_hdagt")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.9
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="Void" type="ColorRect" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 6.10352e-05
+offset_bottom = 0.00012207
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.364706, 0.364706, 0.364706, 1)
+
+[node name="Abilities" parent="." instance=ExtResource("5_xhhf0")]
+unique_name_in_owner = true
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+offset_top = -112.0
+offset_bottom = 0.0

@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://boslddsacn2gf" path="res://scenes/MainMenu/MenuOption.tscn" id="1_1opgk"]
 [ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_vxj3r"]
-[ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/PlayingField/canvas.tscn" id="2_7gkl3"]
+[ext_resource type="PackedScene" uid="uid://8lnr5p5klpqg" path="res://scenes/PlayingField/playing_field.tscn" id="2_0c4pf"]
 
 [node name="MainMenu" type="Node"]
 script = ExtResource("1_vxj3r")
@@ -15,8 +15,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0687983, 0.0687983, 0.0687983, 1)
 
-[node name="PlayingField" parent="." instance=ExtResource("2_7gkl3")]
+[node name="PlayingField" parent="." instance=ExtResource("2_0c4pf")]
 unique_name_in_owner = true
+anchors_preset = -1
+anchor_top = 0.03
+anchor_right = 1.0
+anchor_bottom = 1.08
+instantiateEntities = false
 
 [node name="Void" type="ColorRect" parent="."]
 z_index = 1
@@ -85,3 +90,5 @@ layout_mode = 2
 title = "MAIN_MENU_SETTINGS"
 subtitle = " "
 addendum = " "
+
+[connection signal="ballDespawned" from="PlayingField" to="." method="_on_playing_field_ball_despawned"]

@@ -1,15 +1,10 @@
 extends Node
 
 
-signal startOfRound
-signal endOfRound
-
-
 const nBoxRows: int = 18
 const boxesPerRow: int = 10
 const boxMargin: int = 5
 
-var boxFieldReady: bool = false
 var continuedOnce: bool = false
 var ballSpeed
 var nBalls: int
@@ -17,7 +12,6 @@ var nBallsSpawned: int = 0
 var nBallsDespawned: int = 0
 var score: int = 0
 
-var deathTime: int
 var deathTimeRemaining: int :
 	set(newDTR):
 		deathTimeRemaining = newDTR
@@ -28,17 +22,12 @@ var deathTimeRemaining: int :
 # ========= Godot Overrides ==============
 # ========================================
 func _ready() -> void:
+	%PlayingField.gainedScore.connect(_on_score_gained)
 	%PlayingField.ballDespawned.connect(_on_ball_despawned)
 	%PlayingField.startOfRound.connect(_on_start_of_round)
-	
-	%ObjectField.laserPointerStart = %StartPosition.position
-	%ObjectField.requestLaserTrace.connect(_on_request_laser_trace)
-	%ObjectField.queryPortalSpaceAvailable.connect(_on_query_portal_space)
-	
-	%EntityField.readyAndRendered.connect(_on_box_field_ready)
-	%EntityField.boxDestruction.connect(_on_box_destruction)
-	%EntityField.collectUpgrade.connect(_on_collect_upgrade)
-	%EntityField.gameover.connect(_on_gameover)
+	%PlayingField.gameover.connect(_on_gameover)
+	%PlayingField.deathTimeIncreased.connect(func (x): deathTimeRemaining += x)
+	%PlayingField.resetRound.connect(roundReset)
 	
 	$GameOverDialog.continueGame.connect(_on_gameover_continue_game)
 	$GameOverDialog.restartGame.connect(_on_gameover_restart_game)
@@ -46,7 +35,6 @@ func _ready() -> void:
 	
 	Player.dataChanged.connect(_on_player_data_changed)
 	
-	%Abilities.abilityUsed.connect(_on_use_ability)
 	setup()
 
 
@@ -59,7 +47,6 @@ func _process(_delta: float) -> void:
 # ========================================
 func setup() -> void:
 	GlobalDefinitions.loadRewardInterstitial()
-	deathTime = Player.getUpgrade("deathTime")
 	nBalls = Player.getUpgrade("nBalls")
 	$ScoreBar.setBallNumber(nBalls)
 	$ScoreBar.setDamage(Player.getUpgrade("damage"))
@@ -74,30 +61,25 @@ func setup() -> void:
 
 
 func roundReset() -> void:
-	endOfRound.emit()
 	nBallsDespawned = 0
-	deathTimeRemaining = deathTime
+	deathTimeRemaining = Player.getUpgrade("deathTime")
 	
 	stopRunning()
-	%Abilities.onRoundReset()
 	$BallSpawnTimer.stop()
 	$DeathTimer.stop()
 	Player.onRoundReset()
-	
-	if boxFieldReady: %EntityField.walk()
 	
 	# Free all spawned balls and resets collision list
 	%PlayingField.reset()
 	CollisionList.reset()
 	
 	# Instantiate first ball at origin
-	%PlayingField.spawnBall(%StartPosition.position, Vector2.ZERO, false)
+	%PlayingField.initiateFirstBall()
 	nBallsSpawned = 1
 
 
 func startRunning() -> void:
 	GlobalDefinitions.state = GlobalDefinitions.State.RUNNING
-	%Abilities.onRoundStart()
 	set_process(true)
 	
 	$BallSpawnTimer.start()
@@ -110,13 +92,18 @@ func stopRunning() -> void:
 
 
 func spawnBall() -> void:
-	%PlayingField.spawnBallAt(%StartPosition.position)
+	%PlayingField.spawnBall()
 	nBallsSpawned += 1
 
 
 # ========================================
 # ========= Signals ======================
 # ========================================
+func _on_score_gained(gain: int) -> void:
+	score += gain
+	$ScoreBar.setScore(score)
+
+
 func _on_ball_despawned() -> void:
 	nBallsDespawned += 1
 	
@@ -126,9 +113,7 @@ func _on_ball_despawned() -> void:
 		roundReset()
 
 
-func _on_start_of_round(ballVelocity: Vector2) -> void:
-	startOfRound.emit()
-	
+func _on_start_of_round(ballVelocity: Vector2) -> void:	
 	if GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
 		startRunning()
 		
@@ -145,79 +130,17 @@ func _on_start_of_round(ballVelocity: Vector2) -> void:
 			$ProgressBar.value += spawnAngle
 
 
-func _on_request_laser_trace(start: Vector2, direction: Vector2) -> void:
-	%ObjectField.laserPointerPoints = getLaserTraceRecursive(start, direction, 3)
-
-
-func _on_query_portal_space(position: Vector2, radius: float) -> void:
-	%ObjectField.portalSpaceAvailable = %EntityField.isSpaceAvailable(position, radius)
-
-
-func getLaserTraceRecursive(start: Vector2, direction: Vector2, n: int) -> PackedVector2Array:
-	var result = PackedVector2Array([start])
-	var nextCollision = %Canvas.calculateOnCanvasCollision(start, direction)
-	var entityCollision = %EntityField.calculateNextCollision(start, direction)
-	if entityCollision["t"] < nextCollision["t"]:
-		nextCollision = entityCollision
-	
-	if not "collision location" in nextCollision: return result
-	if "upgrade" in nextCollision["partner details"]: n += 1
-	
-	if n > 0:
-		result.append_array(getLaserTraceRecursive(
-			nextCollision["collision location"], nextCollision["post velocity"], n - 1
-		))
-		return result
-	
-	if (start - nextCollision["collision location"]).length() >= 50.:
-		result.append(start + 50 * direction)
-	else: result.append(nextCollision["collision location"])
-	return result
-
-func _on_box_field_ready() -> void:
-	boxFieldReady = true
-	for i in 3:
-		%EntityField.walk()
-
-
-func _on_box_destruction(details: String, scorePoints: int) -> void:
-	score += scorePoints
-	$ScoreBar.setScore(score)
-	var boxName = details.split("-")[0]
-	CollisionList.removeBoxFromCollisionList(boxName)
-
-
-func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) -> void:
-	match type:
-		GlobalDefinitions.EntityType.Damage:
-			Player.incrementTemporaryUpgrade("damage", 0.25)
-		GlobalDefinitions.EntityType.TimeUp:
-			deathTime += 1
-			deathTimeRemaining += 1
-		GlobalDefinitions.EntityType.Currency:
-			Player.state["currency"]["standard"] += 1
-			Player.saveState()
-		GlobalDefinitions.EntityType.PremiumCurrency:
-			Player.state["currency"]["premium"] += 1
-			Player.saveState()
-		GlobalDefinitions.EntityType.Charge:
-			Player.addCharge()
-	
-	var boxName = details.split("-")[0]
-	CollisionList.removeBoxFromCollisionList(boxName)
-
-
 func _on_gameover() -> void:
 	GlobalDefinitions.state = GlobalDefinitions.State.GAMEOVER
 	set_process(false)
 	$GameOverDialog.show()
-	$GameOverDialog.setRewardAmount(%EntityField.currencyReward())
+	$GameOverDialog.setRewardAmount(%PlayingField.currencyReward())
 	if continuedOnce:
 		$GameOverDialog.hideContinue()
 
 
 func _on_gameover_continue_game() -> void:
-	%EntityField.cleanRowsOnContinue()
+	%PlayingField.gameoverContinue()
 	$GameOverDialog.hide()
 	await get_tree().create_timer(0.1).timeout
 	stopRunning()
@@ -227,23 +150,20 @@ func _on_gameover_continue_game() -> void:
 
 func _on_gameover_restart_game() -> void:
 	Player.reset()
-	%EntityField.reset()
-	%PlayingField.reset()
+	%PlayingField.restart()
 	CollisionList.reset()
 	$GameOverDialog.hide()
 	$GameOverDialog.showContinue()
-	Player.endOfGameUpdates(score, %EntityField.currencyReward())
+	Player.endOfGameUpdates(score, %PlayingField.currencyReward())
 	await get_tree().create_timer(0.1).timeout
 	continuedOnce = false
-	boxFieldReady = false
 	setup()
-	_on_box_field_ready()
 
 
 func _on_gameover_end_game() -> void:
 	Player.reset()
 	CollisionList.reset()
-	Player.endOfGameUpdates(score, %EntityField.currencyReward())
+	Player.endOfGameUpdates(score, %PlayingField.currencyReward())
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 
@@ -256,35 +176,6 @@ func _on_player_data_changed(id: String, value) -> void:
 			$ScoreBar.setDamage(value)
 		_:
 			pass
-
-
-func _on_use_ability(abilityId: String) -> void:
-	match abilityId:
-		"Pass":
-			pass
-		
-		# pre round abilities#
-		
-		# end round abilities
-		"SuddenStop":
-			roundReset()
-		
-		# minor abilities
-		"GlassCannon":
-			AbilityDefinitions.startGlassCannon(%EntityField.nRows)
-			var lambda = func(ball) -> void:
-					# TODO: Do not trigger for upgrades
-					AbilityDefinitions.endGlassCannon()
-					%PlayingField.despawnBall(ball)
-			%EntityField.boxHit.connect(lambda, CONNECT_ONE_SHOT)
-		
-		_:
-			AbilityDefinitions.factory[abilityId]["start"].call()
-			connect(
-				AbilityDefinitions.factory[abilityId]["signal"],
-				AbilityDefinitions.factory[abilityId]["end"],
-				CONNECT_ONE_SHOT
-			)
 
 
 func _on_ball_spawn_timer_timeout() -> void:

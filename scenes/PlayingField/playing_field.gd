@@ -1,8 +1,18 @@
 extends Control
 
 
+signal gainedScore(gain: int)
 signal startOfRound(v0: Vector2)
+signal endOfRound
 signal ballDespawned
+signal gameover
+signal deathTimeIncreased(value)
+signal resetRound
+
+
+@export var instantiateEntities: bool = true
+
+var boxFieldReady: bool = false
 
 var ballObj: PackedScene = load("res://scenes/PlayingField/ball.tscn")
 var ballDict: Dictionary = {}
@@ -17,6 +27,18 @@ func _ready() -> void:
 	CollisionList.requestCollisionUpdate.connect(calculateNextCollision)
 	
 	%Canvas.cursorReleased.connect(_on_cursor_released)
+	
+	if instantiateEntities:
+		%EntityField.readyAndRendered.connect(_on_box_field_ready)
+		%EntityField.boxDestruction.connect(_on_box_destruction)
+		%EntityField.collectUpgrade.connect(_on_collect_upgrade)
+		%EntityField.gameover.connect(func (): gameover.emit())
+	
+	%ObjectField.laserPointerStart = %StartPosition.position
+	%ObjectField.queryPortalSpaceAvailable.connect(_on_query_portal_space)
+	%ObjectField.requestLaserTrace.connect(_on_request_laser_trace)
+	
+	%Abilities.abilityUsed.connect(_on_use_ability)
 
 
 func _process(delta: float) -> void:
@@ -56,11 +78,11 @@ func isValidSpawnPosition(spawnPosition: Vector2) -> bool:
 	return true
 
 
-func spawnBallAt(spawnPosition: Vector2):
-	spawnBall(spawnPosition, v0)
+func initiateFirstBall():
+	spawnBall(%StartPosition.position, v0, false)
 
 
-func spawnBall(spawnPosition: Vector2, spawnVelocity: Vector2, determineCollision: bool = true):
+func spawnBall(spawnPosition: Vector2 = %StartPosition.position, spawnVelocity: Vector2 = v0, determineCollision: bool = true):
 	var newBall = ballObj.instantiate()
 	newBall.position = spawnPosition
 	newBall.velocity = spawnVelocity
@@ -84,9 +106,28 @@ func freeBall(ball: Object) -> void:
 
 
 func reset() -> void:
+	endOfRound.emit()
+	%Abilities.onRoundReset()
+	if boxFieldReady: %EntityField.walk()
+	
 	for ballName in ballDict:
 		ballDict[ballName].queue_free()
 	ballDict = {}
+
+
+func restart() -> void:
+	boxFieldReady = false
+	reset()
+	%EntityField.reset()
+	_on_box_field_ready()
+
+
+func gameoverContinue() -> void:
+	%EntityField.cleanRowsOnContinue()
+
+
+func currencyReward() -> int:
+	return %EntityField.currencyReward()
 
 
 # ========================================
@@ -96,10 +137,8 @@ func calculateNextCollision(ball) -> void:
 	if ball.is_queued_for_deletion():
 		return
 	var collisionEvent = {"ball": ball, "t": INF}
-	var geometricCollisionData = %Canvas.calculateOnCanvasCollision(ball.position, ball.velocity)
-	GlobalDefinitions.updateCollisionEventFromGeometricData(
-		collisionEvent, "Canvas", geometricCollisionData
-	)
+	%Canvas.calculateOnCanvasCollision(ball, collisionEvent)
+	%ObjectField.calculateOnObjectCollision(ball, collisionEvent)
 	%EntityField.calculateOnEntityCollision(ball, collisionEvent)
 	if AbilityDefinitions.factory["Phantom"].active == false:
 		calculateOnBallCollision(ball, collisionEvent)
@@ -135,7 +174,7 @@ func calculateOnBallCollision(ball, collisionEvent: Dictionary) -> void:
 
 func resolveCollision(collisionEvent: Dictionary) -> void:
 	var ball = collisionEvent["ball"]
-	#ball.position = collisionEvent["collision location"]
+	ball.position = collisionEvent["collision location"]
 	ball.velocity = collisionEvent["post velocity"]
 	
 	match collisionEvent["partner"]:
@@ -148,6 +187,9 @@ func resolveCollision(collisionEvent: Dictionary) -> void:
 		
 		"Entity":
 			%EntityField.resolveOnEntityCollision(collisionEvent)
+		
+		"Object":
+			pass
 
 
 func resolveOnBallCollision(collisionEvent: Dictionary) -> void:
@@ -178,3 +220,101 @@ func _on_cursor_released(_clickStartLocation: Vector2, clickLocation: Vector2) -
 		ball.velocity = v0
 		calculateNextCollision(ball)
 		startOfRound.emit(v0)
+		%Abilities.onRoundStart()
+
+
+func _on_box_field_ready() -> void:
+	boxFieldReady = true
+	for i in 3:
+		%EntityField.walk()
+
+
+func _on_box_destruction(details: String, scorePoints: int) -> void:
+	gainedScore.emit(scorePoints)
+	var boxName = details.split("-")[0]
+	CollisionList.removeBoxFromCollisionList(boxName)
+
+
+func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) -> void:
+	match type:
+		GlobalDefinitions.EntityType.Damage:
+			Player.incrementTemporaryUpgrade("damage", 0.25)
+		GlobalDefinitions.EntityType.TimeUp:
+			Player.incrementTemporaryUpgrade("deathTime", 1)
+			deathTimeIncreased.emit(1)
+		GlobalDefinitions.EntityType.Currency:
+			Player.state["currency"]["standard"] += 1
+			Player.saveState()
+		GlobalDefinitions.EntityType.PremiumCurrency:
+			Player.state["currency"]["premium"] += 1
+			Player.saveState()
+		GlobalDefinitions.EntityType.Charge:
+			Player.addCharge()
+	
+	var boxName = details.split("-")[0]
+	CollisionList.removeBoxFromCollisionList(boxName)
+
+
+func _on_query_portal_space(location: Vector2, radius: float) -> void:
+	%ObjectField.portalSpaceAvailable = %EntityField.isSpaceAvailable(location, radius)
+
+
+func _on_request_laser_trace(start: Vector2, direction: Vector2) -> void:
+	%ObjectField.laserPointerPoints = getLaserTraceRecursive(start, direction, 3)
+
+
+func getLaserTraceRecursive(start: Vector2, direction: Vector2, n: int) -> PackedVector2Array:
+	var result = PackedVector2Array([start])
+	var nextCollision = %Canvas.calculateNextCollision(start, direction)
+	var entityCollision = %EntityField.calculateNextCollision(start, direction)
+	var objectCollision = %ObjectField.calculateNextCollision(start, direction)
+	if entityCollision["t"] < nextCollision["t"]:
+		nextCollision = entityCollision
+	if objectCollision["t"] < nextCollision["t"]:
+		nextCollision = objectCollision
+	
+	if not "collision location" in nextCollision: return result
+	if "upgrade" in nextCollision["partner details"]: n += 1
+	
+	if n > 0:
+		if "portal" in nextCollision["partner details"]:
+			result.append(start + nextCollision["t"] * direction)
+			result.append(Vector2.INF)
+		result.append_array(getLaserTraceRecursive(
+			nextCollision["collision location"], nextCollision["post velocity"], n - 1
+		))
+		return result
+	
+	if (start - nextCollision["collision location"]).length() >= 50.:
+		result.append(start + 50 * direction)
+	else: result.append(nextCollision["collision location"])
+	return result
+
+
+func _on_use_ability(abilityId: String) -> void:
+	match abilityId:
+		"Pass":
+			pass
+		
+		# pre round abilities#
+		
+		# end round abilities
+		"SuddenStop":
+			resetRound.emit()
+		
+		# minor abilities
+		"GlassCannon":
+			AbilityDefinitions.startGlassCannon(%EntityField.nRows)
+			var lambda = func(ball) -> void:
+					# TODO: Do not trigger for upgrades
+					AbilityDefinitions.endGlassCannon()
+					%PlayingField.despawnBall(ball)
+			%EntityField.boxHit.connect(lambda, CONNECT_ONE_SHOT)
+		
+		_:
+			AbilityDefinitions.factory[abilityId]["start"].call()
+			connect(
+				AbilityDefinitions.factory[abilityId]["signal"],
+				AbilityDefinitions.factory[abilityId]["end"],
+				CONNECT_ONE_SHOT
+			)

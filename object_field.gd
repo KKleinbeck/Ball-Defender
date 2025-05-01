@@ -1,8 +1,8 @@
 extends Control
 
 
-signal requestLaserTrace(start: Vector2, direction: Vector2)
 signal queryPortalSpaceAvailable(location: Vector2, portalRadius: float)
+signal requestLaserTrace(start: Vector2, direction: Vector2)
 
 
 const laserDotDistance: float = 25.
@@ -30,13 +30,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		var cursorLocation = get_local_mouse_position()
-		var direction = (cursorLocation - laserPointerStart).normalized()
-		var start = laserPointerStart + 20 * direction
-		requestLaserTrace.emit(start, direction)
-		
-		phase += 15 * delta
-		if phase > laserDotDistance: phase -= laserDotDistance
-		queue_redraw()
+		if AbilityDefinitions.factory.LaserPointer.active:
+			var direction = (cursorLocation - laserPointerStart).normalized()
+			var start = laserPointerStart + 20 * direction
+			requestLaserTrace.emit(start, direction)
+			
+			phase += 15 * delta
+			if phase > laserDotDistance: phase -= laserDotDistance
+			queue_redraw()
 
 
 func _input(event: InputEvent) -> void:
@@ -46,7 +47,7 @@ func _input(event: InputEvent) -> void:
 		if AbilityDefinitions.factory.Portal.active:
 			var portal = load("res://scenes/PlayingField/portal.tscn").instantiate()
 			var portalPosition = get_local_mouse_position()
-			var portalDiameter = size.x / GlobalDefinitions.boxesPerRow
+			var portalDiameter = 0.9 * size.x / GlobalDefinitions.boxesPerRow
 			queryPortalSpaceAvailable.emit(portalPosition, 0.5 * portalDiameter)
 			
 			if portalSpaceAvailable:
@@ -81,3 +82,36 @@ func deactivatePlayerPortals() -> void:
 	for portal in playerPortals:
 		portal.queue_free()
 	playerPortals = []
+
+
+# ========================================
+# ========= Collision Handling ===========
+# ========================================
+func calculateOnObjectCollision(ball, collisionEvent: Dictionary) -> void:
+	var geometricCollisionData = calculateNextCollision(ball.position, ball.velocity)
+	if geometricCollisionData["t"] < INF:
+		GlobalDefinitions.updateCollisionEventFromGeometricData(
+			collisionEvent, "Object", geometricCollisionData
+		)
+
+
+func calculateNextCollision(ballPosition: Vector2, ballVelocity: Vector2) -> Dictionary:
+	var geometricCollisionData = {"t": INF}
+	var trajDir = ballVelocity.normalized()
+	for n in playerPortals.size():
+		var portal = playerPortals[n]
+		var deltaPos = portal.position + portal.pivot_offset - ballPosition
+		var signedLongDist = deltaPos.dot(trajDir)
+		var signedOrthoDist = deltaPos.cross(trajDir)
+		var distAtCollision = GlobalDefinitions.ballRadius + portal.size.x / 3
+		if signedLongDist < 0 or abs(signedOrthoDist) > distAtCollision: continue
+		
+		var travelDist = Math.travelDist(signedLongDist, signedOrthoDist, distAtCollision)
+		var tCollision = travelDist / ballVelocity.length()
+		var collisionLocation = playerPortals[1].position if n == 0 else playerPortals[0].position
+		collisionLocation += portal.pivot_offset + distAtCollision * trajDir
+		GlobalDefinitions.updateGeometricCollision(
+			geometricCollisionData, tCollision, "portal" + str(n),
+			collisionLocation, ballVelocity
+		)
+	return geometricCollisionData

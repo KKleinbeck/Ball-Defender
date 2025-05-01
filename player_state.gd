@@ -2,7 +2,7 @@ extends Node
 
 
 signal abilityCharged(type: String)
-signal dataChanged(id: String, value)
+signal dataChanged(id: String, valueNow)
 
 
 const playerDataLocation = "user://PlayerData.json"
@@ -138,6 +138,7 @@ var upgrades: Dictionary = {}
 var temporaryUpgrades: Dictionary = {
 	"damage": 0,
 	"nBalls": 0,
+	"deathTime": 0
 }
 var abilityUpgrades: Dictionary = {}
 
