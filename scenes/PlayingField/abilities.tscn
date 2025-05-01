@@ -49,7 +49,6 @@ stretch_mode = 4
 
 [node name="PreRoundAbilityChargeContainer" type="Control" parent="PreRoundAbility"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -59,7 +58,7 @@ layout_mode = 2
 offset_right = 84.0
 offset_bottom = 84.0
 mouse_filter = 2
-value = 30.0
+value = 100.0
 fill_mode = 8
 nine_patch_stretch = true
 texture_under = ExtResource("4_2q1k5")
@@ -101,7 +100,6 @@ stretch_mode = 4
 
 [node name="Ability1ChargeContainer" type="Control" parent="Ability1"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -111,7 +109,7 @@ layout_mode = 2
 offset_right = 84.0
 offset_bottom = 84.0
 mouse_filter = 2
-value = 30.0
+value = 100.0
 fill_mode = 8
 nine_patch_stretch = true
 texture_under = ExtResource("4_2q1k5")
@@ -152,7 +150,6 @@ stretch_mode = 4
 
 [node name="MainAbilityChargeContainer" type="Control" parent="MainAbility"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -162,7 +159,7 @@ layout_mode = 2
 offset_right = 100.0
 offset_bottom = 100.0
 mouse_filter = 2
-value = 30.0
+value = 100.0
 fill_mode = 8
 nine_patch_stretch = true
 texture_under = ExtResource("4_2q1k5")
@@ -204,7 +201,6 @@ stretch_mode = 4
 
 [node name="Ability2ChargeContainer" type="Control" parent="Ability2"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -214,7 +210,7 @@ layout_mode = 2
 offset_right = 84.0
 offset_bottom = 84.0
 mouse_filter = 2
-value = 30.0
+value = 100.0
 fill_mode = 8
 nine_patch_stretch = true
 texture_under = ExtResource("4_2q1k5")
@@ -256,7 +252,6 @@ stretch_mode = 4
 
 [node name="EndRoundAbilityChargeContainer" type="Control" parent="EndRoundAbility"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -266,7 +261,7 @@ layout_mode = 2
 offset_right = 84.0
 offset_bottom = 84.0
 mouse_filter = 2
-value = 30.0
+value = 100.0
 fill_mode = 8
 nine_patch_stretch = true
 texture_under = ExtResource("4_2q1k5")

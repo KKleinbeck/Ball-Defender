@@ -1,6 +1,7 @@
 extends Node
 
 
+signal startOfRound
 signal endOfRound
 
 
@@ -28,9 +29,13 @@ var deathTimeRemaining: int :
 # ========================================
 func _ready() -> void:
 	%PlayingField.ballDespawned.connect(_on_ball_despawned)
+	%PlayingField.startOfRound.connect(_on_start_of_round)
 	%PlayingField.requestCalculateOnBoxCollision.connect(%EntityField.calculateOnBoxCollision)
 	%PlayingField.requestResolveOnBoxCollision.connect(%EntityField.resolveOnBoxCollision)
 	%PlayingField.canvasClicked.connect(_on_click_on_playingfield)
+	
+	%ObjectField.laserPointerStart = %StartPosition.position
+	%ObjectField.requestLaserTrace.connect(_on_request_laser_trace)
 	
 	%EntityField.readyAndRendered.connect(_on_box_field_ready)
 	%EntityField.boxDestruction.connect(_on_box_destruction)
@@ -141,6 +146,35 @@ func _on_ball_despawned() -> void:
 		roundReset()
 
 
+func _on_start_of_round() -> void:
+	startOfRound.emit()
+
+
+func _on_request_laser_trace(start: Vector2, direction: Vector2) -> void:
+	%ObjectField.laserPointerPoints = getLaserTraceRecursive(start, direction, 3)
+
+
+func getLaserTraceRecursive(start: Vector2, direction: Vector2, n: int) -> PackedVector2Array:
+	var result = PackedVector2Array([start])
+	var nextCollision = %PlayingField.calculateOnCanvasCollision(start, direction)
+	var entityCollision = %EntityField.calculateNextCollision(start, direction)
+	if entityCollision["t"] < nextCollision["t"]:
+		nextCollision = entityCollision
+	
+	if not "collision location" in nextCollision: return result
+	if "upgrade" in nextCollision["partner details"]: n += 1
+	
+	if n > 0:
+		result.append_array(getLaserTraceRecursive(
+			nextCollision["collision location"], nextCollision["post velocity"], n - 1
+		))
+		return result
+	
+	if (start - nextCollision["collision location"]).length() >= 50.:
+		result.append(start + 50 * direction)
+	else: result.append(nextCollision["collision location"])
+	return result
+
 func _on_box_field_ready() -> void:
 	boxFieldReady = true
 	for i in 3:
@@ -157,7 +191,7 @@ func _on_box_destruction(details: String, scorePoints: int) -> void:
 func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) -> void:
 	match type:
 		GlobalDefinitions.EntityType.Damage:
-			Player.incrementTemporaryUpgrade("damage", 0.5)
+			Player.incrementTemporaryUpgrade("damage", 0.25)
 		GlobalDefinitions.EntityType.TimeUp:
 			deathTime += 1
 			deathTimeRemaining += 1

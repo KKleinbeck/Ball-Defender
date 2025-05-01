@@ -1,6 +1,9 @@
 extends Node
 
 
+signal laserPointerDeactivated
+
+
 var factory: Dictionary = {}
 
 
@@ -30,6 +33,11 @@ func _ready() -> void:
 		"signal": "endOfRound",
 		"start": startPhantom,
 		"end": endPhantom
+	})
+	factory["LaserPointer"].merge({
+		"signal": "startOfRound",
+		"start": startLaserPointer,
+		"end": endLaserPointer
 	})
 
 
@@ -75,6 +83,17 @@ func startGlassCannon(nRows: int) -> void:
 func endGlassCannon() -> void:
 	factory["GlassCannon"].active = false
 	Player.removeAbilityUpgrade("GlassCannon")
+
+
+func startLaserPointer() -> void:
+	factory["LaserPointer"].active = true
+	Player.state.doNotStartOnDrag = false
+
+
+func endLaserPointer() -> void:
+	factory["LaserPointer"].active = false
+	Player.state.doNotStartOnDrag = true
+	laserPointerDeactivated.emit()
 
 
 func startPhantom() -> void:

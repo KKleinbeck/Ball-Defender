@@ -65,7 +65,7 @@ var levelingDetails = {
 	},
 	"ballProgressPerLevelCost": {
 		"max": 20,
-		"start": 20.,
+		"start": 40.,
 		"levelBonus": -0.5,
 		"cost": [2, 5, 10]
 	},
@@ -142,7 +142,7 @@ var abilityUpgrades: Dictionary = {}
 
 var abilities = {
 	"PreRoundAbility": {
-		"id": "Pass",
+		"id": "LaserPointer",
 		"charge": INF
 	},
 	"EndRoundAbility": {
@@ -179,7 +179,7 @@ var abilityDetails: Dictionary = {
 		"fullCharge": 0.5,
 	},
 	"LaserPointer": {
-		"fullCharge": 1.999
+		"fullCharge": 2.999
 	},
 	"Pass": {
 		"fullCharge": 0.
@@ -188,7 +188,7 @@ var abilityDetails: Dictionary = {
 		"fullCharge": 4.999
 	},
 	"SuddenStop": {
-		"fullCharge": 0.
+		"fullCharge": -INF
 	},
 }
 

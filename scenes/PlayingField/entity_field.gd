@@ -115,83 +115,77 @@ func walk() -> void:
 
 
 func calculateOnBoxCollision(ball, collisionEvent: Dictionary) -> void:
-	var trajDir = ball.velocity.normalized()
+	var geometricCollisionData = calculateNextCollision(ball.position, ball.velocity, ball.debugMode)
+	if geometricCollisionData["t"] < INF:
+		GlobalDefinitions.updateCollisionEventFromGeometricData(
+			collisionEvent, "Entity", geometricCollisionData
+		)
+
+
+func calculateNextCollision(objectPosition: Vector2, objectVelocity:Vector2, debugMode: bool = false) -> Dictionary:
+	var trajDir = objectVelocity.normalized()
 	var boxWidth = gridConstant - 2 * margin
-	var radius = 0.5 * ball.diameter
-	var cornerCollDist = sqrt(1/2.) * boxWidth + radius
-	var wallCollDist = 0.5 * (boxWidth + ball.diameter)
+	var ballRadius = GlobalDefinitions.ballRadius
+	var wallCollDist = 0.5 * boxWidth + ballRadius
+	var geometricCollisionData = {"t": INF}
 	
 	for entity in get_children():
 		if entity.is_queued_for_deletion(): continue
 		
+		var deltaPos = entity.center - objectPosition
+		var signedLongDist = deltaPos.dot(trajDir)
+		var signedOrthoDist = deltaPos.cross(trajDir)
+		if signedLongDist < 0 or abs(signedOrthoDist) > ballRadius + entity.radius:
+			if debugMode and entity is Polygon2D: entity.color = Color(1, 1, 1)
+			continue
+		
 		if entity is TextureRect:
-			var center = entity.position + entity.radius * Vector2(1., 1.)
-			var deltaPos = center - ball.position
+			var distAtCollision = entity.radius + ballRadius
 			
-			var signedLongDist = deltaPos.dot(trajDir)
-			var signedOrthoDist = deltaPos.cross(trajDir)
-			var distAtCollision = entity.radius + radius
-			if signedLongDist < 0 or abs(signedOrthoDist) > distAtCollision:
-				continue
-				
-			var travelDist = signedLongDist - sqrt(distAtCollision * distAtCollision - signedOrthoDist * signedOrthoDist)
-			var tCollision = travelDist / ball.velocity.length()
-			if tCollision < 0: continue
-			GlobalDefinitions.updateCollisionEvent(
-				collisionEvent, tCollision, "Entity", entity.name + "-" + "upgrade",
-				center - 0.99 * distAtCollision * trajDir.rotated(asin(-signedOrthoDist / distAtCollision))
+			var travelDist = Math.travelDist(signedLongDist, signedOrthoDist, distAtCollision)
+			var tCollision = travelDist / objectVelocity.length()
+			GlobalDefinitions.updateGeometricCollision(
+				geometricCollisionData, tCollision, entity.name + "-upgrade",
+				entity.center - 0.999 * distAtCollision * trajDir.rotated(asin(-signedOrthoDist / distAtCollision)),
+				objectVelocity
 			)
 		
 		if entity is Polygon2D:
-			var deltaPos = entity.polygon[0] - ball.position + 0.5 * boxWidth * Vector2(1., 1.)
-			
 			# check if ball traveling towards box and box within potential collision range
-			if deltaPos.dot(trajDir) < 0 or abs(deltaPos.cross(trajDir)) > cornerCollDist:
-				if ball.debugMode: entity.color = Color(1, 1, 1)
-				continue
-			else:
-				if ball.debugMode: entity.color = Color(1, 0, 0)
-				
-				# side wall collision
-				var horDist = deltaPos.x - sign(trajDir.x) * wallCollDist
-				if sign(trajDir.x) * horDist > 0:
-					var tCollision = horDist / ball.velocity.x
-					if abs(deltaPos.y - ball.velocity.y * tCollision) < 0.5 * boxWidth:
-						if ball.debugMode: entity.color = Color(0, 0, 1.)
-						GlobalDefinitions.updateCollisionEvent(
-							collisionEvent, tCollision, "Entity", entity.name + "-" + "horizontal",
-							Vector2(
-								entity.polygon[1 - sign(trajDir.x)].x - radius * sign(trajDir.x),
-								ball.position.y + ball.velocity.y * tCollision
-							)
-						)
-						
-				var vertDist = deltaPos.y - sign(trajDir.y) * wallCollDist
-				if sign(trajDir.y) * vertDist > 0:
-					var tCollision = vertDist / ball.velocity.y
-					if abs(deltaPos.x - ball.velocity.x * tCollision) < 0.5 * boxWidth:
-						if ball.debugMode: entity.color = Color(0, 0, 1.)
-						GlobalDefinitions.updateCollisionEvent(
-							collisionEvent, tCollision, "Entity", entity.name + "-" + "vertical",
-							Vector2(
-								ball.position.x + ball.velocity.x * tCollision,
-								entity.polygon[1 - sign(trajDir.y)].y - radius * sign(trajDir.y)
-							)
-						)
-				
-				# Corner collision
-				for i in 4:
-					var cornerToBall = entity.polygon[i] - ball.position
-					var signedOrthoDist = cornerToBall.cross(trajDir)
-					if abs(signedOrthoDist) > radius: continue
-					var travelDist = cornerToBall.dot(trajDir) - sqrt(radius * radius - signedOrthoDist * signedOrthoDist)
-					var tCollision = travelDist / ball.velocity.length()
-					if tCollision < 0: continue
-					if ball.debugMode: entity.color = Color(0, 0, 1.)
-					GlobalDefinitions.updateCollisionEvent(
-						collisionEvent, tCollision, "Entity", entity.name + "-" + "corner" + str(i),
-						entity.polygon[i] - 0.999 * radius * trajDir.rotated(asin(-signedOrthoDist / radius))
-					)
+			if debugMode: entity.color = Color(0, 0, 1)
+			
+			# side wall collision
+			var horDist = deltaPos.x - sign(trajDir.x) * wallCollDist
+			var tCollision = horDist / objectVelocity.x
+			if abs(deltaPos.y - objectVelocity.y * tCollision) < 0.5 * boxWidth:
+				GlobalDefinitions.updateGeometricCollision(
+					geometricCollisionData, tCollision, entity.name + "-horizontal",
+					objectPosition + objectVelocity * tCollision,
+					Vector2(-objectVelocity.x, objectVelocity.y)
+				)
+			
+			var vertDist = deltaPos.y - sign(trajDir.y) * wallCollDist
+			tCollision = vertDist / objectVelocity.y
+			if abs(deltaPos.x - objectVelocity.x * tCollision) < 0.5 * boxWidth:
+				GlobalDefinitions.updateGeometricCollision(
+					geometricCollisionData, tCollision, entity.name + "-vertical",
+					objectPosition + objectVelocity * tCollision,
+					Vector2(objectVelocity.x, -objectVelocity.y)
+				)
+			
+			# Corner collision
+			for i in 4:
+				var cornerToBall = entity.polygon[i] - objectPosition
+				signedOrthoDist = cornerToBall.cross(trajDir)
+				if abs(signedOrthoDist) > ballRadius: continue
+				var travelDist = Math.travelDist(cornerToBall.dot(trajDir), signedOrthoDist, ballRadius)
+				tCollision = travelDist / objectVelocity.length()
+				var collisionLocation = objectPosition + objectVelocity * tCollision #entity.polygon[i] - objectRadius * trajDir.rotated(asin(-signedOrthoDist / objectRadius))
+				GlobalDefinitions.updateGeometricCollision(
+					geometricCollisionData, tCollision, entity.name + "-corner" + str(i), collisionLocation,
+					objectVelocity.bounce((entity.polygon[i] - collisionLocation).normalized())
+				)
+	return geometricCollisionData
 
 
 func resolveOnBoxCollision(collisionEvent: Dictionary) -> void:
@@ -199,19 +193,10 @@ func resolveOnBoxCollision(collisionEvent: Dictionary) -> void:
 	var boxName = collisionEvent["partner details"].split("-")[0]
 	var entity = get_children().filter(func(x): return x.name == boxName)[0]
 	
-	# Collision Physics
-	if collisionEvent["partner details"].contains("horizontal"):
-		ball.velocity.x *= -1
-	elif collisionEvent["partner details"].contains("vertical"):
-		ball.velocity.y *= -1
-	elif collisionEvent["partner details"].contains("corner"):
-		var corner = entity.polygon[int(collisionEvent["partner details"][-1])]
-		ball.velocity = ball.velocity.bounce((corner - ball.position).normalized())
-	elif collisionEvent["partner details"].contains("upgrade"):
+	if collisionEvent["partner details"].contains("upgrade"):
 		entity.queue_free()
 		collectUpgrade.emit(collisionEvent["partner details"], entity.type)
 		return
-	# TODO: After all stability improvements, we should still implement a check here, to see whether the ball entered a box at this step
 	
 	# Box destruction
 	entity.applyDamage()

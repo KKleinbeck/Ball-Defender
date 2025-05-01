@@ -20,15 +20,15 @@ func _ready() -> void:
 # ========= Interface ====================
 # ========================================
 func onRoundReset() -> void:
-	%PreRoundAbility.disabled = false
-	if Player.missingCharge("EndRoundAbility") < 0:
-		%EndRoundAbility.disabled = true
+	if Player.missingCharge("PreRoundAbility") < 0:
+		%PreRoundAbility.disabled = false
+	%EndRoundAbility.disabled = true
 
 
 func onRoundStart() -> void:
-	if Player.missingCharge("PreRoundAbility") < 0:
-		%PreRoundAbility.disabled = true
-	%EndRoundAbility.disabled = false
+	%PreRoundAbility.disabled = true
+	if Player.missingCharge("EndRoundAbility") < 0:
+		%EndRoundAbility.disabled = false
 
 
 func onAbilityPressed(type: String) -> void:
@@ -41,7 +41,6 @@ func onAbilityPressed(type: String) -> void:
 		abilityUsed.emit(abilityName)
 		Player.abilities[type]["charge"] = 0.
 		get_node("%" + type + "Charge").value = 100
-		get_node("%" + type + "ChargeContainer").show()
 
 
 # ========================================
@@ -70,8 +69,9 @@ func _on_ability_main_pressed() -> void:
 func _on_ability_charged(type: String) -> void:
 	var charge = Player.abilities[type].charge
 	var fullCharge = Player.abilityDetails[Player.abilities[type].id]["fullCharge"]
-	if charge > fullCharge:
-		get_node("%" + type + "ChargeContainer").hide()
-		get_node("%" + type).disabled = false
-	else:
+	if charge < fullCharge:
 		get_node("%" + type + "Charge").value = 100 * (fullCharge - charge) / fullCharge
+	else: # and charge > fullCharge
+		get_node("%" + type + "Charge").value = 100
+		if type != "PreRoundAbility":
+			get_node("%" + type).disabled = false

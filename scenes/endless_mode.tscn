@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://38hpxc86n28g"]
+[gd_scene load_steps=8 format=3 uid="uid://38hpxc86n28g"]
 
 [ext_resource type="Script" path="res://scenes/endless_mode.gd" id="1_5codb"]
 [ext_resource type="PackedScene" uid="uid://27sxmgkg6fdi" path="res://scenes/PlayingField/score_bar.tscn" id="2_dgjtq"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bnjc37jk5h6xx" path="res://scenes/PlayingField/entity_field.tscn" id="4_mwu1d"]
 [ext_resource type="PackedScene" uid="uid://cq8g4rbaay25f" path="res://scenes/game_over_dialog.tscn" id="5_4n0y1"]
 [ext_resource type="PackedScene" uid="uid://dc51n8jndld17" path="res://scenes/PlayingField/abilities.tscn" id="5_jnkj4"]
+[ext_resource type="PackedScene" uid="uid://7ir32ja6lr1q" path="res://scenes/PlayingField/object_field.tscn" id="5_kfk2m"]
 
 [node name="EndlessMode" type="Node"]
 script = ExtResource("1_5codb")
@@ -55,6 +56,15 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.9
+
+[node name="ObjectField" parent="AspectRatioContainer/Container" instance=ExtResource("5_kfk2m")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.9
+offset_right = 0.0
+offset_bottom = 0.0
 
 [node name="Void" type="ColorRect" parent="AspectRatioContainer/Container"]
 layout_mode = 1

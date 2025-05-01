@@ -4,6 +4,7 @@ extends TextureRect
 var gridConstant: int
 var margin: int
 var radius: float
+var center: Vector2
 var type: GlobalDefinitions.EntityType
 
 var upgradeMargin = {
@@ -23,7 +24,7 @@ func _ready() -> void:
 func createBenefit(_gridConstant: int, start: Vector2, _type: GlobalDefinitions.EntityType) -> void:
 	gridConstant = _gridConstant
 	margin = upgradeMargin[_type]
-	radius = 0.5 * gridConstant - margin
+	radius = 0.5 * gridConstant - margin # Fictitious radius - circle fully _within_ texture
 	type = _type
 	
 	match type:
@@ -41,9 +42,11 @@ func createBenefit(_gridConstant: int, start: Vector2, _type: GlobalDefinitions.
 			pass
 	
 	position = start + Vector2(margin, margin)
+	center = start + 0.5 * gridConstant * Vector2(1., 1.)
 	size = Vector2(gridConstant - 2*margin, gridConstant - 2*margin)
 
 
 func walk() -> void:
 	var yDown = gridConstant * Vector2.DOWN
+	center += yDown
 	position += yDown
