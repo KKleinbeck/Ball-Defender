@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cweg7yil1pury"]
 
-[ext_resource type="Script" path="res://scenes/playing_field.gd" id="1_v0xqm"]
+[ext_resource type="Script" path="res://scenes/PlayingField/canvas.gd" id="1_v0xqm"]
 
 [node name="PlayingField" type="ColorRect"]
 anchors_preset = -1

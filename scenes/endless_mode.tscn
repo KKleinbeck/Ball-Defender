@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://38hpxc86n28g"]
+[gd_scene load_steps=9 format=3 uid="uid://38hpxc86n28g"]
 
 [ext_resource type="Script" path="res://scenes/endless_mode.gd" id="1_5codb"]
 [ext_resource type="PackedScene" uid="uid://27sxmgkg6fdi" path="res://scenes/PlayingField/score_bar.tscn" id="2_dgjtq"]
-[ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/playing_field.tscn" id="3_wjj17"]
+[ext_resource type="Script" path="res://scenes/PlayingField/playing_field.gd" id="3_4h42d"]
+[ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/PlayingField/canvas.tscn" id="3_wjj17"]
 [ext_resource type="PackedScene" uid="uid://bnjc37jk5h6xx" path="res://scenes/PlayingField/entity_field.tscn" id="4_mwu1d"]
 [ext_resource type="PackedScene" uid="uid://cq8g4rbaay25f" path="res://scenes/game_over_dialog.tscn" id="5_4n0y1"]
 [ext_resource type="PackedScene" uid="uid://dc51n8jndld17" path="res://scenes/PlayingField/abilities.tscn" id="5_jnkj4"]
@@ -36,28 +37,30 @@ anchor_bottom = 1.0
 ratio = 0.48
 alignment_vertical = 0
 
-[node name="Container" type="Control" parent="AspectRatioContainer"]
+[node name="PlayingField" type="Control" parent="AspectRatioContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+script = ExtResource("3_4h42d")
 
-[node name="PlayingField" parent="AspectRatioContainer/Container" instance=ExtResource("3_wjj17")]
+[node name="Canvas" parent="AspectRatioContainer/PlayingField" instance=ExtResource("3_wjj17")]
 unique_name_in_owner = true
 layout_mode = 1
 anchor_top = 0.0
 anchor_bottom = 0.9
 grow_horizontal = 2
 
-[node name="StartPosition" type="Marker2D" parent="AspectRatioContainer/Container/PlayingField"]
+[node name="StartPosition" type="Marker2D" parent="AspectRatioContainer/PlayingField/Canvas"]
 unique_name_in_owner = true
 position = Vector2(269, 980)
 
-[node name="EntityField" parent="AspectRatioContainer/Container" instance=ExtResource("4_mwu1d")]
+[node name="EntityField" parent="AspectRatioContainer/PlayingField" instance=ExtResource("4_mwu1d")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.9
 
-[node name="ObjectField" parent="AspectRatioContainer/Container" instance=ExtResource("5_kfk2m")]
+[node name="ObjectField" parent="AspectRatioContainer/PlayingField" instance=ExtResource("5_kfk2m")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -66,7 +69,8 @@ anchor_bottom = 0.9
 offset_right = 0.0
 offset_bottom = 0.0
 
-[node name="Void" type="ColorRect" parent="AspectRatioContainer/Container"]
+[node name="Void" type="ColorRect" parent="AspectRatioContainer/PlayingField"]
+z_index = 1
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.9
@@ -78,8 +82,9 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.364706, 0.364706, 0.364706, 1)
 
-[node name="Abilities" parent="AspectRatioContainer/Container" instance=ExtResource("5_jnkj4")]
+[node name="Abilities" parent="AspectRatioContainer/PlayingField" instance=ExtResource("5_jnkj4")]
 unique_name_in_owner = true
+z_index = 1
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0

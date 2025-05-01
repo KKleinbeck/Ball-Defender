@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://boslddsacn2gf" path="res://scenes/MainMenu/MenuOption.tscn" id="1_1opgk"]
 [ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_vxj3r"]
-[ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/playing_field.tscn" id="2_7gkl3"]
+[ext_resource type="PackedScene" uid="uid://cweg7yil1pury" path="res://scenes/PlayingField/canvas.tscn" id="2_7gkl3"]
 
 [node name="MainMenu" type="Node"]
 script = ExtResource("1_vxj3r")
@@ -85,5 +85,3 @@ layout_mode = 2
 title = "MAIN_MENU_SETTINGS"
 subtitle = " "
 addendum = " "
-
-[connection signal="ballDespawned" from="PlayingField" to="." method="_on_playing_field_ball_despawned"]

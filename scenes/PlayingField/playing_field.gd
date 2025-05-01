@@ -1,20 +1,13 @@
-extends ColorRect
+extends Control
 
 
+signal startOfRound(v0: Vector2)
 signal ballDespawned
-signal startOfRound
-signal cursorDragStart(start: Vector2)
-signal cursorReleased(start: Vector2, end: Vector2)
-signal requestCalculateOnBoxCollision(ball: Node, collisionEvent: Dictionary)
-signal requestResolveOnBoxCollision(collisionEvent: Dictionary)
-signal canvasClicked(location: Vector2)
 
-var pressReadied: bool = false
-var pressStartLocation: Vector2
 var ballObj: PackedScene = load("res://scenes/PlayingField/ball.tscn")
 var ballDict: Dictionary = {}
 var ballSpeed = 450
-var v0: Vector2 = Vector2(0, -ballSpeed)
+var v0 = Vector2.DOWN
 
 
 # ========================================
@@ -22,33 +15,8 @@ var v0: Vector2 = Vector2(0, -ballSpeed)
 # ========================================
 func _ready() -> void:
 	CollisionList.requestCollisionUpdate.connect(calculateNextCollision)
-
-
-func _input(event: InputEvent) -> void:
-	if Player.state.isDrawing: return
 	
-	var clickLocation = get_local_mouse_position()
-	if event is InputEventMouseButton and event.pressed:
-		if !pressReadied:
-			pressStartLocation = clickLocation
-		cursorDragStart.emit(pressStartLocation)
-		pressReadied = true
-	
-	if event is InputEventMouseButton and event.pressed == false and pressReadied: # pressed == false => mouse up
-		pressReadied = false
-		cursorReleased.emit(pressStartLocation, clickLocation)
-		# Ignore clicks outside the field or too distant locations
-		if clickLocation.y < position.y or clickLocation.y > position.y + size.y or \
-		   ( (clickLocation - pressStartLocation).length() > 20 and Player.state.doNotStartOnDrag):
-			return
-		startOfRound.emit()
-		
-		if ballDict.size() == 1 and GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
-			var ball = ballDict[ballDict.keys()[0]]
-			v0 = (clickLocation - ball.position).normalized() * ballSpeed
-			ball.velocity = v0
-			calculateNextCollision(ball)
-		canvasClicked.emit(clickLocation)
+	%Canvas.cursorReleased.connect(_on_cursor_released)
 
 
 func _process(delta: float) -> void:
@@ -128,43 +96,15 @@ func calculateNextCollision(ball) -> void:
 	if ball.is_queued_for_deletion():
 		return
 	var collisionEvent = {"ball": ball, "t": INF}
-	var geometricCollisionData = calculateOnCanvasCollision(ball.position, ball.velocity)
+	var geometricCollisionData = %Canvas.calculateOnCanvasCollision(ball.position, ball.velocity)
 	GlobalDefinitions.updateCollisionEventFromGeometricData(
 		collisionEvent, "Canvas", geometricCollisionData
 	)
+	%EntityField.calculateOnEntityCollision(ball, collisionEvent)
 	if AbilityDefinitions.factory["Phantom"].active == false:
 		calculateOnBallCollision(ball, collisionEvent)
-	calculateOnBoxCollision(ball, collisionEvent)
 	
 	CollisionList.add(collisionEvent)
-
-
-func calculateOnCanvasCollision(p: Vector2, v: Vector2) -> Dictionary:
-	var r = GlobalDefinitions.ballRadius
-	
-	var endPosition = position + size
-	var geometricCollisionData = {"t": INF}
-	if v.x < 0:
-		var tCollision = (position.x + r - p.x) / v.x
-		GlobalDefinitions.updateGeometricCollision(
-			geometricCollisionData, tCollision, "Left", Vector2(r, p.y + v.y * tCollision), Vector2(-v.x, v.y)
-		)
-	else:
-		var tCollision = (endPosition.x - r - p.x) / (v.x + 1e-200) # In case v.x == 0
-		GlobalDefinitions.updateGeometricCollision(
-			geometricCollisionData, tCollision, "Right", Vector2(endPosition.x - r, p.y + v.y * tCollision), Vector2(-v.x, v.y)
-		)
-	if v.y < 0:
-		var tCollision = (r - p.y) / v.y
-		GlobalDefinitions.updateGeometricCollision(
-			geometricCollisionData, tCollision, "Top", Vector2(p.x + v.x * tCollision, r), Vector2(v.x, -v.y)
-		)
-	else:
-		var tCollision = (size.y + 2*r - p.y) / (v.y + 1e-200)
-		GlobalDefinitions.updateGeometricCollision(
-			geometricCollisionData, tCollision, "Void", Vector2(p.x + v.x * tCollision, size.y + 2*r), v
-		)
-	return geometricCollisionData
 
 
 func calculateOnBallCollision(ball, collisionEvent: Dictionary) -> void:
@@ -193,10 +133,6 @@ func calculateOnBallCollision(ball, collisionEvent: Dictionary) -> void:
 		)
 
 
-func calculateOnBoxCollision(ball: Node, collisionEvent: Dictionary) -> void:
-	requestCalculateOnBoxCollision.emit(ball, collisionEvent)
-
-
 func resolveCollision(collisionEvent: Dictionary) -> void:
 	var ball = collisionEvent["ball"]
 	#ball.position = collisionEvent["collision location"]
@@ -211,7 +147,7 @@ func resolveCollision(collisionEvent: Dictionary) -> void:
 			resolveOnBallCollision(collisionEvent)
 		
 		"Entity":
-			requestResolveOnBoxCollision.emit(collisionEvent)
+			%EntityField.resolveOnEntityCollision(collisionEvent)
 
 
 func resolveOnBallCollision(collisionEvent: Dictionary) -> void:
@@ -230,3 +166,15 @@ func resolveOnBallCollision(collisionEvent: Dictionary) -> void:
 		other.velocity += 2 * m1 * deltaVProj * deltaPDir / (m1 + m2)
 	
 	CollisionList.triggerUpdateFor(collisionEvent["partner details"])
+
+
+# ========================================
+# ========= Signal handling ==============
+# ========================================
+func _on_cursor_released(_clickStartLocation: Vector2, clickLocation: Vector2) -> void:
+	if ballDict.size() == 1 and GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
+		var ball = ballDict[ballDict.keys()[0]]
+		v0 = (clickLocation - ball.position).normalized() * ballSpeed
+		ball.velocity = v0
+		calculateNextCollision(ball)
+		startOfRound.emit(v0)

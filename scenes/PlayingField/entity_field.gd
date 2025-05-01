@@ -123,7 +123,7 @@ func isSpaceAvailable(objectPosition: Vector2, radius: float) -> bool:
 	return true
 
 
-func calculateOnBoxCollision(ball, collisionEvent: Dictionary) -> void:
+func calculateOnEntityCollision(ball, collisionEvent: Dictionary) -> void:
 	var geometricCollisionData = calculateNextCollision(ball.position, ball.velocity, ball.debugMode)
 	if geometricCollisionData["t"] < INF:
 		GlobalDefinitions.updateCollisionEventFromGeometricData(
@@ -197,7 +197,7 @@ func calculateNextCollision(objectPosition: Vector2, objectVelocity:Vector2, deb
 	return geometricCollisionData
 
 
-func resolveOnBoxCollision(collisionEvent: Dictionary) -> void:
+func resolveOnEntityCollision(collisionEvent: Dictionary) -> void:
 	var ball = collisionEvent["ball"]
 	var boxName = collisionEvent["partner details"].split("-")[0]
 	var entity = get_children().filter(func(x): return x.name == boxName)[0]

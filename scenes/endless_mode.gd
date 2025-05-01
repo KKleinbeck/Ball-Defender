@@ -30,9 +30,6 @@ var deathTimeRemaining: int :
 func _ready() -> void:
 	%PlayingField.ballDespawned.connect(_on_ball_despawned)
 	%PlayingField.startOfRound.connect(_on_start_of_round)
-	%PlayingField.requestCalculateOnBoxCollision.connect(%EntityField.calculateOnBoxCollision)
-	%PlayingField.requestResolveOnBoxCollision.connect(%EntityField.resolveOnBoxCollision)
-	%PlayingField.canvasClicked.connect(_on_click_on_playingfield)
 	
 	%ObjectField.laserPointerStart = %StartPosition.position
 	%ObjectField.requestLaserTrace.connect(_on_request_laser_trace)
@@ -120,24 +117,6 @@ func spawnBall() -> void:
 # ========================================
 # ========= Signals ======================
 # ========================================
-func _on_click_on_playingfield(location: Vector2) -> void:
-	if GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
-		startRunning()
-		
-		var trajectory = location - %StartPosition.position
-		var flankAngleBonus = 1 - (Player.getUpgrade("ballProgressFlankAngle") / 90.)
-		var spawnAngle = 90. - flankAngleBonus * abs(trajectory.angle_to(Vector2.UP)) * 180 / PI
-		if $ProgressBar.value + spawnAngle > $ProgressBar.max_value:
-			$ProgressBar.value = $ProgressBar.value + spawnAngle - $ProgressBar.max_value
-			nBalls += 1
-			Player.incrementTemporaryUpgrade("nBalls", 1)
-			$ScoreBar.setBallNumber(nBalls)
-			$ProgressBar.max_value = Player.getUpgrade("ballProgressCost") + \
-				(nBalls - 1) * Player.getUpgrade("ballProgressPerLevelCost")
-		else:
-			$ProgressBar.value += spawnAngle
-
-
 func _on_ball_despawned() -> void:
 	nBallsDespawned += 1
 	
@@ -147,8 +126,23 @@ func _on_ball_despawned() -> void:
 		roundReset()
 
 
-func _on_start_of_round() -> void:
+func _on_start_of_round(ballVelocity: Vector2) -> void:
 	startOfRound.emit()
+	
+	if GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
+		startRunning()
+		
+		var flankAngleBonus = 1 - (Player.getUpgrade("ballProgressFlankAngle") / 90.)
+		var spawnAngle = 90. - flankAngleBonus * abs(ballVelocity.angle_to(Vector2.UP)) * 180 / PI
+		if $ProgressBar.value + spawnAngle > $ProgressBar.max_value:
+			$ProgressBar.value = $ProgressBar.value + spawnAngle - $ProgressBar.max_value
+			nBalls += 1
+			Player.incrementTemporaryUpgrade("nBalls", 1)
+			$ScoreBar.setBallNumber(nBalls)
+			$ProgressBar.max_value = Player.getUpgrade("ballProgressCost") + \
+				(nBalls - 1) * Player.getUpgrade("ballProgressPerLevelCost")
+		else:
+			$ProgressBar.value += spawnAngle
 
 
 func _on_request_laser_trace(start: Vector2, direction: Vector2) -> void:
@@ -161,7 +155,7 @@ func _on_query_portal_space(position: Vector2, radius: float) -> void:
 
 func getLaserTraceRecursive(start: Vector2, direction: Vector2, n: int) -> PackedVector2Array:
 	var result = PackedVector2Array([start])
-	var nextCollision = %PlayingField.calculateOnCanvasCollision(start, direction)
+	var nextCollision = %Canvas.calculateOnCanvasCollision(start, direction)
 	var entityCollision = %EntityField.calculateNextCollision(start, direction)
 	if entityCollision["t"] < nextCollision["t"]:
 		nextCollision = entityCollision
