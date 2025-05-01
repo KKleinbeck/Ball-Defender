@@ -25,6 +25,8 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if Player.state.isDrawing: return
+	
 	var clickLocation = get_local_mouse_position()
 	if event is InputEventMouseButton and event.pressed:
 		if !pressReadied:

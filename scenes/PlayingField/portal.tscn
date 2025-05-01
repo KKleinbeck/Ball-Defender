@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://ds3nn1nrtfucx"]
+
+[ext_resource type="Texture2D" uid="uid://lnbspb26uvq1" path="res://assets/abilities/Portal.png" id="1_vgxxh"]
+[ext_resource type="Script" path="res://scenes/PlayingField/portal.gd" id="2_dbtbc"]
+
+[node name="Portal" type="TextureRect"]
+offset_right = 60.0
+offset_bottom = 60.0
+texture = ExtResource("1_vgxxh")
+expand_mode = 1
+script = ExtResource("2_dbtbc")

@@ -33,6 +33,7 @@ var state = {
 		"probDamage": 0,
 		"probCharge": 0,
 	},
+	"isDrawing": false,
 	"doNotStartOnDrag": true,
 	"challangeLevel": 0,
 }
@@ -150,7 +151,7 @@ var abilities = {
 		"charge": INF
 	},
 	"Ability1": {
-		"id": "AntiGravity",
+		"id": "Portal",
 		"charge": INF
 	},
 	"Ability2": {
@@ -186,6 +187,9 @@ var abilityDetails: Dictionary = {
 	},
 	"Phantom": {
 		"fullCharge": 4.999
+	},
+	"Portal": {
+		"fullCharge": 2.999
 	},
 	"SuddenStop": {
 		"fullCharge": -INF

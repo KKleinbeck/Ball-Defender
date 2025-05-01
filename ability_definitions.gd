@@ -2,6 +2,7 @@ extends Node
 
 
 signal laserPointerDeactivated
+signal portalsDeactivated
 
 
 var factory: Dictionary = {}
@@ -33,6 +34,11 @@ func _ready() -> void:
 		"signal": "endOfRound",
 		"start": startPhantom,
 		"end": endPhantom
+	})
+	factory["Portal"].merge({
+		"signal": "endOfRound",
+		"start": startPortal,
+		"end": endPortal
 	})
 	factory["LaserPointer"].merge({
 		"signal": "startOfRound",
@@ -102,3 +108,14 @@ func startPhantom() -> void:
 
 func endPhantom() -> void:
 	factory["Phantom"].active = false
+
+
+func startPortal() -> void:
+	factory["Portal"].active = true
+	factory["Portal"]["count"] = 0
+	Player.state.isDrawing = true
+
+
+func endPortal() -> void:
+	factory["Portal"].active = false
+	portalsDeactivated.emit()

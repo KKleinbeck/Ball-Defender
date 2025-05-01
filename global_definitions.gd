@@ -2,6 +2,7 @@ extends Node
 
 
 const ballRadius: float = 10.
+const boxesPerRow: int = 10
 
 
 enum EntityType {Empty, Standard, Damage, TimeUp, Currency, PremiumCurrency, Charge}

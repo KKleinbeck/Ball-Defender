@@ -36,6 +36,7 @@ func _ready() -> void:
 	
 	%ObjectField.laserPointerStart = %StartPosition.position
 	%ObjectField.requestLaserTrace.connect(_on_request_laser_trace)
+	%ObjectField.queryPortalSpaceAvailable.connect(_on_query_portal_space)
 	
 	%EntityField.readyAndRendered.connect(_on_box_field_ready)
 	%EntityField.boxDestruction.connect(_on_box_destruction)
@@ -152,6 +153,10 @@ func _on_start_of_round() -> void:
 
 func _on_request_laser_trace(start: Vector2, direction: Vector2) -> void:
 	%ObjectField.laserPointerPoints = getLaserTraceRecursive(start, direction, 3)
+
+
+func _on_query_portal_space(position: Vector2, radius: float) -> void:
+	%ObjectField.portalSpaceAvailable = %EntityField.isSpaceAvailable(position, radius)
 
 
 func getLaserTraceRecursive(start: Vector2, direction: Vector2, n: int) -> PackedVector2Array:

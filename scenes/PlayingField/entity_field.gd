@@ -16,13 +16,14 @@ var isReady: bool = false
 var gameCanvas: Rect2
 var gridConstant: int
 var margin: int = 5
-var boxesPerRow: int = 9
 var nRows: int = 0
 
 
 func _process(_delta: float) -> void:
-	gridConstant = int(size.x / boxesPerRow)
-	readyAndRendered.emit()
+	if not isReady:
+		isReady = true
+		gridConstant = int(size.x / GlobalDefinitions.boxesPerRow)
+		readyAndRendered.emit()
 	set_process(false)
 
 
@@ -71,7 +72,7 @@ func newRow() -> void:
 	var nBoxes = randi_range(3, 6)
 	
 	var boxLocation = []
-	for n in boxesPerRow:
+	for n in GlobalDefinitions.boxesPerRow:
 		if n < nBoxes:
 			boxLocation.append(GlobalDefinitions.EntityType.Standard)
 		else:
@@ -88,7 +89,7 @@ func newRow() -> void:
 		boxLocation[-1] = GlobalDefinitions.EntityType.PremiumCurrency
 	boxLocation.shuffle()
 	
-	for n in boxesPerRow:
+	for n in GlobalDefinitions.boxesPerRow:
 		match boxLocation[n]:
 			GlobalDefinitions.EntityType.Empty:
 				continue
@@ -112,6 +113,14 @@ func walk() -> void:
 			return
 		entity.walk()
 	newRow()
+
+
+func isSpaceAvailable(objectPosition: Vector2, radius: float) -> bool:
+	for entity in get_children():
+		if entity.is_queued_for_deletion(): continue
+		if (entity.center - objectPosition).length() < radius + entity.radius:
+			return false
+	return true
 
 
 func calculateOnBoxCollision(ball, collisionEvent: Dictionary) -> void:
