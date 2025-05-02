@@ -28,6 +28,13 @@ func _input(event: InputEvent) -> void:
 		cursorReleased.emit(pressStartLocation, clickLocation)
 
 
+func isSpaceAvailable(objectPosition: Vector2, radius: float) -> bool:
+	if objectPosition.x - radius < 0 or objectPosition.x + radius > size.x or \
+	   objectPosition.y - radius < 0 or objectPosition.y + radius > size.y:
+		return false
+	return true
+
+
 func calculateOnCanvasCollision(ball, collisionEvent: Dictionary) -> void:
 	var geometricCollisionData = calculateNextCollision(ball.position, ball.velocity)
 	if geometricCollisionData["t"] < INF:

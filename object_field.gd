@@ -47,7 +47,7 @@ func _input(event: InputEvent) -> void:
 		if AbilityDefinitions.factory.Portal.active:
 			var portal = load("res://scenes/PlayingField/portal.tscn").instantiate()
 			var portalPosition = get_local_mouse_position()
-			var portalDiameter = 0.9 * size.x / GlobalDefinitions.boxesPerRow
+			var portalDiameter = size.x / GlobalDefinitions.boxesPerRow
 			queryPortalSpaceAvailable.emit(portalPosition, 0.5 * portalDiameter)
 			
 			if portalSpaceAvailable:
@@ -103,7 +103,7 @@ func calculateNextCollision(ballPosition: Vector2, ballVelocity: Vector2) -> Dic
 		var deltaPos = portal.position + portal.pivot_offset - ballPosition
 		var signedLongDist = deltaPos.dot(trajDir)
 		var signedOrthoDist = deltaPos.cross(trajDir)
-		var distAtCollision = GlobalDefinitions.ballRadius + portal.size.x / 3
+		var distAtCollision = GlobalDefinitions.ballRadius
 		if signedLongDist < 0 or abs(signedOrthoDist) > distAtCollision: continue
 		
 		var travelDist = Math.travelDist(signedLongDist, signedOrthoDist, distAtCollision)

@@ -256,7 +256,8 @@ func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) ->
 
 
 func _on_query_portal_space(location: Vector2, radius: float) -> void:
-	%ObjectField.portalSpaceAvailable = %EntityField.isSpaceAvailable(location, radius)
+	%ObjectField.portalSpaceAvailable = %Canvas.isSpaceAvailable(location, radius) and \
+		%EntityField.isSpaceAvailable(location, radius)
 
 
 func _on_request_laser_trace(start: Vector2, direction: Vector2) -> void:
@@ -312,6 +313,7 @@ func _on_use_ability(abilityId: String) -> void:
 			%EntityField.boxHit.connect(lambda, CONNECT_ONE_SHOT)
 		
 		_:
+			# TODO: two abilities listening for the same signal? Make that work!
 			AbilityDefinitions.factory[abilityId]["start"].call()
 			connect(
 				AbilityDefinitions.factory[abilityId]["signal"],

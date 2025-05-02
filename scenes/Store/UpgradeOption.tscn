@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://cgx66km3tckom" path="res://assets/upgrades/currency.png" id="1_r60ke"]
 [ext_resource type="Script" path="res://scenes/Store/upgrade_option.gd" id="1_rirfw"]
-[ext_resource type="Texture2D" uid="uid://d4u6rh74q6df" path="res://assets/plus.png" id="2_5rkbo"]
-[ext_resource type="Texture2D" uid="uid://n25p3at2gg7l" path="res://assets/chevronLeft.png" id="4_hrlmd"]
+[ext_resource type="Texture2D" uid="uid://cxsjk1ra06nys" path="res://assets/plus.png" id="2_5rkbo"]
+[ext_resource type="Texture2D" uid="uid://carkrd3lfh0w5" path="res://assets/chevronLeft.png" id="4_hrlmd"]
 
 [node name="Margin" type="MarginContainer"]
 custom_minimum_size = Vector2(270, 62)

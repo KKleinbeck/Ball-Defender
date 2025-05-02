@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://scenes/PlayingField/entity_field.gd" id="1_6p8rj"]
 [ext_resource type="PackedScene" uid="uid://df8xwyv5r0bj1" path="res://scenes/PlayingField/box.tscn" id="2_tg1nd"]
-[ext_resource type="PackedScene" uid="uid://bqy5nw3j6lcwy" path="res://scenes/upgrade.tscn" id="3_ko4xv"]
+[ext_resource type="PackedScene" uid="uid://bqy5nw3j6lcwy" path="res://scenes/PlayingField/upgrade.tscn" id="3_ko4xv"]
 
-[node name="Boxes" type="Control"]
+[node name="Entitites" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_6p8rj")

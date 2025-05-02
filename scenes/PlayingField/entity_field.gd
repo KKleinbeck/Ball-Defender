@@ -119,8 +119,12 @@ func isSpaceAvailable(objectPosition: Vector2, radius: float) -> bool:
 	# TODO: Since we approximate boxes as spheres this is a way too coarse approximation
 	for entity in get_children():
 		if entity.is_queued_for_deletion(): continue
-		if (entity.center - objectPosition).length() < radius + entity.radius:
-			return false
+		# Test intersection of bounding spheres
+		var deltaPos = entity.center - objectPosition
+		if deltaPos.length() < radius + entity.radius:
+			# Now test intersection of bounding boxes
+			if max(abs(deltaPos.x), abs(deltaPos.y)) < 0.5 * gridConstant - entity.margin + radius:
+				return false
 	return true
 
 
