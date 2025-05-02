@@ -17,6 +17,7 @@ var portalSpaceAvailable: bool = false
 
 
 var playerPortals: Array = []
+var barriers: Array = []
 
 
 # ========================================
@@ -25,6 +26,7 @@ var playerPortals: Array = []
 func _ready() -> void:
 	AbilityDefinitions.laserPointerDeactivated.connect(deactivateLaserPointer)
 	AbilityDefinitions.portalsDeactivated.connect(deactivatePlayerPortals)
+	AbilityDefinitions.shieldDeactivated.connect(deactivateShield)
 
 
 func _process(delta: float) -> void:
@@ -45,7 +47,7 @@ func _input(event: InputEvent) -> void:
 	
 	if event is InputEventMouseButton and event.pressed == false:
 		if AbilityDefinitions.factory.Portal.active:
-			var portal = load("res://scenes/PlayingField/portal.tscn").instantiate()
+			var portal = load("res://scenes/Objects/portal.tscn").instantiate()
 			var portalPosition = get_local_mouse_position()
 			var portalDiameter = size.x / GlobalDefinitions.boxesPerRow
 			queryPortalSpaceAvailable.emit(portalPosition, 0.5 * portalDiameter)
@@ -84,6 +86,22 @@ func deactivatePlayerPortals() -> void:
 	playerPortals = []
 
 
+func deactivateShield() -> void:
+	if AbilityDefinitions.factory.Shield.active:
+		barriers[0].queue_free()
+		barriers = []
+
+
+func createShield(yPosition) -> void:
+	var shield = load("res://scenes/Objects/Shield.tscn").instantiate()
+	shield.position.x = GlobalDefinitions.ballRadius
+	shield.position.y = yPosition
+	shield.size.x = size.x - 2 * GlobalDefinitions.ballRadius
+	shield.z_index = 1
+	add_child(shield)
+	barriers.append(shield)
+
+
 # ========================================
 # ========= Collision Handling ===========
 # ========================================
@@ -103,7 +121,7 @@ func calculateNextCollision(ballPosition: Vector2, ballVelocity: Vector2) -> Dic
 		var deltaPos = portal.position + portal.pivot_offset - ballPosition
 		var signedLongDist = deltaPos.dot(trajDir)
 		var signedOrthoDist = deltaPos.cross(trajDir)
-		var distAtCollision = GlobalDefinitions.ballRadius
+		var distAtCollision = portal.size.x / 2 - GlobalDefinitions.ballRadius
 		if signedLongDist < 0 or abs(signedOrthoDist) > distAtCollision: continue
 		
 		var travelDist = Math.travelDist(signedLongDist, signedOrthoDist, distAtCollision)
@@ -111,7 +129,20 @@ func calculateNextCollision(ballPosition: Vector2, ballVelocity: Vector2) -> Dic
 		var collisionLocation = playerPortals[1].position if n == 0 else playerPortals[0].position
 		collisionLocation += portal.pivot_offset + distAtCollision * trajDir
 		GlobalDefinitions.updateGeometricCollision(
-			geometricCollisionData, tCollision, "portal" + str(n),
+			geometricCollisionData, tCollision, "Portal" + str(n),
 			collisionLocation, ballVelocity
 		)
+	
+	if AbilityDefinitions.factory.Shield.active and ballVelocity.y > 0 and barriers.size() > 0:
+		var tCollision = (barriers[0].position.y - ballPosition.y + 2 - GlobalDefinitions.ballRadius) / ballVelocity.y
+		GlobalDefinitions.updateGeometricCollision(
+			geometricCollisionData, tCollision, "Shield",
+			ballPosition + ballVelocity * tCollision, Vector2(ballVelocity.x, -ballVelocity.y)
+		)
 	return geometricCollisionData
+
+
+func resolveOnEntityCollision(collisionEvent: Dictionary) -> void:
+	# Clear balls after shield is dead
+	if collisionEvent["partner details"] == "Shield":
+		barriers[0].self_modulate.a = AbilityDefinitions.damageShield()

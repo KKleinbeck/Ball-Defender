@@ -156,7 +156,7 @@ var abilities = {
 		"charge": INF
 	},
 	"Ability2": {
-		"id": "DoubleDamage",
+		"id": "Shield",
 		"charge": INF
 	},
 	"MainAbility": {
@@ -190,6 +190,9 @@ var abilityDetails: Dictionary = {
 		"fullCharge": 4.999
 	},
 	"Portal": {
+		"fullCharge": 2.999
+	},
+	"Shield": {
 		"fullCharge": 2.999
 	},
 	"SuddenStop": {

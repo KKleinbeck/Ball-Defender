@@ -20,7 +20,7 @@ grow_horizontal = 2
 
 [node name="StartPosition" type="Marker2D" parent="Canvas"]
 unique_name_in_owner = true
-position = Vector2(269, 980)
+position = Vector2(269, 970)
 
 [node name="EntityField" parent="." instance=ExtResource("3_wyduw")]
 unique_name_in_owner = true
@@ -28,15 +28,6 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.9
-
-[node name="ObjectField" parent="." instance=ExtResource("4_hdagt")]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.9
-offset_right = 0.0
-offset_bottom = 0.0
 
 [node name="Void" type="ColorRect" parent="."]
 z_index = 1
@@ -50,6 +41,15 @@ offset_bottom = 0.00012207
 grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.364706, 0.364706, 0.364706, 1)
+
+[node name="ObjectField" parent="." instance=ExtResource("4_hdagt")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.9
+offset_right = 0.0
+offset_bottom = 0.0
 
 [node name="Abilities" parent="." instance=ExtResource("5_xhhf0")]
 unique_name_in_owner = true

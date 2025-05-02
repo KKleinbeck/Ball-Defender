@@ -189,7 +189,7 @@ func resolveCollision(collisionEvent: Dictionary) -> void:
 			%EntityField.resolveOnEntityCollision(collisionEvent)
 		
 		"Object":
-			pass
+			%ObjectField.resolveOnEntityCollision(collisionEvent)
 
 
 func resolveOnBallCollision(collisionEvent: Dictionary) -> void:
@@ -311,6 +311,12 @@ func _on_use_ability(abilityId: String) -> void:
 					AbilityDefinitions.endGlassCannon()
 					%PlayingField.despawnBall(ball)
 			%EntityField.boxHit.connect(lambda, CONNECT_ONE_SHOT)
+		
+		
+		"Shield":
+			AbilityDefinitions.startShield()
+			%ObjectField.createShield(%StartPosition.position.y + 2)
+			endOfRound.connect(AbilityDefinitions.endShield, CONNECT_ONE_SHOT)
 		
 		_:
 			# TODO: two abilities listening for the same signal? Make that work!

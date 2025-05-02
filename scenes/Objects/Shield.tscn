@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://erpy2q47si1w"]
+
+[ext_resource type="Texture2D" uid="uid://c4bwyn3ucitbc" path="res://assets/objects/Shield.png" id="1_ebpql"]
+
+[node name="Shield" type="NinePatchRect"]
+offset_right = 38.0
+offset_bottom = 54.0
+texture = ExtResource("1_ebpql")
+patch_margin_left = 19
+patch_margin_top = 19
+patch_margin_right = 19
+patch_margin_bottom = 19
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1

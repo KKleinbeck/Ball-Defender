@@ -42,6 +42,18 @@ func triggerUpdateFor(ball: Node) -> void:
 		requestCollisionUpdate.emit(deletedBall)
 
 
+func triggerUpdateByPartnerDetails(details: String, eliminationSet: Dictionary = {}) -> void:
+	for collisionEvent in entries:
+		if collisionEvent["partner details"] is String and collisionEvent["partner details"] == details:
+			var ball = collisionEvent["ball"]
+			eliminationSet[ball] = null
+			recursiveRemoveBallDependencies(ball, eliminationSet)
+			triggerUpdateByPartnerDetails(details, eliminationSet)
+			return
+	for deletedBall in eliminationSet:
+		requestCollisionUpdate.emit(deletedBall)
+
+
 func removeBall(ball: Node) -> void:
 	var eliminationSet = {}
 	recursiveRemoveBallDependencies(ball, eliminationSet)

@@ -3,6 +3,7 @@ extends Node
 
 signal laserPointerDeactivated
 signal portalsDeactivated
+signal shieldDeactivated
 
 
 var factory: Dictionary = {}
@@ -96,7 +97,7 @@ func startLaserPointer() -> void:
 	Player.state.doNotStartOnDrag = false
 
 
-func endLaserPointer() -> void:
+func endLaserPointer(_v0: Vector2) -> void:
 	factory["LaserPointer"].active = false
 	Player.state.doNotStartOnDrag = true
 	laserPointerDeactivated.emit()
@@ -119,3 +120,21 @@ func startPortal() -> void:
 func endPortal() -> void:
 	factory["Portal"].active = false
 	portalsDeactivated.emit()
+
+
+func startShield() -> void:
+	factory["Shield"].active = true
+	factory["Portal"]["life"] = 1 + int(Player.getUpgrade("nBalls") / 3)
+
+
+func damageShield() -> float:
+	factory["Portal"]["life"] -= 1
+	if factory["Portal"]["life"] == 0:
+		endShield()
+	return factory["Portal"]["life"] / (1. + int(Player.getUpgrade("nBalls") / 3))
+
+
+func endShield() -> void:
+	factory["Shield"].active = false
+	CollisionList.triggerUpdateByPartnerDetails("Shield")
+	shieldDeactivated.emit()
