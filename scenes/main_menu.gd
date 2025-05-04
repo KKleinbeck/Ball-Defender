@@ -29,6 +29,35 @@ func spawnRandomBall() -> void:
 	$PlayingField.spawnBall(position, 100 * Vector2.UP.rotated(2 * PI * randf()))
 
 
+func showHeroSelect() -> void:
+	$Options.hide()
+	$HeroContainer.show()
+	for hero in Player.state.heros:
+		var option = load("res://scenes/MainMenu/HeroOption.tscn").instantiate()
+		option.title = hero
+		option.pressed.connect(heroSelected)
+		for n in Player.state.heros[hero].size():
+			var ability = Player.state.heros[hero][n]
+			option.setAbility(n+1, ability)
+			
+			if n == Player.state.heros[hero].size():
+				option.setToEndOfList()
+		%HeroOptions.add_child(option)
+
+
+func heroSelected(hero) -> void:
+	for n in Player.state.heros[hero].size():
+		var ability = Player.state.heros[hero][n]
+		
+		if n == 0:
+			Player.abilities.MainAbility.id = ability
+		else:
+			Player.abilities["Ability" + str(n)].id = ability
+	
+	CollisionList.reset()
+	get_tree().change_scene_to_file("res://scenes/endless_mode.tscn")
+
+
 # ========================================
 # ========= Collision Handling ===========
 # ========================================
@@ -37,8 +66,7 @@ func _on_playing_field_ball_despawned() -> void:
 
 
 func _on_endless_start() -> void:
-	CollisionList.reset()
-	get_tree().change_scene_to_file("res://scenes/endless_mode.tscn")
+	showHeroSelect()
 
 
 func _enter_upgrade_store() -> void:

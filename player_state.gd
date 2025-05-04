@@ -36,6 +36,11 @@ var state = {
 	"isDrawing": false,
 	"doNotStartOnDrag": true,
 	"challangeLevel": 0,
+	"heros": {
+		"Warrior": ["BallHell", "GlassCannon", "DoubleDamage"],
+		"Guardian": ["BallHell", "AntiGravity", "Shield"],
+		"Ghost": ["BallHell", "Phantom", "Portal"],
+	}
 }
 
 var levelingDetails = {
