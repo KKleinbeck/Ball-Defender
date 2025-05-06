@@ -17,7 +17,7 @@ var portalSpaceAvailable: bool = false
 
 
 var playerPortals: Array = []
-var barriers: Array = []
+var shield: Node
 
 
 # ========================================
@@ -87,19 +87,17 @@ func deactivatePlayerPortals() -> void:
 
 
 func deactivateShield() -> void:
-	if AbilityDefinitions.factory.Shield.active:
-		barriers[0].queue_free()
-		barriers = []
+	if is_instance_valid(shield) and !shield.is_queued_for_deletion():
+		shield.queue_free()
 
 
 func createShield(yPosition) -> void:
-	var shield = load("res://scenes/Objects/Shield.tscn").instantiate()
+	shield = load("res://scenes/Objects/Shield.tscn").instantiate()
 	shield.position.x = GlobalDefinitions.ballRadius
 	shield.position.y = yPosition
 	shield.size.x = size.x - 2 * GlobalDefinitions.ballRadius
 	shield.z_index = 1
 	add_child(shield)
-	barriers.append(shield)
 
 
 # ========================================
@@ -133,8 +131,8 @@ func calculateNextCollision(ballPosition: Vector2, ballVelocity: Vector2) -> Dic
 			collisionLocation, ballVelocity
 		)
 	
-	if AbilityDefinitions.factory.Shield.active and ballVelocity.y > 0 and barriers.size() > 0:
-		var tCollision = (barriers[0].position.y - ballPosition.y + 2 - GlobalDefinitions.ballRadius) / ballVelocity.y
+	if AbilityDefinitions.factory.Shield.active and ballVelocity.y > 0 and !shield.is_queued_for_deletion():
+		var tCollision = (shield.position.y - ballPosition.y + 2 - GlobalDefinitions.ballRadius) / ballVelocity.y
 		GlobalDefinitions.updateGeometricCollision(
 			geometricCollisionData, tCollision, "Shield",
 			ballPosition + ballVelocity * tCollision, Vector2(ballVelocity.x, -ballVelocity.y)
@@ -145,4 +143,4 @@ func calculateNextCollision(ballPosition: Vector2, ballVelocity: Vector2) -> Dic
 func resolveOnEntityCollision(collisionEvent: Dictionary) -> void:
 	# Clear balls after shield is dead
 	if collisionEvent["partner details"] == "Shield":
-		barriers[0].self_modulate.a = AbilityDefinitions.damageShield()
+		shield.self_modulate.a = AbilityDefinitions.damageShield()
