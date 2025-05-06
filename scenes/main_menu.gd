@@ -32,16 +32,19 @@ func spawnRandomBall() -> void:
 func showHeroSelect() -> void:
 	$Options.hide()
 	$HeroContainer.show()
+	
+	var n = 0
 	for hero in Player.state.heros:
+		n += 1
 		var option = load("res://scenes/MainMenu/HeroOption.tscn").instantiate()
 		option.title = hero
 		option.pressed.connect(heroSelected)
-		for n in Player.state.heros[hero].size():
-			var ability = Player.state.heros[hero][n]
-			option.setAbility(n+1, ability)
-			
-			if n == Player.state.heros[hero].size():
-				option.setToEndOfList()
+		if n == Player.state.heros.size():
+			option.margin_bottom = 0
+		
+		for m in Player.state.heros[hero].size():
+			var ability = Player.state.heros[hero][m]
+			option.setAbility(m+1, ability)
 		%HeroOptions.add_child(option)
 
 

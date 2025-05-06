@@ -4,15 +4,20 @@ extends MarginContainer
 signal pressed(hero: String)
 
 
+@export var margin_bottom: int = 25
+
+
 @export var title: String :
 	get:
 		return title
 	set(value):
 		title = value
 		%Title.text = value
+		%HeroIcon.texture = load("res://assets/UI/" + value + ".png")
 
 
 func _ready() -> void:
+	add_theme_constant_override("margin_bottom", margin_bottom)
 	set_process(false)
 
 
@@ -24,7 +29,3 @@ func _on_gui_input(event: InputEvent) -> void:
 func setAbility(n: int, ability: String) -> void:
 	get_node("%Image" + str(n)).texture = load("res://assets/abilities/Option" + ability + ".png")
 	get_node("%ImageSubtitle" + str(n)).text = ability
-
-
-func setToEndOfList() -> void:
-	add_theme_constant_override("margin_bottom", 0)
