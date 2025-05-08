@@ -113,6 +113,8 @@ func reset() -> void:
 	for ballName in ballDict:
 		ballDict[ballName].queue_free()
 	ballDict = {}
+	
+	Player.addCharge(Player.getUpgrade("chargePerRound"))
 
 
 func restart() -> void:
@@ -221,6 +223,8 @@ func _on_cursor_released(_clickStartLocation: Vector2, clickLocation: Vector2) -
 		calculateNextCollision(ball)
 		startOfRound.emit(v0)
 		%Abilities.onRoundStart()
+	
+	Player.increaseBallProgress()
 
 
 func _on_box_field_ready() -> void:

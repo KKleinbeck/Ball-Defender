@@ -20,7 +20,9 @@ var state = {
 		"nBalls": 0,
 		"ballProgressCost": 0,
 		"ballProgressPerLevelCost": 0,
-		"ballProgressFlankAngle": 0,
+		"ballProgressGain": 0,
+		
+		"chargePerRound": 0,
 		
 		"clearRowsOnRestart": 0,
 		"currencyRewardPerLevel": 0,
@@ -33,6 +35,8 @@ var state = {
 		"probDamage": 0,
 		"probCharge": 0,
 	},
+	"ballProgressValue": 0,
+	"ballProgressTarget": 0,
 	"isDrawing": false,
 	"doNotStartOnDrag": true,
 	"challangeLevel": 0,
@@ -75,10 +79,17 @@ var levelingDetails = {
 		"levelBonus": -0.5,
 		"cost": [2, 5, 10]
 	},
-	"ballProgressFlankAngle": {
+	"ballProgressGain": {
 		"max": 30,
-		"start": 0.,
+		"start": 90.,
 		"levelBonus": 1.,
+		"cost": [2, 5, 10]
+	},
+	
+	"chargePerRound": {
+		"max": 20,
+		"start": 0.1,
+		"levelBonus": 0.01,
 		"cost": [2, 5, 10]
 	},
 	
@@ -143,7 +154,7 @@ var upgrades: Dictionary = {}
 var temporaryUpgrades: Dictionary = {
 	"damage": 0,
 	"nBalls": 0,
-	"deathTime": 0
+	"deathTime": 0,
 }
 var abilityUpgrades: Dictionary = {}
 
@@ -222,15 +233,17 @@ func _process(delta: float) -> void:
 func reset() -> void:
 	for ability in temporaryUpgrades:
 		temporaryUpgrades[ability] = 0
+	
+	state.ballProgressValue = 0.
+	setBallProgressTarget()
+	
 	for ability in abilities:
 		abilities[ability].charge = INF
 		abilityCharged.emit(ability)
 	abilityUpgrades = {}
 
 
-func addCharge() -> void:
-	var charge = 1.
-	
+func addCharge(charge: float = 1.) -> void:
 	var nonFullAbilities = {}
 	for _i in 5: # Fixed number of loops as 5 buckets can only redistribute 5 times
 		# Determine which abilities needs to be charged
@@ -251,6 +264,23 @@ func addCharge() -> void:
 		if charge <= 1e-7: break
 
 
+func increaseBallProgress() -> void:
+	state.ballProgressValue += getUpgrade("ballProgressGain")
+	if state.ballProgressValue > state.ballProgressTarget:
+		state.ballProgressValue -= state.ballProgressTarget
+		temporaryUpgrades.nBalls += 1
+		setBallProgressTarget()
+		
+		dataChanged.emit("nBalls", getUpgrade("nBalls"))
+		dataChanged.emit("ballProgressTarget", state.ballProgressTarget)
+	dataChanged.emit("ballProgressValue", state.ballProgressValue)
+
+
+func setBallProgressTarget() -> void:
+	state.ballProgressTarget = getUpgrade("ballProgressCost") + \
+		(getUpgrade("nBalls") - 1) * getUpgrade("ballProgressPerLevelCost")
+
+
 func missingCharge(type: String) -> float:
 	return abilityDetails[abilities[type].id].fullCharge - abilities[type].charge
 
@@ -262,6 +292,8 @@ func determineUpgrades() -> void:
 		var levelBonus = levelingDetails[upgrade]["levelBonus"]
 		
 		upgrades[upgrade] = start + level * levelBonus
+	
+	setBallProgressTarget()
 
 
 func getUpgradeWithoutEffects(id: String):

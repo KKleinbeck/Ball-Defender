@@ -46,13 +46,12 @@ func _process(_delta: float) -> void:
 # ========= Custom Methods ===============
 # ========================================
 func setup() -> void:
+	Player.reset()
 	GlobalDefinitions.loadRewardInterstitial()
 	nBalls = Player.getUpgrade("nBalls")
 	$ScoreBar.setBallNumber(nBalls)
 	$ScoreBar.setDamage(Player.getUpgrade("damage"))
-	$ProgressBar.max_value = 0
-	$ProgressBar.max_value = Player.getUpgrade("ballProgressCost") + \
-		(nBalls - 1) * Player.getUpgrade("ballProgressPerLevelCost")
+	$ProgressBar.max_value = Player.state.ballProgressTarget
 	
 	# Reset temporary player state
 	for upgrade in Player.temporaryUpgrades:
@@ -113,21 +112,9 @@ func _on_ball_despawned() -> void:
 		roundReset()
 
 
-func _on_start_of_round(ballVelocity: Vector2) -> void:	
+func _on_start_of_round(_ballVelocity: Vector2) -> void:
 	if GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
 		startRunning()
-		
-		var flankAngleBonus = 1 - (Player.getUpgrade("ballProgressFlankAngle") / 90.)
-		var spawnAngle = 90. - flankAngleBonus * abs(ballVelocity.angle_to(Vector2.UP)) * 180 / PI
-		if $ProgressBar.value + spawnAngle > $ProgressBar.max_value:
-			$ProgressBar.value = $ProgressBar.value + spawnAngle - $ProgressBar.max_value
-			nBalls += 1
-			Player.incrementTemporaryUpgrade("nBalls", 1)
-			$ScoreBar.setBallNumber(nBalls)
-			$ProgressBar.max_value = Player.getUpgrade("ballProgressCost") + \
-				(nBalls - 1) * Player.getUpgrade("ballProgressPerLevelCost")
-		else:
-			$ProgressBar.value += spawnAngle
 
 
 func _on_gameover() -> void:
@@ -169,6 +156,10 @@ func _on_gameover_end_game() -> void:
 
 func _on_player_data_changed(id: String, value) -> void:
 	match id:
+		"ballProgressTarget":
+			$ProgressBar.max_value = value
+		"ballProgressValue":
+			$ProgressBar.value = value
 		"nBalls":
 			nBalls = value
 			$ScoreBar.setBallNumber(value)
