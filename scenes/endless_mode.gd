@@ -106,7 +106,7 @@ func _on_score_gained(gain: int) -> void:
 func _on_ball_despawned() -> void:
 	nBallsDespawned += 1
 	
-	if nBallsSpawned == nBallsDespawned:
+	if Player.getUpgrade("nBalls") == nBallsDespawned:
 		$DeathTimer.stop() # manual stop to prevent to independent round end events
 		await get_tree().create_timer(0.1).timeout # Short timer between rounds
 		roundReset()

@@ -229,7 +229,7 @@ func _on_cursor_released(_clickStartLocation: Vector2, clickLocation: Vector2) -
 
 func _on_box_field_ready() -> void:
 	boxFieldReady = true
-	for i in 3:
+	for i in 13:
 		%EntityField.walk()
 
 
