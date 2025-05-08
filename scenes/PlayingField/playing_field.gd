@@ -121,6 +121,7 @@ func restart() -> void:
 	boxFieldReady = false
 	reset()
 	%EntityField.reset()
+	await get_tree().create_timer(0.1).timeout # spawn boxes only after previous have been despawned
 	_on_box_field_ready()
 
 
