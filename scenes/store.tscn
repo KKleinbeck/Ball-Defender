@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dv1wsujrmrgf7"]
+[gd_scene load_steps=6 format=3 uid="uid://dv1wsujrmrgf7"]
 
-[ext_resource type="Texture2D" uid="uid://carkrd3lfh0w5" path="res://assets/chevronLeft.png" id="1_4fyso"]
 [ext_resource type="Script" path="res://scenes/store.gd" id="1_pbjr5"]
+[ext_resource type="Theme" uid="uid://m7flewg752am" path="res://secondary_theme.tres" id="1_t62af"]
 [ext_resource type="Texture2D" uid="uid://cgx66km3tckom" path="res://assets/upgrades/currency.png" id="2_qj6t0"]
+[ext_resource type="Texture2D" uid="uid://dm20pvw62o2mw" path="res://assets/UI/ChevronLeft.png" id="2_qyj3m"]
 [ext_resource type="Texture2D" uid="uid://d046vuumalplc" path="res://assets/upgrades/premiumCurrency.png" id="4_v0ngm"]
 
 [node name="Store" type="Control"]
@@ -12,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_t62af")
 script = ExtResource("1_pbjr5")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -21,7 +23,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.231078, 0.0330194, 0.322924, 1)
+color = Color(0.364706, 0.364706, 0.364706, 1)
 
 [node name="GoBack" type="TextureButton" parent="."]
 layout_mode = 2
@@ -29,17 +31,28 @@ offset_left = 24.0
 offset_top = 24.0
 offset_right = 64.0
 offset_bottom = 64.0
-texture_normal = ExtResource("1_4fyso")
+texture_normal = ExtResource("2_qyj3m")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.1
+anchor_left = 0.05
 anchor_top = 0.1
 anchor_right = 0.95
-anchor_bottom = 0.9
+anchor_bottom = 1.1
+
+[node name="GridContainer" type="GridContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.07
+anchor_top = 0.11
+anchor_right = 0.93
+anchor_bottom = 1.0
+theme_override_constants/v_separation = 10
+columns = 3
 
 [node name="Currency" type="Panel" parent="."]
 layout_mode = 1

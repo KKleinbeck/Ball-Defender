@@ -30,8 +30,14 @@ func spawnRandomBall() -> void:
 
 
 func showHeroSelect() -> void:
-	$Options.hide()
+	$HeroContainer.modulate.a = 0
 	$HeroContainer.show()
+	
+	# Animate transition
+	var tween = get_tree().create_tween()
+	tween.tween_property($HeroContainer, "modulate", Color(1, 1, 1, 1), 0.4)
+	tween.parallel().tween_property($Options, "modulate", Color(1, 1, 1, 0), 0.4)
+	tween.tween_property($Options, "visible", false, 0.4)
 	
 	var n = 0
 	for hero in Player.state.heros:

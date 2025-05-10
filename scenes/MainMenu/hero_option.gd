@@ -12,7 +12,7 @@ signal pressed(hero: String)
 		return title
 	set(value):
 		title = value
-		%Title.text = value
+		%Title.text = "HERO_" + value.to_upper()
 		%HeroIcon.texture = load("res://assets/UI/" + value + ".png")
 
 

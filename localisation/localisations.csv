@@ -15,7 +15,7 @@ UPGRADE_DAMAGE_EFFECT_LONG,{value} + {chance}%,
 UPGRADE_DEATHTIME,Death time,Rundenzeit
 UPGRADE_DEATHTIME_EFFECT,{value} sec,
 UPGRADE_NBALLS,Initial balls,Bälle beim Start
-UPGRADE_NBALLS_EFFECT,{value},
+UPGRADE_NBALLS_EFFECT,{value} balls,{value} Bälle
 UPGRADE_BALLPROGRESSCOST,Cost first new ball,Kosten 1. Zusatzball
 UPGRADE_BALLPROGRESSCOST_EFFECT,{value}°,
 UPGRADE_BALLPROGRESSPERLEVELCOST,Extra cost per ball,Zusatzkosten pro Ball

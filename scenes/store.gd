@@ -11,10 +11,11 @@ func _ready() -> void:
 	for upgradeName in Player.state["upgrades"]:
 		var optionInstance = optionScene.instantiate()
 		optionInstance.identifier = upgradeName
-		optionInstance.setTitle(tr("UPGRADE_" + upgradeName.to_upper()))
+		optionInstance.setAbility(tr("UPGRADE_" + upgradeName.to_upper()))
 		
-		var level = Player.state["upgrades"][upgradeName]
-		optionInstance.setLevel(level)
+		var level = Player.state.upgrades[upgradeName]
+		var maxLevel = Player.levelingDetails[upgradeName].max
+		optionInstance.setLevel(level, maxLevel)
 		
 		var upgradeCost = cost(upgradeName, level)
 		optionInstance.setCost(upgradeCost)
@@ -25,7 +26,7 @@ func _ready() -> void:
 		
 		optionDict[upgradeName] = optionInstance
 		optionInstance.upgrade.connect(_on_upgrade)
-		$VBoxContainer.add_child(optionInstance)
+		$GridContainer.add_child(optionInstance)
 
 
 func cost(identifier: String, level: int) -> int:
@@ -34,17 +35,21 @@ func cost(identifier: String, level: int) -> int:
 
 
 func displayCurrency() -> void:
-	%Standard.text = str(Player.state["currency"]["standard"])
-	%Premium.text = str(Player.state["currency"]["premium"])
+	%Standard.text = str(Player.state.currency.standard)
+	%Premium.text = str(Player.state.currency.premium)
 
 
 func redraw(identifier: String) -> void:
 	var optionInstance = optionDict[identifier]
 	
-	var level = Player.state["upgrades"][identifier]
-	optionInstance.setLevel(level)
+	var level = Player.state.upgrades[identifier]
+	var maxLevel = Player.levelingDetails[identifier].max
+	optionInstance.setLevel(level, maxLevel)
 	var upgradeCost = cost(identifier, level)
 	optionInstance.setCost(upgradeCost)
+	var currentEffect = LocalisationHelper.upgradeEffect(identifier, level)
+	var newEffect = LocalisationHelper.upgradeEffect(identifier, level + 1)
+	optionInstance.setEffect(currentEffect, newEffect)
 	
 	displayCurrency()
 

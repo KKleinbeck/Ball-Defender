@@ -1,146 +1,103 @@
-[gd_scene load_steps=5 format=3 uid="uid://ddwhp3rvq4tav"]
+[gd_scene load_steps=7 format=3 uid="uid://bbml8cdpk3wfs"]
 
+[ext_resource type="Theme" uid="uid://dulka0cj4fq56" path="res://main_theme.tres" id="1_k24tc"]
 [ext_resource type="Texture2D" uid="uid://cgx66km3tckom" path="res://assets/upgrades/currency.png" id="1_r60ke"]
 [ext_resource type="Script" path="res://scenes/Store/upgrade_option.gd" id="1_rirfw"]
-[ext_resource type="Texture2D" uid="uid://cxsjk1ra06nys" path="res://assets/plus.png" id="2_5rkbo"]
-[ext_resource type="Texture2D" uid="uid://carkrd3lfh0w5" path="res://assets/chevronLeft.png" id="4_hrlmd"]
+[ext_resource type="Theme" uid="uid://m7flewg752am" path="res://secondary_theme.tres" id="3_ihg64"]
+[ext_resource type="Texture2D" uid="uid://bxkj8d21pas78" path="res://assets/upgrades/damage.png" id="4_5y5bt"]
+[ext_resource type="Texture2D" uid="uid://6tjypjnvomml" path="res://assets/UI/PlusSecondary.png" id="6_em3mq"]
 
-[node name="Margin" type="MarginContainer"]
-custom_minimum_size = Vector2(270, 62)
-offset_right = 540.0
-offset_bottom = 60.0
-theme_override_constants/margin_bottom = 10
+[node name="UpgradeOption" type="PanelContainer"]
+custom_minimum_size = Vector2(150, 165)
+theme = ExtResource("1_k24tc")
 script = ExtResource("1_rirfw")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("3_ihg64")
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Panel"]
+[node name="UpgradeIcon" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.02
-anchor_top = 0.25
-anchor_right = 0.02
-anchor_bottom = 0.25
-offset_left = 11.5
-offset_top = -15.0
-offset_right = 11.5
-offset_bottom = 15.0
-text = "Title
-"
-vertical_alignment = 1
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_5y5bt")
+expand_mode = 1
+stretch_mode = 4
 
-[node name="Icon" type="TextureRect" parent="Panel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.02
-anchor_top = 0.75
-anchor_right = 0.02
-anchor_bottom = 0.75
-offset_left = 11.5
-offset_top = -12.0
-offset_right = 25.5
-offset_bottom = 12.0
-grow_vertical = 2
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme_override_constants/separation = -1
+
+[node name="Progress" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0/0"
+horizontal_alignment = 2
+
+[node name="CurrentValue" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "current"
+horizontal_alignment = 2
+
+[node name="Ability" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 12
+text = "Ability"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="HBoxContainerCost" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainerCost"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = -1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainerCost/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Cost" type="Label" parent="VBoxContainer/HBoxContainerCost/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "5"
+
+[node name="CostIcon" type="TextureRect" parent="VBoxContainer/HBoxContainerCost/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
 texture = ExtResource("1_r60ke")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 4
 
-[node name="Cost" type="Label" parent="Panel"]
+[node name="NextValue" type="Label" parent="VBoxContainer/HBoxContainerCost/VBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.02
-anchor_top = 0.75
-anchor_right = 0.02
-anchor_bottom = 0.75
-offset_left = 31.5
-offset_top = -15.0
-offset_right = 28.5
-offset_bottom = 15.0
-grow_vertical = 0
-text = "Cost"
-vertical_alignment = 1
+layout_direction = 3
+layout_mode = 2
+text = "next"
 
-[node name="Level" type="Label" parent="Panel"]
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/HBoxContainerCost"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.98
-anchor_top = 0.5
-anchor_right = 0.98
-anchor_bottom = 0.5
-offset_left = 129.4
-offset_top = -12.0
-offset_right = -50.0
-offset_bottom = 12.0
-grow_horizontal = 0
-grow_vertical = 2
-text = "Level"
-vertical_alignment = 1
-
-[node name="TextureRect" type="TextureButton" parent="Panel"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.98
-anchor_top = 0.5
-anchor_right = 0.98
-anchor_bottom = 0.5
-offset_top = -15.0
-offset_bottom = 15.0
-grow_horizontal = 0
-grow_vertical = 2
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
 size_flags_vertical = 4
-texture_normal = ExtResource("2_5rkbo")
+texture_normal = ExtResource("6_em3mq")
 ignore_texture_size = true
-stretch_mode = 5
+stretch_mode = 4
 
-[node name="Current" type="Label" parent="Panel"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.75
-anchor_right = 0.5
-anchor_bottom = 0.75
-offset_left = -100.0
-offset_top = -15.0
-offset_right = -15.0
-offset_bottom = 15.0
-text = "Current"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="ProgressArror" type="TextureRect" parent="Panel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.75
-anchor_right = 0.5
-anchor_bottom = 0.75
-offset_left = -10.0
-offset_top = -10.0
-offset_right = 10.0
-offset_bottom = 10.0
-texture = ExtResource("4_hrlmd")
-expand_mode = 2
-flip_h = true
-
-[node name="New" type="Label" parent="Panel"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.75
-anchor_right = 0.5
-anchor_bottom = 0.75
-offset_left = 15.0
-offset_top = -15.0
-offset_right = 100.0
-offset_bottom = 15.0
-text = "New"
-vertical_alignment = 1
-
-[connection signal="pressed" from="Panel/TextureRect" to="." method="_on_texture_rect_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainerCost/TextureButton" to="." method="_on_texture_button_pressed"]
