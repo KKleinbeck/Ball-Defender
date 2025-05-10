@@ -5,6 +5,10 @@ MAIN_MENU_DAILY,Daily Challange,Tägliche Herausforderung
 MAIN_MENU_UPGRADES,Upgrade Forge,Fortschritt Schmiede
 MAIN_MENU_SETTINGS,Settings,Einstellungen
 ,,
+HERO_GHOST,Ghost,Geist
+HERO_GUARDIAN,Guardian,Bastion
+HERO_WARRIOR,Warrior,Kämpfer
+,,
 UPGRADE_DAMAGE,Damage,Schaden
 UPGRADE_DAMAGE_EFFECT,{value},
 UPGRADE_DAMAGE_EFFECT_LONG,{value} + {chance}%,
@@ -16,8 +20,10 @@ UPGRADE_BALLPROGRESSCOST,Cost first new ball,Kosten 1. Zusatzball
 UPGRADE_BALLPROGRESSCOST_EFFECT,{value}°,
 UPGRADE_BALLPROGRESSPERLEVELCOST,Extra cost per ball,Zusatzkosten pro Ball
 UPGRADE_BALLPROGRESSPERLEVELCOST_EFFECT,{value}°,
-UPGRADE_BALLPROGRESSFLANKANGLE,Cost reward for flat shot,Ballfortschritt flacher Schüsse
-UPGRADE_BALLPROGRESSFLANKANGLE_EFFECT,{value}°,
+UPGRADE_BALLPROGRESSGAIN,Extra ball charge per shot,Ballfortschritt pro Schuss
+UPGRADE_BALLPROGRESSGAIN_EFFECT,{value},
+UPGRADE_CHARGEPERROUND,Ability charge per round,Fähigkeitsenergie pro Runde
+UPGRADE_CHARGEPERROUND_EFFECT,{value},
 UPGRADE_CLEARROWSONRESTART,Rows removed after Ads,Entfernte Reihen nach Werbung
 UPGRADE_CLEARROWSONRESTART_EFFECT,{value},
 UPGRADE_CURRENCYREWARDPERLEVEL,Gameover reward per level,Spielendenbelohnung pro Reihe
