@@ -225,7 +225,7 @@ func _on_cursor_released(_clickStartLocation: Vector2, clickLocation: Vector2) -
 		startOfRound.emit(v0)
 		%Abilities.onRoundStart()
 	
-	Player.increaseBallProgress()
+		Player.increaseBallProgress()
 
 
 func _on_box_field_ready() -> void:
