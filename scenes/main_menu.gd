@@ -1,6 +1,9 @@
 extends Node
 
 
+signal changeGameScene(id: String)
+
+
 func _ready() -> void:
 	for _i in 5:
 		spawnRandomBall()
@@ -64,7 +67,7 @@ func heroSelected(hero) -> void:
 			Player.abilities["Ability" + str(n)].id = ability
 	
 	CollisionList.reset()
-	get_tree().change_scene_to_file("res://scenes/endless_mode.tscn")
+	changeGameScene.emit("EndlessMode")
 
 
 # ========================================
@@ -80,7 +83,7 @@ func _on_endless_start() -> void:
 
 func _enter_upgrade_store() -> void:
 	CollisionList.reset()
-	get_tree().change_scene_to_file("res://scenes/store.tscn")
+	changeGameScene.emit("Store")
 
 
 func _debug_info() -> void:

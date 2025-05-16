@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Ball Defender"
-run/main_scene="res://scenes/main_menu.tscn"
+run/main_scene="res://scenes/entry.tscn"
 config/features=PackedStringArray("4.3", "Mobile")
 
 [autoload]
@@ -37,7 +37,7 @@ project/assembly_name="Ball Defender"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/admob/plugin.cfg")
+enabled=PackedStringArray("res://addons/AdmobPlugin/plugin.cfg")
 
 [internationalization]
 
