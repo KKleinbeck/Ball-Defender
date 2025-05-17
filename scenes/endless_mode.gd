@@ -132,6 +132,11 @@ func _on_gameover() -> void:
 
 func _on_gameover_continue_game() -> void:
 	showRewardAd.emit()
+	$LoadingAnimation.showAndPlay()
+
+
+func _on_rewarded() -> void:
+	$LoadingAnimation.hideAndPause()
 	%PlayingField.gameoverContinue()
 	$GameOverDialog.hide()
 	await get_tree().create_timer(0.1).timeout

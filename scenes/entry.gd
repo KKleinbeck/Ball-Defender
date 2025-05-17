@@ -26,6 +26,7 @@ func _on_admob_initialised(_status_data: InitializationStatus) -> void:
 func _on_admob_rewarded_ad_loaded(ad_id: String) -> void:
 	$Label.text = "Reward Ad Ready: " + ad_id
 	admob.show_rewarded_ad()
+	runningScene._on_rewarded()
 
 
 func _on_change_game_scene(sceneName: String) -> void:
@@ -51,8 +52,5 @@ func _on_change_game_scene(sceneName: String) -> void:
 
 func _on_show_reward_ad() -> void:
 	admob.load_rewarded_ad()
-	#$Label.text = admob._active_rewarded_ads
-	#admob.show_rewarded_ad()
-	#await admob.rewarded_ad_showed_full_screen_content
-	#$Label.text = "Reward Displayed"
+	# TODO: Implement timer here and send failure signal if loading fails
 	
