@@ -1,6 +1,10 @@
 extends Node
 
 
+signal changeGameScene(id: String)
+signal showRewardAd
+
+
 const nBoxRows: int = 18
 const boxesPerRow: int = 10
 const boxMargin: int = 5
@@ -45,9 +49,8 @@ func _process(_delta: float) -> void:
 # ========= Custom Methods ===============
 # ========================================
 func setup() -> void:
-	if !GameState.runningReloadedGame:
-		Player.reset()
-	GlobalDefinitions.loadRewardInterstitial()
+	Player.reset()
+	#GlobalDefinitions.loadRewardInterstitial()
 	nBalls = Player.getUpgrade("nBalls")
 	$ScoreBar.setBallNumber(nBalls)
 	$ScoreBar.setDamage(Player.getUpgrade("damage"))
@@ -128,18 +131,22 @@ func _on_gameover() -> void:
 	set_process(false)
 	$GameOverDialog.show()
 	$GameOverDialog.setRewardAmount(%PlayingField.currencyReward())
-	if continuedOnce:
+	if continuedOnce or !GlobalDefinitions.admobInitilised:
 		$GameOverDialog.hideContinue()
 
 
 func _on_gameover_continue_game() -> void:
-	GameState.mode = GameState.Mode.HALTING
+	showRewardAd.emit()
+	$LoadingAnimation.showAndPlay()
+
+
+func _on_rewarded() -> void:
+	$LoadingAnimation.hideAndPause()
 	%PlayingField.gameoverContinue()
 	$GameOverDialog.hide()
 	await get_tree().create_timer(0.1).timeout
 	stopRunning()
 	continuedOnce = true
-	GlobalDefinitions.showRewardInterstitial()
 
 
 func _on_gameover_restart_game() -> void:
@@ -159,9 +166,8 @@ func _on_gameover_end_game() -> void:
 	GameState.reset()
 	Player.reset()
 	CollisionList.reset()
-	Player.endOfGameUpdates(GameState.state.score, %PlayingField.currencyReward())
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
-	GameState.eraseStoredState()
+	Player.endOfGameUpdates(score, %PlayingField.currencyReward())
+	changeGameScene.emit("MainMenu")
 
 
 func _on_player_data_changed(id: String, value) -> void:

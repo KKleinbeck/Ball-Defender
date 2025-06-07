@@ -1,69 +1,20 @@
 extends Node
 
 
+signal globalChannel(msg: String)
+
+
 const ballRadius: float = 10.
 const boxesPerRow: int = 10
 
 
 enum EntityType {Empty, Box, Damage, TimeUp, Currency, PremiumCurrency, Charge}
 
-var adUnitID: String
-var rewardInterstitialAd: RewardedInterstitialAd
-var rewardInterstitialAdLoadCallback: RewardedInterstitialAdLoadCallback
-var fullScreenContentCallback := FullScreenContentCallback.new()
-var onUserEarnedRewardListener := OnUserEarnedRewardListener.new()
+var admobInitilised: bool = false # set from entry
 
 
 func _ready() -> void:
-	MobileAds.initialize()
-	
-	if OS.get_name() == "Android":
-		adUnitID = "ca-app-pub-3940256099942544/5354046379"
-	elif OS.get_name() == "iOS":
-		adUnitID = "ca-app-pub-3940256099942544/4411468910"
-	
-	rewardInterstitialAdLoadCallback = RewardedInterstitialAdLoadCallback.new()
-	rewardInterstitialAdLoadCallback.on_ad_failed_to_load = func(adError: LoadAdError) -> void:
-		print(adError.message)
-
-	rewardInterstitialAdLoadCallback.on_ad_loaded = onAdLoaded
-	
-	fullScreenContentCallback.on_ad_clicked = func() -> void:
-		print("on_ad_clicked")
-	fullScreenContentCallback.on_ad_dismissed_full_screen_content = func() -> void:
-		print("on_ad_dismissed_full_screen_content")
-	fullScreenContentCallback.on_ad_failed_to_show_full_screen_content = func(_ad_error: AdError) -> void:
-		print("on_ad_failed_to_show_full_screen_content")
-	fullScreenContentCallback.on_ad_impression = func() -> void:
-		print("on_ad_impression")
-	fullScreenContentCallback.on_ad_showed_full_screen_content = func() -> void:
-		print("on_ad_showed_full_screen_content")
-	
-	onUserEarnedRewardListener.on_user_earned_reward = func(rewarded_item : RewardedItem):
-		print("on_user_earned_reward, rewarded_item: rewarded", rewarded_item.amount, rewarded_item.type)
-	
 	set_process(false)
-
-
-func onAdLoaded(_rewardInterstitialAd: RewardedInterstitialAd) -> void:
-	print("interstitial ad loaded" + str(_rewardInterstitialAd._uid))
-	rewardInterstitialAd = _rewardInterstitialAd
-	rewardInterstitialAd.full_screen_content_callback = fullScreenContentCallback
-
-
-func loadRewardInterstitial() -> void:
-	if rewardInterstitialAd:
-		rewardInterstitialAd.destroy()
-		rewardInterstitialAd = null
-		
-	rewardInterstitialAdLoadCallback = RewardedInterstitialAdLoadCallback.new()
-	
-	RewardedInterstitialAdLoader.new().load(adUnitID, AdRequest.new(), rewardInterstitialAdLoadCallback)
-
-
-func showRewardInterstitial() -> void:
-	if rewardInterstitialAd:
-		rewardInterstitialAd.show(onUserEarnedRewardListener)
 
 
 func updateCollisionEvent(collisionEvent: Dictionary, t: float, partner: String, partnerDetails,

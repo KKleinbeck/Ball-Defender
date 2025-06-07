@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://38hpxc86n28g"]
+[gd_scene load_steps=6 format=3 uid="uid://38hpxc86n28g"]
 
 [ext_resource type="Script" path="res://scenes/endless_mode.gd" id="1_5codb"]
 [ext_resource type="PackedScene" uid="uid://27sxmgkg6fdi" path="res://scenes/PlayingField/score_bar.tscn" id="2_dgjtq"]
 [ext_resource type="PackedScene" uid="uid://8lnr5p5klpqg" path="res://scenes/PlayingField/playing_field.tscn" id="3_rg03s"]
 [ext_resource type="PackedScene" uid="uid://cq8g4rbaay25f" path="res://scenes/game_over_dialog.tscn" id="5_4n0y1"]
+[ext_resource type="PackedScene" uid="uid://cafu0vit6pl3t" path="res://scenes/loading_animation.tscn" id="5_5rr1j"]
 
 [node name="EndlessMode" type="Node"]
 script = ExtResource("1_5codb")
@@ -44,6 +45,11 @@ wait_time = 0.5
 
 [node name="GameOverDialog" parent="." instance=ExtResource("5_4n0y1")]
 visible = false
+
+[node name="LoadingAnimation" parent="." instance=ExtResource("5_5rr1j")]
+visible = false
+position = Vector2(270, 800)
+scale = Vector2(0.5, 0.5)
 
 [connection signal="timeout" from="BallSpawnTimer" to="." method="_on_ball_spawn_timer_timeout"]
 [connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]

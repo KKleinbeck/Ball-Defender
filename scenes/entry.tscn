@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://daaq4htmw1084"]
+
+[ext_resource type="Script" path="res://scenes/entry.gd" id="1_q06x8"]
+[ext_resource type="Script" path="res://addons/AdmobPlugin/Admob.gd" id="2_upyny"]
+
+[node name="Entry" type="Node"]
+script = ExtResource("1_q06x8")
+
+[node name="Admob" type="Node" parent="."]
+script = ExtResource("2_upyny")
+debug_application_id = "ca-app-pub-3940256099942544~3347511713"
+debug_banner_id = "ca-app-pub-3940256099942544/9214589741"
+debug_interstitial_id = "ca-app-pub-3940256099942544/1033173712"
+debug_rewarded_id = "ca-app-pub-3940256099942544/5224354917"
+debug_rewarded_interstitial_id = "ca-app-pub-3940256099942544/5354046379"
+real_application_id = "ca-app-pub-6886681922144072~7483980567"
+real_banner_id = "ca-app-pub-6886681922144072~7483980567"
+
+[node name="Label" type="Label" parent="."]
+z_index = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -158.0
+offset_right = 50.0
+offset_bottom = -135.0
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "Debug"
+
+[connection signal="initialization_completed" from="Admob" to="." method="_on_admob_initialised"]
+[connection signal="rewarded_ad_loaded" from="Admob" to="." method="_on_admob_rewarded_ad_loaded"]

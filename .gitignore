@@ -1,6 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /assets/*.import
+/assets/assets.afdesign~lock~
 /android/
 /addons/
 *.tmp
