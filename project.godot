@@ -22,6 +22,7 @@ CollisionList="*res://collision_list.gd"
 Player="*res://player_state.gd"
 LocalisationHelper="*res://localisation/localisation_helper.gd"
 AbilityDefinitions="*res://ability_definitions.gd"
+GameState="*res://game_state.gd"
 
 [display]
 

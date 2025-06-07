@@ -10,7 +10,7 @@ var pressStartLocation: Vector2
 
 
 func _input(event: InputEvent) -> void:
-	if Player.state.isDrawing: return
+	if Player.state.isDrawing or GameState.mode == GameState.Mode.GAMEOVER: return
 	
 	var clickLocation = get_local_mouse_position()
 	if event is InputEventMouseButton and event.pressed:

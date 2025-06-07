@@ -7,11 +7,11 @@ signal endGame
 
 
 func hideContinue():
-	%MarginContinue.hide()
+	%PanelContinue.hide()
 
 
 func showContinue():
-	%MarginContinue.show()
+	%PanelContinue.show()
 
 
 func setRewardAmount(amount: int) -> void:

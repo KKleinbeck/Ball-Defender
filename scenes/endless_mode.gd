@@ -10,7 +10,6 @@ var ballSpeed
 var nBalls: int
 var nBallsSpawned: int = 0
 var nBallsDespawned: int = 0
-var score: int = 0
 
 var deathTimeRemaining: int :
 	set(newDTR):
@@ -46,16 +45,21 @@ func _process(_delta: float) -> void:
 # ========= Custom Methods ===============
 # ========================================
 func setup() -> void:
-	Player.reset()
+	if !GameState.runningReloadedGame:
+		Player.reset()
 	GlobalDefinitions.loadRewardInterstitial()
 	nBalls = Player.getUpgrade("nBalls")
 	$ScoreBar.setBallNumber(nBalls)
 	$ScoreBar.setDamage(Player.getUpgrade("damage"))
-	$ProgressBar.max_value = Player.state.ballProgressTarget
+	$ScoreBar.setScore(GameState.state.score)
 	
-	# Reset temporary player state
-	for upgrade in Player.temporaryUpgrades:
-		Player.temporaryUpgrades[upgrade] = 0
+	if GameState.runningReloadedGame:
+		$ProgressBar.max_value = GameState.state.playerState.ballProgressTarget
+		$ProgressBar.value = GameState.state.playerState.ballProgressValue
+	else:
+		$ProgressBar.max_value = Player.state.ballProgressTarget
+		$ProgressBar.value = 0
+	
 	roundReset()
 
 
@@ -63,7 +67,6 @@ func roundReset() -> void:
 	nBallsDespawned = 0
 	deathTimeRemaining = Player.getUpgrade("deathTime")
 	
-	stopRunning()
 	$BallSpawnTimer.stop()
 	$DeathTimer.stop()
 	Player.onRoundReset()
@@ -75,10 +78,12 @@ func roundReset() -> void:
 	# Instantiate first ball at origin
 	%PlayingField.initiateFirstBall()
 	nBallsSpawned = 1
+	
+	stopRunning()
 
 
 func startRunning() -> void:
-	GlobalDefinitions.state = GlobalDefinitions.State.RUNNING
+	GameState.mode = GameState.Mode.RUNNING
 	set_process(true)
 	
 	$BallSpawnTimer.start()
@@ -86,8 +91,9 @@ func startRunning() -> void:
 
 
 func stopRunning() -> void:
-	GlobalDefinitions.state = GlobalDefinitions.State.HALTING
-	set_process(false)
+	if GameState.Mode.GAMEOVER != GameState.mode:
+		GameState.mode = GameState.Mode.HALTING
+		set_process(false)
 
 
 func spawnBall() -> void:
@@ -99,8 +105,8 @@ func spawnBall() -> void:
 # ========= Signals ======================
 # ========================================
 func _on_score_gained(gain: int) -> void:
-	score += gain
-	$ScoreBar.setScore(score)
+	GameState.state.score += gain
+	$ScoreBar.setScore(GameState.state.score)
 
 
 func _on_ball_despawned() -> void:
@@ -113,12 +119,12 @@ func _on_ball_despawned() -> void:
 
 
 func _on_start_of_round(_ballVelocity: Vector2) -> void:
-	if GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
+	if GameState.Mode.HALTING == GameState.mode:
 		startRunning()
 
 
 func _on_gameover() -> void:
-	GlobalDefinitions.state = GlobalDefinitions.State.GAMEOVER
+	GameState.mode = GameState.Mode.GAMEOVER
 	set_process(false)
 	$GameOverDialog.show()
 	$GameOverDialog.setRewardAmount(%PlayingField.currencyReward())
@@ -127,6 +133,7 @@ func _on_gameover() -> void:
 
 
 func _on_gameover_continue_game() -> void:
+	GameState.mode = GameState.Mode.HALTING
 	%PlayingField.gameoverContinue()
 	$GameOverDialog.hide()
 	await get_tree().create_timer(0.1).timeout
@@ -136,22 +143,25 @@ func _on_gameover_continue_game() -> void:
 
 
 func _on_gameover_restart_game() -> void:
+	GameState.reset()
 	Player.reset()
 	%PlayingField.restart()
 	CollisionList.reset()
 	$GameOverDialog.hide()
 	$GameOverDialog.showContinue()
-	Player.endOfGameUpdates(score, %PlayingField.currencyReward())
+	Player.endOfGameUpdates(GameState.state.score, %PlayingField.currencyReward())
 	await get_tree().create_timer(0.1).timeout
 	continuedOnce = false
 	setup()
 
 
 func _on_gameover_end_game() -> void:
+	GameState.reset()
 	Player.reset()
 	CollisionList.reset()
-	Player.endOfGameUpdates(score, %PlayingField.currencyReward())
+	Player.endOfGameUpdates(GameState.state.score, %PlayingField.currencyReward())
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	GameState.eraseStoredState()
 
 
 func _on_player_data_changed(id: String, value) -> void:

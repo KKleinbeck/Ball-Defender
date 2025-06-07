@@ -2,6 +2,7 @@ extends Node
 
 
 func _ready() -> void:
+	GameState.mode = GameState.Mode.SETUP
 	for _i in 5:
 		spawnRandomBall()
 	
@@ -45,12 +46,17 @@ func showHeroSelect() -> void:
 		var option = load("res://scenes/MainMenu/HeroOption.tscn").instantiate()
 		option.title = hero
 		option.pressed.connect(heroSelected)
-		if n == Player.state.heros.size():
+		if n == Player.state.heros.size() and !GameState.previousGameExists():
 			option.margin_bottom = 0
 		
 		for m in Player.state.heros[hero].size():
 			var ability = Player.state.heros[hero][m]
 			option.setAbility(m+1, ability)
+		%HeroOptions.add_child(option)
+	
+	if GameState.previousGameExists():
+		var option = load("res://scenes/MainMenu/ReloadOption.tscn").instantiate()
+		option.reload.connect(reloadPreviousGame)
 		%HeroOptions.add_child(option)
 
 
@@ -64,6 +70,15 @@ func heroSelected(hero) -> void:
 			Player.abilities["Ability" + str(n)].id = ability
 	
 	CollisionList.reset()
+	get_tree().change_scene_to_file("res://scenes/endless_mode.tscn")
+
+
+func reloadPreviousGame() -> void:
+	GameState.loadState()
+	Player.abilities = GameState.state.abilities
+	Player.temporaryUpgrades = GameState.state.temporaryUpgrades
+	for key in GameState.state.playerState:
+		Player.state[key] = GameState.state.playerState[key]
 	get_tree().change_scene_to_file("res://scenes/endless_mode.tscn")
 
 

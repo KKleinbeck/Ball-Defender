@@ -26,6 +26,7 @@ func _ready() -> void:
 		
 		optionDict[upgradeName] = optionInstance
 		optionInstance.upgrade.connect(_on_upgrade)
+		optionInstance.size_flags_horizontal = SIZE_EXPAND_FILL
 		$GridContainer.add_child(optionInstance)
 
 

@@ -1,6 +1,9 @@
 extends Polygon2D
 
 
+const type = GlobalDefinitions.EntityType.Box
+
+
 var initialHealth: int
 var health: int
 var gridConstant: float
@@ -9,11 +12,11 @@ var radius: float
 var center: Vector2
 
 
-func setup(_gridConstant: float, _margin: int, _start: Vector2, _health: int) -> void:
+func setup(_gridConstant: float, _margin: int, _start: Vector2, _health: int, _initialHealth: int) -> void:
 	gridConstant = _gridConstant
 	margin = _margin
 	radius = sqrt(1/2.) * (gridConstant - 2 * margin) # Fictitious radius - circle _engulfing_ box
-	initialHealth = _health
+	initialHealth = _initialHealth
 	health = _health
 	$Label.text = str(health)
 	$Label.size = gridConstant * Vector2(1., 1.)

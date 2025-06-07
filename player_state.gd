@@ -230,6 +230,15 @@ func _process(delta: float) -> void:
 			abilityCharged.emit(ability)
 
 
+func storeGameState() -> void:
+	GameState.state.abilities = abilities
+	GameState.state.temporaryUpgrades = temporaryUpgrades
+	GameState.state.playerState = {
+		"ballProgressValue": state.ballProgressValue,
+		"ballProgressTarget": state.ballProgressTarget
+	}
+
+
 func reset() -> void:
 	for ability in temporaryUpgrades:
 		temporaryUpgrades[ability] = 0

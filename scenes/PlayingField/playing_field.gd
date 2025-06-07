@@ -108,13 +108,18 @@ func freeBall(ball: Object) -> void:
 func reset() -> void:
 	endOfRound.emit()
 	%Abilities.onRoundReset()
-	if boxFieldReady: %EntityField.walk()
+	if boxFieldReady:
+		%EntityField.walk()
+		%EntityField.storeGameState()
 	
 	for ballName in ballDict:
 		ballDict[ballName].queue_free()
 	ballDict = {}
 	
-	Player.addCharge(Player.getUpgrade("chargePerRound"))
+	if !(GameState.Mode.SETUP == GameState.mode):
+		Player.addCharge(Player.getUpgrade("chargePerRound"))
+	Player.storeGameState()
+	GameState.saveState()
 
 
 func restart() -> void:
@@ -217,7 +222,7 @@ func resolveOnBallCollision(collisionEvent: Dictionary) -> void:
 # ========= Signal handling ==============
 # ========================================
 func _on_cursor_released(_clickStartLocation: Vector2, clickLocation: Vector2) -> void:
-	if ballDict.size() == 1 and GlobalDefinitions.State.HALTING == GlobalDefinitions.state:
+	if ballDict.size() == 1 and GameState.Mode.HALTING == GameState.mode:
 		var ball = ballDict[ballDict.keys()[0]]
 		v0 = (clickLocation - ball.position).normalized() * ballSpeed
 		ball.velocity = v0
@@ -230,8 +235,11 @@ func _on_cursor_released(_clickStartLocation: Vector2, clickLocation: Vector2) -
 
 func _on_box_field_ready() -> void:
 	boxFieldReady = true
-	for i in 13:
-		%EntityField.walk()
+	if GameState.runningReloadedGame:
+		%EntityField.reloadPreviousGame()
+	else:
+		for i in 7:
+			%EntityField.walk()
 
 
 func _on_box_destruction(details: String, scorePoints: int) -> void:

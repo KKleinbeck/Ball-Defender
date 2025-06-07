@@ -48,17 +48,27 @@ func cleanRowsOnContinue() -> void:
 
 func newBoxAtColumnRow(x: int, y: int) -> Polygon2D:
 	var start = position + gridConstant * Vector2(x, y)
-	
-	var box = boxes.instantiate()
+	return newBoxAtPosition(start)
+
+
+func newBoxAtPosition(start: Vector2) -> Polygon2D:
 	var health = nRows - randi_range(0, 1) * int(nRows / 2.)
-	box.setup(gridConstant, margin, start, health)
+	return newBox(start, health, health)
+
+
+func newBox(start: Vector2, health: int, initialHealth: int) -> Polygon2D:
+	var box = boxes.instantiate()
+	box.setup(gridConstant, margin, start, health, initialHealth)
 	add_child(box)
 	return box
 
 
 func newBenefitAtColumnRow(x: int, y: int, type: GlobalDefinitions.EntityType) -> TextureRect:
 	var start = position + gridConstant * Vector2(x, y)
-	
+	return newBenefitAtPosition(start, type)
+
+
+func newBenefitAtPosition(start: Vector2, type: GlobalDefinitions.EntityType) -> TextureRect:
 	var upgrade = upgrades.instantiate()
 	upgrade.createBenefit(gridConstant, start, type)
 	add_child(upgrade)
@@ -74,7 +84,7 @@ func newRow() -> void:
 	var boxLocation = []
 	for n in GlobalDefinitions.boxesPerRow:
 		if n < nBoxes:
-			boxLocation.append(GlobalDefinitions.EntityType.Standard)
+			boxLocation.append(GlobalDefinitions.EntityType.Box)
 		else:
 			boxLocation.append(GlobalDefinitions.EntityType.Empty)
 	if randf() < Player.upgrades["probDamage"]:
@@ -93,7 +103,7 @@ func newRow() -> void:
 		match boxLocation[n]:
 			GlobalDefinitions.EntityType.Empty:
 				continue
-			GlobalDefinitions.EntityType.Standard:
+			GlobalDefinitions.EntityType.Box:
 				newBoxAtColumnRow(n, 0)
 			_:
 				newBenefitAtColumnRow(n, 0, boxLocation[n])
@@ -107,12 +117,38 @@ func chanceCurrency(type: String) -> float:
 
 func walk() -> void:
 	for entity in get_children():
-		if (entity is Polygon2D and entity.polygon[3].y + 1.5 * gridConstant > size.y) or \
-		   entity.position.y + gridConstant > size.y:
+		if (entity is Polygon2D and entity.polygon[3].y + 1.5 * gridConstant > size.y):
 			gameover.emit()
 			return
+		if entity.position.y + gridConstant > size.y:
+			entity.queue_free()
+			continue
 		entity.walk()
 	newRow()
+
+
+func storeGameState() -> void:
+	GameState.state.entities = []
+	var offset = 0.5 * gridConstant * Vector2(1., 1.)
+	for entity in get_children():
+		var entry = {
+			"type": entity.type,
+			"position": entity.center - offset
+		}
+		if entity is Polygon2D:
+			entry["initialHealth"] = entity.initialHealth
+			entry["health"] = entity.health
+		GameState.state.entities.append(entry)
+
+
+func reloadPreviousGame() -> void:
+	for entity in GameState.state.entities:
+		match entity.type:
+			GlobalDefinitions.EntityType.Box:
+				newBox(entity.position, entity.health, entity.initialHealth)
+			
+			_:
+				newBenefitAtPosition(entity.position, entity.type)
 
 
 func isSpaceAvailable(objectPosition: Vector2, radius: float) -> bool:

@@ -54,72 +54,59 @@ anchor_bottom = 1.0
 theme_override_constants/v_separation = 10
 columns = 3
 
-[node name="Currency" type="Panel" parent="."]
+[node name="Currency" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -150.0
+offset_left = -50.0
 offset_top = 20.0
 offset_right = -20.0
 offset_bottom = 70.0
 grow_horizontal = 0
 
-[node name="IconStandard" type="TextureRect" parent="Currency"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 0.25
-anchor_right = 1.0
-anchor_bottom = 0.25
-offset_left = -24.0
-offset_top = -7.0
-offset_right = -10.0
-offset_bottom = 7.0
-texture = ExtResource("2_qj6t0")
-expand_mode = 1
-stretch_mode = 5
+[node name="MarginContainer" type="MarginContainer" parent="Currency"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_constants/margin_right = 10
 
-[node name="Standard" type="Label" parent="Currency"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Currency/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="HBoxPremium" type="HBoxContainer" parent="Currency/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Premium" type="Label" parent="Currency/MarginContainer/VBoxContainer/HBoxPremium"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.25
-anchor_right = 0.78
-anchor_bottom = 0.25
-offset_top = -12.0
-offset_bottom = 12.0
-text = "0"
+layout_mode = 2
+text = "0
+"
 horizontal_alignment = 2
 
-[node name="IconPremium" type="TextureRect" parent="Currency"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 0.75
-anchor_right = 1.0
-anchor_bottom = 0.75
-offset_left = -24.0
-offset_top = -7.0
-offset_right = -10.0
-offset_bottom = 7.0
+[node name="IconPremium" type="TextureRect" parent="Currency/MarginContainer/VBoxContainer/HBoxPremium"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
 texture = ExtResource("4_v0ngm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Premium" type="Label" parent="Currency"]
+[node name="HBoxStandard" type="HBoxContainer" parent="Currency/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Standard" type="Label" parent="Currency/MarginContainer/VBoxContainer/HBoxStandard"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.75
-anchor_right = 0.78
-anchor_bottom = 0.75
-offset_top = -12.0
-offset_bottom = 12.0
-text = "0
-"
+layout_mode = 2
+text = "0"
 horizontal_alignment = 2
+
+[node name="IconStandard" type="TextureRect" parent="Currency/MarginContainer/VBoxContainer/HBoxStandard"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+texture = ExtResource("2_qj6t0")
+expand_mode = 1
+stretch_mode = 5
 
 [connection signal="pressed" from="GoBack" to="." method="_on_go_back_pressed"]

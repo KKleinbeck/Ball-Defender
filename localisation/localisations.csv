@@ -9,6 +9,8 @@ HERO_GHOST,Ghost,Geist
 HERO_GUARDIAN,Guardian,Bastion
 HERO_WARRIOR,Warrior,Kämpfer
 ,,
+OPTION_RELOAD,Continue previous game,Vorheriges Spiel weiterführen
+,,
 UPGRADE_DAMAGE,Damage,Schaden
 UPGRADE_DAMAGE_EFFECT,{value},
 UPGRADE_DAMAGE_EFFECT_LONG,{value} + {chance}%,

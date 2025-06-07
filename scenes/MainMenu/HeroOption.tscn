@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cudny80wdtmrp"]
+[gd_scene load_steps=5 format=3 uid="uid://cudny80wdtmrp"]
 
 [ext_resource type="Script" path="res://scenes/MainMenu/hero_option.gd" id="1_xa33a"]
+[ext_resource type="Theme" uid="uid://m7flewg752am" path="res://secondary_theme.tres" id="2_avnaa"]
 [ext_resource type="Texture2D" uid="uid://c6rou6geb5l8h" path="res://assets/UI/Warrior.png" id="2_n12ka"]
 [ext_resource type="Texture2D" uid="uid://cf6xw1a6veyvy" path="res://assets/abilities/OptionGlassCannon.png" id="3_csadc"]
 
@@ -13,12 +14,14 @@ script = ExtResource("1_xa33a")
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
 mouse_filter = 1
+theme = ExtResource("2_avnaa")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer"]
@@ -42,6 +45,7 @@ alignment = 1
 [node name="Title" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer/EndlessVBox"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 16
 text = "Title
 "
 horizontal_alignment = 1

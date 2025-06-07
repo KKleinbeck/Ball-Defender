@@ -5,9 +5,7 @@ const ballRadius: float = 10.
 const boxesPerRow: int = 10
 
 
-enum EntityType {Empty, Standard, Damage, TimeUp, Currency, PremiumCurrency, Charge}
-enum State {RUNNING, HALTING, GAMEOVER}
-var state: State = State.RUNNING
+enum EntityType {Empty, Box, Damage, TimeUp, Currency, PremiumCurrency, Charge}
 
 var adUnitID: String
 var rewardInterstitialAd: RewardedInterstitialAd

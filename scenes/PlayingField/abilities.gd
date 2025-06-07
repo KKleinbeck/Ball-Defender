@@ -13,6 +13,14 @@ func _ready() -> void:
 	%Ability2Icon.texture = load("res://assets/abilities/" + Player.abilities.Ability2.id + ".png")
 	%MainAbilityIcon.texture = load("res://assets/abilities/" + Player.abilities.MainAbility.id + ".png")
 	
+	if GameState.runningReloadedGame:
+		for key in GameState.state.abilities:
+			var ability = GameState.state.abilities[key]
+			var fullCharge = Player.abilityDetails[ability.id]["fullCharge"]
+			if ability.charge < fullCharge:
+				get_node("%" + key).disabled = true
+				get_node("%" + key + "Charge").value = 100 * (fullCharge - ability.charge) / fullCharge
+	
 	Player.abilityCharged.connect(_on_ability_charged)
 
 
