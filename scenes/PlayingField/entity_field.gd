@@ -67,8 +67,12 @@ func newBoxAtPosition(start: Vector2) -> Box:
 
 func newLightningConduitAtPosition(start: Vector2) -> Box:
 	var health = nRows + randi_range(0, 1) * int(nRows / 2.)
+	return newLightningConduit(start, health, health)
+
+
+func newLightningConduit(start: Vector2, health: int, initialHealth: int) -> Box:
 	var lightningConduit = lighningConduitScene.instantiate()
-	lightningConduit.setup(gridConstant, margin, start, health, health)
+	lightningConduit.setup(gridConstant, margin, start, health, initialHealth)
 	add_child(lightningConduit)
 	return lightningConduit
 
@@ -102,7 +106,7 @@ func newSpecialAtPosition(start: Vector2, type, details) -> Node2D:
 func newRow() -> void:
 	nRows += 1
 	
-	if nRows < 10:
+	if nRows < 6:
 		newStandardRow()
 	else:
 		laserRow()
@@ -144,12 +148,12 @@ func laserRow() -> void:
 	var conduits = createRowFromArray(entityLocations)
 	var barrier = newSpecialAtPosition(
 		Vector2(gridConstant * (low + 1) - margin, 0),
-		GlobalDefinitions.SpecialType.Lightning,
+		GlobalDefinitions.EntityType.Lightning,
 		{"width": gridConstant * (GlobalDefinitions.boxesPerRow - high - low - 1) + 2 * margin}
 	)
 	
 	for conduit in conduits:
-		conduit.associatedBarrier = barrier
+		conduit.associatedBarrierId = barrier.idAtCreation
 
 
 func createRowFromArray(entityLocations: Array) -> Array:
@@ -186,6 +190,7 @@ func walk() -> void:
 
 
 func storeGameState() -> void:
+	GameState.state.nRows = nRows
 	GameState.state.entities = []
 	var offset = 0.5 * gridConstant * Vector2(1., 1.)
 	for entity in get_children():
@@ -193,20 +198,43 @@ func storeGameState() -> void:
 			"type": entity.type,
 			"position": entity.center - offset
 		}
-		if entity is Polygon2D:
-			entry["initialHealth"] = entity.initialHealth
-			entry["health"] = entity.health
+		if entity is Box:
+			entry.initialHealth = entity.initialHealth
+			entry.health = entity.health
+		elif entity is SpecialNode:
+			entry.details = entity.details
+			entry.position = entity.position
+			entry.idAtCreation = entity.idAtCreation
+		if entity.type == GlobalDefinitions.EntityType.LightningConduit:
+			entry.associatedBarrierId = entity.associatedBarrierId
 		GameState.state.entities.append(entry)
 
 
 func reloadPreviousGame() -> void:
+	nRows = GameState.state.nRows
+	
+	var dependOnIds = {}
+	var newIdMap = {}
 	for entity in GameState.state.entities:
 		match entity.type:
+			GlobalDefinitions.EntityType.Empty:
+				pass
 			GlobalDefinitions.EntityType.Box:
 				newBox(entity.position, entity.health, entity.initialHealth)
-			
-			_:
+			GlobalDefinitions.EntityType.LightningConduit:
+				var conduit = newLightningConduit(
+					entity.position, entity.health, entity.initialHealth
+				)
+				dependOnIds[conduit] = entity.associatedBarrierId
+			GlobalDefinitions.EntityType.Lightning:
+				var special = newSpecialAtPosition(entity.position, entity.type, entity.details)
+				newIdMap[entity.idAtCreation] = special.idAtCreation
+			_: # Upgrades
 				newBenefitAtPosition(entity.position, entity.type)
+				
+	for entity in dependOnIds: # Fix outdated Id references
+		var oldId = dependOnIds[entity]
+		entity.associatedBarrierId = newIdMap[oldId]
 
 
 func isSpaceAvailable(objectPosition: Vector2, radius: float) -> bool:

@@ -111,7 +111,6 @@ func reset() -> void:
 	%Abilities.onRoundReset()
 	if boxFieldReady:
 		%EntityField.walk()
-		%EntityField.storeGameState()
 	
 	for ballName in ballDict:
 		ballDict[ballName].queue_free()
@@ -119,6 +118,12 @@ func reset() -> void:
 	
 	if !(GameState.Mode.SETUP == GameState.mode):
 		Player.addCharge(Player.getUpgrade("chargePerRound"))
+	saveGame()
+
+
+func saveGame() -> void:
+	if boxFieldReady:
+		%EntityField.storeGameState()
 	Player.storeGameState()
 	GameState.saveState()
 
@@ -241,6 +246,7 @@ func _on_box_field_ready() -> void:
 	else:
 		for i in 7:
 			%EntityField.walk()
+		saveGame()
 
 
 func _on_box_destruction(details: String, scorePoints: int) -> void:
@@ -269,8 +275,8 @@ func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) ->
 	CollisionList.removeBoxFromCollisionList(boxName)
 
 
-func _on_special_hit(ball, type: GlobalDefinitions.SpecialType) -> void:
-	if type == GlobalDefinitions.SpecialType.Lightning:
+func _on_special_hit(ball, type: GlobalDefinitions.EntityType) -> void:
+	if type == GlobalDefinitions.EntityType.Lightning:
 		despawnBall(ball)
 
 

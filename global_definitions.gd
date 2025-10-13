@@ -9,10 +9,10 @@ const boxesPerRow: int = 10
 
 
 enum EntityType {
-	Empty, Box, LightningConduit, Damage, TimeUp, Currency, PremiumCurrency, Charge
+	Empty, Box, LightningConduit, Damage, TimeUp, Currency, PremiumCurrency, Charge,
+	# Specials:
+	Lightning
 }
-
-enum SpecialType {Lightning}
 
 var admobInitilised: bool = false # set from entry
 

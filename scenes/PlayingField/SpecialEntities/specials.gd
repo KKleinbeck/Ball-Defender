@@ -6,15 +6,18 @@ var gridConstant: int
 var radius: float
 var center: Vector2
 var details: Dictionary
-var type: GlobalDefinitions.SpecialType
+var type: GlobalDefinitions.EntityType
+
+var idAtCreation: int
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	set_process(false)
+	idAtCreation = get_instance_id()
 
 
-func create(_gridConstant: int, start: Vector2, _type: GlobalDefinitions.SpecialType, _details: Dictionary) -> void:
+func create(_gridConstant: int, start: Vector2, _type: GlobalDefinitions.EntityType, _details: Dictionary) -> void:
 	gridConstant = _gridConstant
 	position = start
 	details = _details
@@ -26,7 +29,7 @@ func create(_gridConstant: int, start: Vector2, _type: GlobalDefinitions.Special
 		center = start + 0.5 * gridConstant * Vector2(1., 1.)
 		radius = 0.5 * gridConstant
 	
-	if type == GlobalDefinitions.SpecialType.Lightning:
+	if type == GlobalDefinitions.EntityType.Lightning:
 		var lightningInstance = lightningScene.instantiate()
 		lightningInstance.size.x = details["width"]
 		lightningInstance.size.y = gridConstant
@@ -40,7 +43,7 @@ func walk() -> void:
 
 
 func calculateNextCollision(geometricCollisionData: Dictionary, p: Vector2, v: Vector2, r: float) -> void:
-	if type == GlobalDefinitions.SpecialType.Lightning:
+	if type == GlobalDefinitions.EntityType.Lightning:
 		var tCollision = 0.
 		if v.y < 0:
 			tCollision = (position.y + gridConstant - 2*r - p.y) / v.y

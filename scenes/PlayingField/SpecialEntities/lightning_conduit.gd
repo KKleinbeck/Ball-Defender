@@ -1,7 +1,7 @@
 extends Box
 
 
-var associatedBarrier: Node2D
+var associatedBarrierId: int
 
 
 func _ready() -> void:
@@ -20,5 +20,7 @@ func walk() -> void:
 
 
 func _notification(what):
-	if what == NOTIFICATION_PREDELETE and is_instance_valid(associatedBarrier):
-		associatedBarrier.queue_free()
+	var barrier = instance_from_id(associatedBarrierId)
+	if what == NOTIFICATION_PREDELETE and is_instance_valid(barrier):
+		barrier.queue_free()
+		# TODO: After destruction make sure that no balls have collisions with this barrier.
