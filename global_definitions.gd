@@ -8,7 +8,11 @@ const ballRadius: float = 10.
 const boxesPerRow: int = 10
 
 
-enum EntityType {Empty, Box, Damage, TimeUp, Currency, PremiumCurrency, Charge}
+enum EntityType {
+	Empty, Box, LightningConduit, Damage, TimeUp, Currency, PremiumCurrency, Charge
+}
+
+enum SpecialType {Lightning}
 
 var admobInitilised: bool = false # set from entry
 

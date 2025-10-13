@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dibumkwqoeu8x"]
+
+[ext_resource type="Script" uid="uid://dl2ulhphqd7gd" path="res://scenes/PlayingField/SpecialEntities/specials.gd" id="1_qpw51"]
+
+[node name="Specials" type="Node2D"]
+script = ExtResource("1_qpw51")

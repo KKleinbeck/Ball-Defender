@@ -1,7 +1,7 @@
-extends Polygon2D
+class_name Box extends Polygon2D
 
 
-const type = GlobalDefinitions.EntityType.Box
+var type = GlobalDefinitions.EntityType.Box
 
 
 var initialHealth: int

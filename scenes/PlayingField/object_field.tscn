@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://7ir32ja6lr1q"]
 
-[ext_resource type="Script" path="res://object_field.gd" id="1_3ms5t"]
+[ext_resource type="Script" uid="uid://rhjmhgesxgco" path="res://scenes/PlayingField/object_field.gd" id="1_3ms5t"]
 
 [node name="ObjectField" type="Control"]
 layout_mode = 3

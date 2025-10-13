@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=11 format=4 uid="uid://m7flewg752am"]
 
-[ext_resource type="Texture2D" uid="uid://bhe3d647veuk4" path="res://assets/GUI_secondary.png" id="1_rx35l"]
+[ext_resource type="Texture2D" uid="uid://46dcj6rb8lla" path="res://assets/GUI_secondary.png" id="1_rx35l"]
 
 [sub_resource type="Image" id="Image_p43jh"]
 data = {
@@ -1120,6 +1120,16 @@ cache/0/10/0/glyphs/268435535/offset = Vector2(0, -9)
 cache/0/10/0/glyphs/268435535/size = Vector2(4, 10)
 cache/0/10/0/glyphs/268435535/uv_rect = Rect2(61, 23, 4, 10)
 cache/0/10/0/glyphs/268435535/texture_idx = 0
+cache/0/10/0/glyphs/3/advance = Vector2(2.59375, 10.046875)
+cache/0/10/0/glyphs/3/offset = Vector2(0, 0)
+cache/0/10/0/glyphs/3/size = Vector2(0, 0)
+cache/0/10/0/glyphs/3/uv_rect = Rect2(0, 0, 0, 0)
+cache/0/10/0/glyphs/3/texture_idx = -1
+cache/0/10/0/glyphs/134217731/advance = Vector2(2.59375, 10.046875)
+cache/0/10/0/glyphs/134217731/offset = Vector2(0, 0)
+cache/0/10/0/glyphs/134217731/size = Vector2(0, 0)
+cache/0/10/0/glyphs/134217731/uv_rect = Rect2(0, 0, 0, 0)
+cache/0/10/0/glyphs/134217731/texture_idx = -1
 cache/0/14/0/ascent = 15.0
 cache/0/14/0/descent = 5.0
 cache/0/14/0/underline_position = 1.40625

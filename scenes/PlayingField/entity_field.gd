@@ -3,6 +3,7 @@ extends Control
 
 signal readyAndRendered()
 signal boxHit(ball)
+signal specialHit(ball, type)
 signal boxDestruction(details, scorePoints)
 signal collectUpgrade(details, type)
 signal gameover()
@@ -10,6 +11,8 @@ signal gameover()
 
 @export var boxes: PackedScene
 @export var upgrades: PackedScene
+@export var specials: PackedScene
+var lighningConduitScene = load("res://scenes/PlayingField/SpecialEntities/LightningConduit.tscn")
 
 
 var isReady: bool = false
@@ -46,17 +49,31 @@ func cleanRowsOnContinue() -> void:
 			entity.queue_free()
 
 
-func newBoxAtColumnRow(x: int, y: int) -> Polygon2D:
+func newBoxLikeAtColumnRow(x: int, y: int, type: GlobalDefinitions.EntityType):
 	var start = position + gridConstant * Vector2(x, y)
-	return newBoxAtPosition(start)
+	match type:
+		GlobalDefinitions.EntityType.Box:
+			return newBoxAtPosition(start)
+		GlobalDefinitions.EntityType.LightningConduit:
+			return newLightningConduitAtPosition(start)
+		_:
+			pass
 
 
-func newBoxAtPosition(start: Vector2) -> Polygon2D:
+func newBoxAtPosition(start: Vector2) -> Box:
 	var health = nRows - randi_range(0, 1) * int(nRows / 2.)
 	return newBox(start, health, health)
 
 
-func newBox(start: Vector2, health: int, initialHealth: int) -> Polygon2D:
+func newLightningConduitAtPosition(start: Vector2) -> Box:
+	var health = nRows + randi_range(0, 1) * int(nRows / 2.)
+	var lightningConduit = lighningConduitScene.instantiate()
+	lightningConduit.setup(gridConstant, margin, start, health, health)
+	add_child(lightningConduit)
+	return lightningConduit
+
+
+func newBox(start: Vector2, health: int, initialHealth: int) -> Box:
 	var box = boxes.instantiate()
 	box.setup(gridConstant, margin, start, health, initialHealth)
 	add_child(box)
@@ -75,38 +92,79 @@ func newBenefitAtPosition(start: Vector2, type: GlobalDefinitions.EntityType) ->
 	return upgrade
 
 
+func newSpecialAtPosition(start: Vector2, type, details) -> Node2D:
+	var special = specials.instantiate()
+	special.create(gridConstant, start, type, details)
+	add_child(special)
+	return special
+
+
 func newRow() -> void:
 	nRows += 1
 	
+	if nRows < 10:
+		newStandardRow()
+	else:
+		laserRow()
+
+func newStandardRow() -> void:
 	# Determining number and location of boxes
 	var nBoxes = randi_range(3, 6)
 	
-	var boxLocation = []
+	var entityLocations = []
 	for n in GlobalDefinitions.boxesPerRow:
 		if n < nBoxes:
-			boxLocation.append(GlobalDefinitions.EntityType.Box)
+			entityLocations.append(GlobalDefinitions.EntityType.Box)
 		else:
-			boxLocation.append(GlobalDefinitions.EntityType.Empty)
+			entityLocations.append(GlobalDefinitions.EntityType.Empty)
 	if randf() < Player.upgrades["probDamage"]:
-		boxLocation[-3] = GlobalDefinitions.EntityType.Damage
+		entityLocations[-3] = GlobalDefinitions.EntityType.Damage
 	elif randf() < Player.upgrades["probCharge"]:
-		boxLocation[-3] = GlobalDefinitions.EntityType.Charge
+		entityLocations[-3] = GlobalDefinitions.EntityType.Charge
 	if randf() < Player.upgrades["probDeathTime"]:
-		boxLocation[-2] = GlobalDefinitions.EntityType.TimeUp
+		entityLocations[-2] = GlobalDefinitions.EntityType.TimeUp
 	if randf() < chanceCurrency("Currency"):
-		boxLocation[-1] = GlobalDefinitions.EntityType.Currency
+		entityLocations[-1] = GlobalDefinitions.EntityType.Currency
 	elif randf() < chanceCurrency("PremiumCurrency"): # Do not spawn currency and and premium at the same time
-		boxLocation[-1] = GlobalDefinitions.EntityType.PremiumCurrency
-	boxLocation.shuffle()
+		entityLocations[-1] = GlobalDefinitions.EntityType.PremiumCurrency
+	entityLocations.shuffle()
 	
+	createRowFromArray(entityLocations)
+
+func laserRow() -> void:
+	var entityLocations = []
+	var low = randi_range(0, 2)
+	var high = randi_range(1, 3)
 	for n in GlobalDefinitions.boxesPerRow:
-		match boxLocation[n]:
+		if n == low or n == GlobalDefinitions.boxesPerRow - high:
+			entityLocations.append(GlobalDefinitions.EntityType.LightningConduit)
+		else:
+			entityLocations.append(GlobalDefinitions.EntityType.Empty)
+			
+	var conduits = createRowFromArray(entityLocations)
+	var barrier = newSpecialAtPosition(
+		Vector2(gridConstant * (low + 1) - margin, 0),
+		GlobalDefinitions.SpecialType.Lightning,
+		{"width": gridConstant * (GlobalDefinitions.boxesPerRow - high - low - 1) + 2 * margin}
+	)
+	
+	for conduit in conduits:
+		conduit.associatedBarrier = barrier
+
+
+func createRowFromArray(entityLocations: Array) -> Array:
+	var newBoxes = []
+	for n in GlobalDefinitions.boxesPerRow:
+		match entityLocations[n]:
 			GlobalDefinitions.EntityType.Empty:
 				continue
 			GlobalDefinitions.EntityType.Box:
-				newBoxAtColumnRow(n, 0)
+				newBoxes.append(newBoxLikeAtColumnRow(n, 0, entityLocations[n]))
+			GlobalDefinitions.EntityType.LightningConduit:
+				newBoxes.append(newBoxLikeAtColumnRow(n, 0, entityLocations[n]))
 			_:
-				newBenefitAtColumnRow(n, 0, boxLocation[n])
+				newBenefitAtColumnRow(n, 0, entityLocations[n])
+	return newBoxes
 
 
 func chanceCurrency(type: String) -> float:
@@ -172,7 +230,7 @@ func calculateOnEntityCollision(ball, collisionEvent: Dictionary) -> void:
 		)
 
 
-func calculateNextCollision(objectPosition: Vector2, objectVelocity:Vector2, debugMode: bool = false) -> Dictionary:
+func calculateNextCollision(objectPosition: Vector2, objectVelocity: Vector2, debugMode: bool = false) -> Dictionary:
 	var trajDir = objectVelocity.normalized()
 	var boxWidth = gridConstant - 2 * margin
 	var ballRadius = GlobalDefinitions.ballRadius
@@ -200,7 +258,7 @@ func calculateNextCollision(objectPosition: Vector2, objectVelocity:Vector2, deb
 				objectVelocity
 			)
 		
-		if entity is Polygon2D:
+		elif entity is Box:
 			# check if ball traveling towards box and box within potential collision range
 			if debugMode: entity.color = Color(0, 0, 1)
 			
@@ -230,11 +288,16 @@ func calculateNextCollision(objectPosition: Vector2, objectVelocity:Vector2, deb
 				if abs(signedOrthoDist) > ballRadius: continue
 				var travelDist = Math.travelDist(cornerToBall.dot(trajDir), signedOrthoDist, ballRadius)
 				tCollision = travelDist / objectVelocity.length()
-				var collisionLocation = objectPosition + objectVelocity * tCollision #entity.polygon[i] - objectRadius * trajDir.rotated(asin(-signedOrthoDist / objectRadius))
+				var collisionLocation = objectPosition + objectVelocity * tCollision
 				GlobalDefinitions.updateGeometricCollision(
 					geometricCollisionData, tCollision, entity.name + "-corner" + str(i), collisionLocation,
 					objectVelocity.bounce((entity.polygon[i] - collisionLocation).normalized())
 				)
+		
+		elif entity is SpecialNode:
+			entity.calculateNextCollision(
+				geometricCollisionData, objectPosition, objectVelocity, ballRadius
+			)
 	return geometricCollisionData
 
 
@@ -246,6 +309,10 @@ func resolveOnEntityCollision(collisionEvent: Dictionary) -> void:
 	if collisionEvent["partner details"].contains("upgrade"):
 		entity.queue_free()
 		collectUpgrade.emit(collisionEvent["partner details"], entity.type)
+		return
+	
+	elif collisionEvent["partner details"].contains("LightningBarrier"):
+		specialHit.emit(ball, entity.type)
 		return
 	
 	# Box destruction

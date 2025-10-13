@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://38hpxc86n28g"]
 
-[ext_resource type="Script" path="res://scenes/endless_mode.gd" id="1_5codb"]
+[ext_resource type="Script" uid="uid://clk4v1baeq4rc" path="res://scenes/endless_mode.gd" id="1_5codb"]
 [ext_resource type="PackedScene" uid="uid://27sxmgkg6fdi" path="res://scenes/PlayingField/score_bar.tscn" id="2_dgjtq"]
 [ext_resource type="PackedScene" uid="uid://8lnr5p5klpqg" path="res://scenes/PlayingField/playing_field.tscn" id="3_rg03s"]
 [ext_resource type="PackedScene" uid="uid://cq8g4rbaay25f" path="res://scenes/game_over_dialog.tscn" id="5_4n0y1"]

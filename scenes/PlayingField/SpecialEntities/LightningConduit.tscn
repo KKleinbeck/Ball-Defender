@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://dasjlum4673ku"]
+
+[ext_resource type="Script" uid="uid://bojv2hr0is7bk" path="res://scenes/PlayingField/SpecialEntities/lightning_conduit.gd" id="1_hq366"]
+[ext_resource type="Texture2D" uid="uid://dq2n76msmp3n4" path="res://assets/UI/Plus.png" id="2_hq366"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hq366"]
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[node name="LightningConduit" type="Polygon2D"]
+color = Color(1, 1, 1, 0)
+script = ExtResource("1_hq366")
+metadata/_custom_type_script = "uid://b64mi2v1mhhkl"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 50.0
+offset_bottom = 50.0
+texture = ExtResource("2_hq366")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="."]
+offset_right = 50.0
+offset_bottom = 50.0
+size_flags_vertical = 1
+text = "1"
+label_settings = SubResource("LabelSettings_hq366")
+horizontal_alignment = 1
+vertical_alignment = 1

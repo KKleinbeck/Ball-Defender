@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bnjc37jk5h6xx"]
+[gd_scene load_steps=5 format=3 uid="uid://bnjc37jk5h6xx"]
 
-[ext_resource type="Script" path="res://scenes/PlayingField/entity_field.gd" id="1_6p8rj"]
+[ext_resource type="Script" uid="uid://dyas37ldy3vco" path="res://scenes/PlayingField/entity_field.gd" id="1_6p8rj"]
 [ext_resource type="PackedScene" uid="uid://df8xwyv5r0bj1" path="res://scenes/PlayingField/box.tscn" id="2_tg1nd"]
 [ext_resource type="PackedScene" uid="uid://bqy5nw3j6lcwy" path="res://scenes/PlayingField/upgrade.tscn" id="3_ko4xv"]
+[ext_resource type="PackedScene" uid="uid://dibumkwqoeu8x" path="res://scenes/PlayingField/SpecialEntities/specials.tscn" id="4_8i2gr"]
 
 [node name="Entitites" type="Control"]
 layout_mode = 3
@@ -10,3 +11,4 @@ anchors_preset = 0
 script = ExtResource("1_6p8rj")
 boxes = ExtResource("2_tg1nd")
 upgrades = ExtResource("3_ko4xv")
+specials = ExtResource("4_8i2gr")

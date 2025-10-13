@@ -166,7 +166,7 @@ func _on_gameover_end_game() -> void:
 	GameState.reset()
 	Player.reset()
 	CollisionList.reset()
-	Player.endOfGameUpdates(score, %PlayingField.currencyReward())
+	Player.endOfGameUpdates(GameState.state.score, %PlayingField.currencyReward())
 	changeGameScene.emit("MainMenu")
 
 

@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bo8y8jn4sami0"]
+
+[ext_resource type="Shader" uid="uid://d130ifmwkmayo" path="res://scenes/PlayingField/SpecialEntities/lightning_barrier.gdshader" id="1_0txmt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uhdwv"]
+shader = ExtResource("1_0txmt")
+shader_parameter/lightning_number = 5
+shader_parameter/amplitude = Vector2(2, 1)
+shader_parameter/offset = 0.45
+shader_parameter/thickness = 0.02
+shader_parameter/speed = 1.0
+shader_parameter/base_color = Color(1, 1, 1, 1)
+shader_parameter/glow_thickness = 0.08
+shader_parameter/glow_color = Color(0.6, 0.5, 0.9, 0)
+shader_parameter/alpha = 1.0
+
+[node name="LightningBarrier" type="ColorRect"]
+material = SubResource("ShaderMaterial_uhdwv")
+offset_right = 100.0
+offset_bottom = 100.0

@@ -33,6 +33,7 @@ func _ready() -> void:
 		%EntityField.boxDestruction.connect(_on_box_destruction)
 		%EntityField.collectUpgrade.connect(_on_collect_upgrade)
 		%EntityField.gameover.connect(func (): gameover.emit())
+		%EntityField.specialHit.connect(_on_special_hit)
 	
 	%ObjectField.laserPointerStart = %StartPosition.position
 	%ObjectField.queryPortalSpaceAvailable.connect(_on_query_portal_space)
@@ -268,6 +269,11 @@ func _on_collect_upgrade(details: String, type: GlobalDefinitions.EntityType) ->
 	CollisionList.removeBoxFromCollisionList(boxName)
 
 
+func _on_special_hit(ball, type: GlobalDefinitions.SpecialType) -> void:
+	if type == GlobalDefinitions.SpecialType.Lightning:
+		despawnBall(ball)
+
+
 func _on_query_portal_space(location: Vector2, radius: float) -> void:
 	%ObjectField.portalSpaceAvailable = %Canvas.isSpaceAvailable(location, radius) and \
 		%EntityField.isSpaceAvailable(location, radius)
@@ -320,7 +326,6 @@ func _on_use_ability(abilityId: String) -> void:
 		"GlassCannon":
 			AbilityDefinitions.startGlassCannon(%EntityField.nRows)
 			var lambda = func(ball) -> void:
-					# TODO: Do not trigger for upgrades
 					AbilityDefinitions.endGlassCannon()
 					%PlayingField.despawnBall(ball)
 			%EntityField.boxHit.connect(lambda, CONNECT_ONE_SHOT)
